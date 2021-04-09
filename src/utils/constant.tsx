@@ -3,8 +3,8 @@ import {Dimensions} from 'react-native';
 const {height, width} = Dimensions.get('window');
 
 const constant = {
-  primaryColor: '#05c2c0',
-  primaryTextColor: '#414c76',
+  primaryColor: '#c03626',
+  primaryTextColor: '#f9a11b',
   thirdTextColor: '#293565',
   secondaryTextColor: '#9b9a9f',
   backColor: '#edeef2',

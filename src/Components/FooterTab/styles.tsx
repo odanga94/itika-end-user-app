@@ -28,7 +28,7 @@ export default StyleSheet.create({
     height: 20,
   },
   focusedText: {
-    color: '#05c2c0',
+    color: '#f9a11b',
     top: 5,
     fontSize: 10,
     fontWeight: '700',

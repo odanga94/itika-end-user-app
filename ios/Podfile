@@ -50,8 +50,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'EndUserApp' do
-  # Pods for EndUserApp
+target 'Itika' do
+  # Pods for Itika
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -83,7 +83,7 @@ target 'EndUserApp' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'EndUserAppTests' do
+  target 'ItikaTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -100,10 +100,10 @@ target 'EndUserApp' do
   end
 end
 
-target 'EndUserApp-tvOS' do
-  # Pods for EndUserApp-tvOS
+target 'Itika-tvOS' do
+  # Pods for Itika-tvOS
 
-  target 'EndUserApp-tvOSTests' do
+  target 'Itika-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
