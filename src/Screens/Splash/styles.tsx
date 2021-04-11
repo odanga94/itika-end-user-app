@@ -1,6 +1,8 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 import constant from '../../utils/constant';
+
+const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
   safeArea: {
@@ -9,6 +11,7 @@ export default StyleSheet.create({
   },
   firstView: {
     flex: 1,
+    backgroundColor: "#fff"
   },
   backgroundColorImage: {
     flex: 1,
@@ -20,22 +23,17 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    height: 100,
-    width: 100,
+    height: 200,
+    width: 200,
     resizeMode: 'stretch',
     marginTop: 65,
+    marginBottom: -40
   },
   firstText: {
-    color: '#fff',
+    color: constant.primaryTextColor,
     paddingTop: 25,
     fontSize: 28,
     fontWeight: 'bold',
-  },
-  secondText: {
-    color: '#fff',
-    padding: 8,
-    fontSize: 13,
-    fontWeight: '300',
   },
   thirdView: {
     flex: 1,
@@ -61,7 +59,7 @@ export default StyleSheet.create({
     marginTop: 30,
   },
   fourthText: {
-    color: '#fff',
+    color: constant.primaryTextColor,
     fontWeight: '300',
     fontSize: 14,
   },

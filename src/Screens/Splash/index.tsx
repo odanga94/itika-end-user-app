@@ -29,12 +29,10 @@ const Splash: React.FC<Props> = (props) => {
         backgroundColor={constant.blackColor}
       />
       <View style={styles.firstView}>
-        <ImageBackground source={image} style={styles.backgroundColorImage}>
           <View style={styles.secondView}>
             <Image source={icon} style={styles.icon} />
-            <Text style={styles.firstText}>Eazy Ordering</Text>
-            <Text style={styles.secondText}>
-              Best Restaurants are on Eazyordering
+            <Text style={styles.firstText}>
+              Your Delivery Partner.
             </Text>
           </View>
           <View style={styles.thirdView}>
@@ -51,7 +49,6 @@ const Splash: React.FC<Props> = (props) => {
               </View>
             </TouchableWithoutFeedback>
           </View>
-        </ImageBackground>
       </View>
     </View>
   );
