@@ -10,7 +10,24 @@
 import React, {useEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
+import {combineReducers, createStore, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import {composeWithDevTools} from 'redux-devtools-extension';
+
 import Stack from './src/Screens';
+
+const initialState = {
+  isReduxWorking: true
+}
+const rootReducer = (state = initialState, action) => {
+  return state
+}
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(ReduxThunk)),
+);
 
 declare const global: {HermesInternal: null | {}};
 
@@ -19,9 +36,11 @@ const App = () => {
     SplashScreen.hide();
   }, []);
   return (
-    <SafeAreaProvider>
-      <Stack />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <Stack />
+      </SafeAreaProvider>
+    </Provider>
   );
 };
 

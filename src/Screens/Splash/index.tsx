@@ -8,11 +8,13 @@ import {
   StatusBar,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import { useSelector } from 'react-redux';
 
 import Button from '../../Components/Button';
 import styles from './styles';
 import {RootStackParamList} from '../AppNavigator';
 import constant from '../../utils/constant';
+import { isError } from 'lodash';
 const image = require('../../../assets/background.png');
 const icon = require('../../../assets/icon-fd.png');
 
@@ -22,6 +24,10 @@ interface Props {
 
 const Splash: React.FC<Props> = (props) => {
   const {navigation} = props;
+  const isReduxWorking = useSelector(state => state.isReduxWorking);
+
+  console.log('redux is working?', isReduxWorking);
+
   return (
     <View style={styles.safeArea}>
       <StatusBar

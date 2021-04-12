@@ -34,7 +34,10 @@
     "react-native-screens": "^2.7.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-stars": "^1.2.1",
-    "react-native-swiper": "^1.6.0-rc.3"
+    "react-native-swiper": "^1.6.0-rc.3",
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -52,6 +55,7 @@
     "prettier": "^2.0.4",
     "react-native-rename": "^2.7.0",
     "react-test-renderer": "16.11.0",
+    "redux-devtools-extension": "^2.13.9",
     "typescript": "^3.8.3"
   },
   "jest": {
