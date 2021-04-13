@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.enduserapp"
+        applicationId "com.itika"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

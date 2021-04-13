@@ -24,9 +24,9 @@ interface Props {
 
 const Splash: React.FC<Props> = (props) => {
   const {navigation} = props;
-  const isReduxWorking = useSelector(state => state.isReduxWorking);
+/*   const isReduxWorking = useSelector(state => state.isReduxWorking);
 
-  console.log('redux is working?', isReduxWorking);
+  console.log('redux is working?', isReduxWorking); */
 
   return (
     <View style={styles.safeArea}>

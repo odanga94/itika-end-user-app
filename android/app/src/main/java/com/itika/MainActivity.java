@@ -1,4 +1,4 @@
-package com.enduserapp;
+package com.itika;
 
 import com.facebook.react.ReactActivity;
 

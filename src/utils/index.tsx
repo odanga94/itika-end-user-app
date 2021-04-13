@@ -51,7 +51,8 @@ const getGpsLoc = () => {
         coords,
       };
       resolve(response);
-    });
+    }, err => console.log(err),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 1800000});
   });
 };
 
