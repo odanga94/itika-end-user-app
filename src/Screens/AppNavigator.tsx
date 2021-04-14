@@ -2,7 +2,7 @@ import * as React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Splash from './Splash';
 import Verify from './Verify';
-import Login from './Login';
+import Login from './Register';
 import OtpVerify from './OtpVerify';
 import SignUp from './SignUp';
 import TabNavigation from './TabNavigation';
@@ -22,6 +22,7 @@ import PaymentOptions from './PaymentOptions';
 import TrackOrder from './TrackOrder';
 import AddCard from './AddCard';
 import LogOut from './LogOut';
+import Auth from './Auth';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -46,6 +47,7 @@ export type RootStackParamList = {
   TrackOrder: undefined;
   AddCard: undefined;
   LogOut: undefined;
+  Auth: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
@@ -79,26 +81,111 @@ const PaymentStack = () => {
 
 const AppStack = () => {
   return (
-    <RootStack.Navigator initialRouteName="Splash" headerMode={'none'}>
-      <RootStack.Screen name="Splash" component={Splash} />
-      <RootStack.Screen name="Verify" component={Verify} />
-      <RootStack.Screen name="Login" component={Login} />
-      <RootStack.Screen name="OtpVerify" component={OtpVerify} />
-      <RootStack.Screen name="SignUp" component={SignUp} />
-      <RootStack.Screen name="Tabs" component={TabNavigation} />
-      <RootStack.Screen name="Filter" component={Filter} />
-      <RootStack.Screen name="SaveAddress" component={SaveAddress} />
-      <RootStack.Screen name="Search" component={Search} />
-      <RootStack.Screen name="MenuList" component={MenuList} />
-      <RootStack.Screen name="Cart" component={Cart} />
-      <RootStack.Screen name="ApplyCoupon" component={ApplyCoupon} />
-      <RootStack.Screen name="CheckOut" component={CheckOut} />
-      <RootStack.Screen name="DoneOrder" component={DoneOrder} />
-      <RootStack.Screen name="RestaurantList" component={RestaurantList} />
-      <RootStack.Screen name="Orders" component={OrderStack} />
-      <RootStack.Screen name="ManageAddress" component={AddressStack} />
-      <RootStack.Screen name="PaymentOptions" component={PaymentStack} />
-      <RootStack.Screen name="LogOut" component={LogOut} />
+    <RootStack.Navigator initialRouteName="Splash" headerMode={'screen'}>
+      <RootStack.Screen
+        name="Splash"
+        component={Splash}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Verify"
+        component={Verify}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Login"
+        component={Login}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="OtpVerify"
+        component={OtpVerify}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Auth"
+        component={Auth}
+        options={{
+          title: 'Sign In',
+          headerShown: true,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <RootStack.Screen
+        name="Tabs"
+        component={TabNavigation}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Filter"
+        component={Filter}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="SaveAddress"
+        component={SaveAddress}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Search"
+        component={Search}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="MenuList"
+        component={MenuList}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Cart"
+        component={Cart}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="ApplyCoupon"
+        component={ApplyCoupon}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="CheckOut"
+        component={CheckOut}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="DoneOrder"
+        component={DoneOrder}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="RestaurantList"
+        component={RestaurantList}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Orders"
+        component={OrderStack}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="ManageAddress"
+        component={AddressStack}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="PaymentOptions"
+        component={PaymentStack}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="LogOut"
+        component={LogOut}
+        options={{headerShown: false}}
+      />
     </RootStack.Navigator>
   );
 };
