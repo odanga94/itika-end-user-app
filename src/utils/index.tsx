@@ -4,7 +4,7 @@ import Geolocation from '@react-native-community/geolocation';
 
 import config from '../../config';
 
-export const checkValidity = (value: any, rules: any) => {
+export const checkValidity = (value: any, rules: any, id: string, passwordValue: string) => {
   let isValid = true;
   if (!rules) {
     return true;
@@ -39,9 +39,9 @@ export const checkValidity = (value: any, rules: any) => {
     isValid = false;
   }
 
-  /* if (props.id === 'confirmPassword' && text !== props.passwordValue) {
+  if (id === 'confirmPassword' && value !== passwordValue) {
     isValid = false;
-  } */
+  }
 
   return isValid;
 };

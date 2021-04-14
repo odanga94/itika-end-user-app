@@ -16,6 +16,7 @@ interface Props {
   keyboardType: any;
   secureTextEntry: any;
   autoCapitalize: string;
+  passwordValue: string;
 }
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
@@ -48,6 +49,8 @@ const Input: React.FC<Props> = (props) => {
     errorText,
     label,
     style,
+    rules,
+    passwordValue,
   } = props;
 
   const [inputState, dispatch] = useReducer(inputReducer, {
@@ -63,7 +66,7 @@ const Input: React.FC<Props> = (props) => {
   }, [inputState, onInputChange, id]);
 
   const textChangedHandler = (text: string) => {
-    let isValid = checkValidity(text, props.rules);
+    let isValid = checkValidity(text, rules, id, passwordValue);
     dispatch({type: INPUT_CHANGE, value: text, isValid});
   };
 

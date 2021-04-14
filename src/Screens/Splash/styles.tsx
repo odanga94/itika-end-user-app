@@ -61,12 +61,12 @@ export default StyleSheet.create({
   fourthText: {
     color: constant.primaryTextColor,
     fontWeight: '300',
-    fontSize: 14,
+    fontSize: 18,
   },
   fifthText: {
     color: constant.primaryColor,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 18,
   },
   sixthText: {
     color: '#fff',

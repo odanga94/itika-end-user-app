@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -34,11 +34,15 @@ const OtpVerify: React.FC<Props> = (props) => {
     value,
     setValue,
   });
-  value.length > 3 &&
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'SignUp'}],
-    });
+
+  useEffect(() => {
+    if (value.length > 3) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignUp'}],
+      });
+    }
+  }, [value, navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
