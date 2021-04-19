@@ -18,14 +18,14 @@ import {
 //import * as firebase from 'firebase';
 //import * as Google from 'expo-google-app-auth';
 //import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-//import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 import Button from '../../Components/Button';
-//import Spinner from '../components/UI/Spinner';
+import Spinner from '../../Components/UI/Spinner';
 //import Colors from '../constants/colors';
 //import DefaultStyles from '../constants/default-styles';
-//import * as authActions from '../store/actions/user/auth';
+import * as authActions from '../../store/actions/user/auth';
 import SignInWithEmailForm from '../../Components/SignInWithEmail';
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
@@ -42,30 +42,27 @@ const Auth: React.FC<Props> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [credentials, setCredentials] = useState();
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  const authHandler = async (credentialDetails: any) => {
+  const authHandler = async () => {
     if (!formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {text: 'Okay'},
       ]);
       return;
     }
-    console.log(credentialDetails);
-    Alert.alert('Can Login!', 'Input is valid, proceed to login', [
-      {text: 'Okay'},
-    ]);
-    /* setIsLoading(true);
-      try {
-        await dispatch(
-          authActions.logIn(credentials.email, credentials.password),
-        );
-        props.navigation.navigate('App');
-      } catch (err) {
-        Alert.alert('An error occurred!', err.message, [{text: 'Okay'}]);
-        setIsLoading(false);
-      }
-    }  */
+    console.log(credentials);
+    setIsLoading(true);
+    try {
+      await dispatch(
+        authActions.logIn(credentials.email, credentials.password),
+      );
+    } catch (err) {
+      console.log(err);
+      Alert.alert('Something went wrong', err.message, [{text: 'Okay'}]);
+      setIsLoading(false);
+    }
+    setIsLoading(false);
   };
 
   /* const facebookAuthHandler = async () => {
@@ -300,28 +297,17 @@ const Auth: React.FC<Props> = (props) => {
           />
         </ScrollView>
       </KeyboardAvoidingView>
-      <Button
-        style={styles.fourthView}
-        onPress={() => {
-          authHandler(credentials);
-        }}>
-        <Text style={styles.sixthText}>Login</Text>
-      </Button>
-      <View style={{paddingHorizontal: 30, bottom: -10}}>
-        <Text style={styles.terms}>
-          By signing up, you agree to our Terms and Conditions and
-          <Text> </Text>
-          <Text
-            style={{color: constant.primaryTextColor}}
-            onPress={() =>
-              Linking.openURL(
-                'https://drive.google.com/file/d/1e16-vnvBi7P0sSzomvUXRnA1pYdLPoD0/view?usp=sharing',
-              )
-            }>
-            Privacy Policy
-          </Text>
-        </Text>
-      </View>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Button
+          style={styles.fourthView}
+          onPress={() => {
+            authHandler();
+          }}>
+          <Text style={styles.sixthText}>Login</Text>
+        </Button>
+      )}
     </View>
   );
 };

@@ -19,18 +19,20 @@ const dropDown = require('../../../assets/dropdown.png');
 interface Props {
   enableEvent: string;
   focus: boolean;
+  number: string;
+  setNumber: (text: string) => void;
 }
 
 const PhoneInput: React.FC<Props> = (props) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [code, setCode] = useState<CountryCode>('IN');
-  const [number, setNumber] = useState<string>('');
-  const [callingCode, setCallingCode] = useState<string>('91');
+  const [code, setCode] = useState<CountryCode>('KE');
+  //const [number, setNumber] = useState<string>('');
+  const [callingCode, setCallingCode] = useState<string>('254');
   const onSelect = (country: Country) => {
     setCode(country.cca2);
     setCallingCode(country.callingCode[0]);
   };
-  const {enableEvent, focus} = props;
+  const {enableEvent, focus, number, setNumber} = props;
   return (
     <View style={styles.firstView} pointerEvents={enableEvent}>
       <View style={styles.secondView}>

@@ -1,11 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
 import {
   Text,
   View,
   TouchableWithoutFeedback,
   Image,
-  ImageBackground,
   StatusBar,
+  Linking,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
@@ -51,6 +52,21 @@ const Splash: React.FC<Props> = (props) => {
               <Text style={styles.fifthText}>Login </Text>
             </View>
           </TouchableWithoutFeedback>
+        </View>
+        <View style={{paddingHorizontal: 30, bottom: 10}}>
+          <Text style={styles.terms}>
+            By signing up, you agree to our Terms and Conditions and
+            <Text> </Text>
+            <Text
+              style={{color: constant.primaryTextColor}}
+              onPress={() =>
+                Linking.openURL(
+                  'https://drive.google.com/file/d/1FuSf8AS7qgniDApdRSzuehHoyO5v6rRM/view?usp=sharing',
+                )
+              }>
+              Privacy Policy
+            </Text>
+          </Text>
         </View>
       </View>
     </View>

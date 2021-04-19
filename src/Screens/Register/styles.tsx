@@ -55,6 +55,7 @@ export default StyleSheet.create({
   seventhView: {
     top: 80,
     left: 20,
+    //flex: 1,
   },
   eightView: {
     flex: 3,
@@ -68,5 +69,14 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: constant.commonColor,
+  },
+  errorContainer: {
+    marginVertical: 5,
+  },
+  errorText: {
+    fontFamily: 'poppins-regular',
+    color: 'red',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
