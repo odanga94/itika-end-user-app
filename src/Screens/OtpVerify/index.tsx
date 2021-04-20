@@ -18,12 +18,14 @@ import {
 import * as firebase from 'firebase';
 import {FirebaseRecaptchaVerifierModal} from 'expo-firebase-recaptcha';
 import {Toast} from 'native-base';
+import {useDispatch} from 'react-redux';
 
 import styles from './styles';
 import {RootStackParamList} from '../AppNavigator';
 import Spinner from '../../Components/UI/Spinner';
 import {firebaseAppAuth, firebaseConfig} from '../../../App';
 import constant from '../../utils/constant';
+import * as authActions from '../../store/actions/user/auth';
 
 const backIcon = require('../../../assets/back.png');
 
@@ -33,6 +35,7 @@ interface Props {
 }
 
 const OtpVerify: React.FC<Props> = (props) => {
+  const dispatch = useDispatch();
   const {navigation, route} = props;
 
   const recaptchaVerifier = useRef(null);
@@ -91,27 +94,23 @@ const OtpVerify: React.FC<Props> = (props) => {
         const authDetails = await firebaseAppAuth.signInWithCredential(
           credential,
         );
-        console.log(authDetails);
-        Alert.alert(
-          'Success',
-          'Phone authentication successful. Proceed to registration',
-          [{text: 'Okay'}],
-        );
+        //console.log(authDetails);
+        dispatch(authActions.authenticate(authDetails.user?.uid, false, false));
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'SignUp'}],
+        });
       } catch (err) {
         Alert.alert('Something Went Wrong.', err.message, [{text: 'Okay'}]);
         //setPhoneAuthLoading(false)
       }
       setPhoneAuthLoading(false);
-      /* navigation.reset({
-          index: 0,
-          routes: [{name: 'SignUp'}],
-        }); */
     };
 
     if (value.length > 5) {
       phoneAuthHandler(verId);
     }
-  }, [value, route, verId]);
+  }, [value, route, verId, dispatch, navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

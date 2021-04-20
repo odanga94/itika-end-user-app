@@ -15,11 +15,12 @@ import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import firebase from 'firebase/app';
-import 'firebase/auth';
+//import 'firebase/auth';
 import {Root} from 'native-base';
 
 import Stack from './src/Screens';
 import authReducer from './src/store/reducers/user/auth';
+import profileReducer from './src/store/reducers/user/profile';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyA7pNSJGB6fqJ5Y8OngV0kav42wAkp_i3g',
@@ -29,6 +30,7 @@ export const firebaseConfig = {
   messagingSenderId: '201382863145',
   appId: '1:201382863145:web:594ebc242dbb552e101738',
   measurementId: 'G-3L52RB385V',
+  databaseURL: 'https://itika-6fe70-default-rtdb.firebaseio.com/',
 };
 
 // if(!firebase.apps.length){
@@ -36,9 +38,11 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 // }
 
 export const firebaseAppAuth = firebaseApp.auth();
+export const firebaseAppDatabase = firebaseApp.database();
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  profile: profileReducer,
 });
 
 const store = createStore(

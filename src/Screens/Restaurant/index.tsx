@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import Modal from 'react-native-modal';
+import {useSelector} from 'react-redux';
 
 import {checkPermission} from '../../utils';
 import RestaurantCard from '../../Components/RestaurantCard';
@@ -29,6 +30,9 @@ interface Props {
 }
 
 const Restaurants: React.FC<Props> = (props) => {
+  const userProfile = useSelector((state: any) => state.profile);
+  console.log(userProfile);
+  
   const [address, setAddress] = useState<string>('');
   const [gpsLoc, setGpsLoc] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);

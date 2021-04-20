@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useReducer, useEffect, useCallback} from 'react';
+import React, {useReducer, /*useEffect,*/ useCallback, useState} from 'react';
 import {
   Text,
   View,
@@ -8,16 +8,21 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  Alert,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {useSelector, useDispatch} from 'react-redux';
 
 import Input from '../../Components/Input';
 import constant from '../../utils/constant';
 import Button from '../../Components/Button';
+import Spinner from '../../Components/UI/Spinner';
+
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
+import * as profileActions from '../../store/actions/user/profile';
+//import {firebaseAppAuth} from '../../../App';
 
 const image = require('../../../assets/Artboard.png');
 
@@ -50,17 +55,27 @@ const formReducer = (state: any, action: any) => {
 };
 
 const SignUp: React.FC<Props> = (props) => {
+  const dispatch = useDispatch();
+  const userId = useSelector((state: any) => state.auth.userId);
+
+  const {navigation} = props;
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       email: '',
       password: '',
       confirmPassword: '',
-      name: '',
-      phone: '',
+      firstName: '',
+      lastName: '',
     },
     inputValidities: {
       email: false,
       password: false,
+      confirmPassword: false,
+      firstName: false,
+      lastName: false,
     },
     formIsValid: false,
   });
@@ -77,26 +92,39 @@ const SignUp: React.FC<Props> = (props) => {
     [dispatchFormState],
   );
 
-  const registrationHandler = (credentialDetails: any) => {
-    console.log(formState.formIsValid, credentialDetails);
+  const registrationHandler = async () => {
+    console.log(formState.formIsValid, formState.inputValues);
     if (!formState.formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {text: 'Okay'},
       ]);
       return;
     }
-
-    Alert.alert('Can Login!', 'Input is valid, proceed to login', [
-      {text: 'Okay'},
-    ]);
+    setIsLoading(true);
+    try {
+      const userData = {
+        firstName: formState.inputValues.firstName,
+        lastName: formState.inputValues.lastName,
+        email: formState.inputValues.email,
+        password: formState.inputValues.password,
+      };
+      await dispatch(profileActions.editProfile(userId, userData));
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      });
+    } catch (err) {
+      Alert.alert('Something went wrong.', err.message, [{text: 'Okay'}]);
+    }
+    setIsLoading(false);
   };
 
+  //console.log('user', firebaseAppAuth.currentUser);
   /* useEffect(() => {
     setFormIsValid(formState.formIsValid);
     setCredentials({...formState.inputValues});
   }, [formState, setFormIsValid, setCredentials]); */
 
-  const {navigation} = props;
   return (
     <View style={styles.firstView}>
       <KeyboardAvoidingView
@@ -159,7 +187,7 @@ const SignUp: React.FC<Props> = (props) => {
                   initialValue=""
                   style={styles.textInput}
                 />
-                <Input
+                {/* <Input
                   id="phone"
                   label="Phone:"
                   keyboardType="phone-pad"
@@ -169,7 +197,7 @@ const SignUp: React.FC<Props> = (props) => {
                   onInputChange={inputChangeHandler}
                   initialValue=""
                   style={styles.textInput}
-                />
+                /> */}
                 <Input
                   id="password"
                   label="Password:"
@@ -198,17 +226,22 @@ const SignUp: React.FC<Props> = (props) => {
                 />
               </ScrollView>
               <View style={styles.fifthView}>
-                <Button
-                  style={styles.button}
-                  onPress={
-                    () => registrationHandler(formState.inputValues)
-                    /* navigation.reset({
-                      index: 0,
-                      routes: [{name: 'Tabs'}],
-                    }) */
-                  }>
-                  <Text style={styles.thirdText}>Register</Text>
-                </Button>
+                {isLoading ? (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      flex: 1,
+                      alignSelf: 'center',
+                    }}>
+                    <Spinner />
+                  </View>
+                ) : (
+                  <Button
+                    style={styles.button}
+                    onPress={() => registrationHandler()}>
+                    <Text style={styles.thirdText}>Register</Text>
+                  </Button>
+                )}
               </View>
             </View>
           </View>
