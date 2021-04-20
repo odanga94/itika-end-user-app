@@ -1,7 +1,7 @@
 import {StyleSheet, Platform} from 'react-native';
 import constant from '../../utils/constant';
 
-const {height, heightRatio} = constant.styleGuide;
+const {height, heightRatio, width} = constant.styleGuide;
 const iphoneX = height > 811;
 
 export default StyleSheet.create({
@@ -57,8 +57,6 @@ export default StyleSheet.create({
   },
   seventhView: {
     paddingTop: 70,
-    marginLeft: 10,
-    marginRight: 40,
   },
   eightView: {
     flex: 2,
@@ -73,13 +71,14 @@ export default StyleSheet.create({
   title: {textAlign: 'center', fontSize: 30},
   codeFiledRoot: {
     marginTop: 20,
-    width: 280,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: width,
+    //marginLeft: 'auto',
+    //marginRight: 'auto',
+    paddingHorizontal: 20,
   },
   cellRoot: {
-    width: 60,
-    height: 60,
+    width: width / 8,
+    height: width / 8,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

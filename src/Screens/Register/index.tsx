@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from 'react';
+import React, {useReducer, useEffect, useState, useRef} from 'react';
 import {
   Text,
   View,
@@ -9,8 +9,11 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
+import {Toast} from 'native-base';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {FirebaseRecaptchaVerifierModal} from 'expo-firebase-recaptcha';
+import * as firebase from 'firebase';
 
 import PhoneInput from '../../Components/PhoneInput';
 import constant from '../../utils/constant';
@@ -18,6 +21,7 @@ import Button from '../../Components/Button';
 import styles from './styles';
 import {RootStackParamList} from '../AppNavigator';
 import {checkValidity} from '../../utils/';
+import {firebaseConfig} from '../../../App';
 
 const backIcon = require('../../../assets/back.png');
 
@@ -55,6 +59,13 @@ const Login: React.FC<Props> = (props) => {
     touched: false,
   });
 
+  const recaptchaVerifier = useRef(null);
+
+  const [verificationId, setVerificationId] = useState('');
+  const [verficationCode, setVerificationCode] = useState();
+  const [countryCode, setCountryCode] = useState('+254');
+  // const [formattedPhone, setFormattedPhone] = useState('');
+
   const textChangedHandler = (text: string) => {
     let isValid = checkValidity(
       text,
@@ -69,18 +80,60 @@ const Login: React.FC<Props> = (props) => {
     dispatch({type: INPUT_BLUR});
   }; */
 
-  const verifyPhoneHandler = () => {
+  const verifyPhoneHandler = async () => {
     if (!inputState.isValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {text: 'Okay'},
       ]);
       return;
     }
-    navigation.navigate('OtpVerify');
+    let formattedPhone = '';
+    if (inputState.value.split('')[0] !== '0') {
+      formattedPhone = countryCode + inputState.value;
+    } else {
+      formattedPhone = countryCode + inputState.value.slice(1);
+    }
+    //console.log(formattedPhone);
+    try {
+      const phoneProvider = new firebase.default.auth.PhoneAuthProvider();
+      const id = await phoneProvider.verifyPhoneNumber(
+        formattedPhone,
+        recaptchaVerifier.current,
+      );
+      setVerificationId(id);
+      Toast.show({
+        text: 'Verification code has been sent to your phone.',
+        buttonText: 'Okay',
+        duration: 5000,
+        textStyle: {color: constant.primaryTextColor},
+        buttonStyle: {backgroundColor: constant.primaryColor},
+        buttonTextStyle: {color: '#fff'},
+        onClose: () => {
+          navigation.navigate('OtpVerify', {
+            verificationId: id,
+            phoneNumber: formattedPhone,
+          });
+        },
+      });
+    } catch (err) {
+      Toast.show({
+        text: err.message,
+        buttonText: 'Okay',
+        duration: 5000,
+        textStyle: {color: constant.primaryTextColor},
+        buttonStyle: {backgroundColor: constant.primaryColor},
+        buttonTextStyle: {color: '#fff'},
+      });
+    }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifier}
+        firebaseConfig={firebaseConfig}
+        attemptInvisibleVerification={true}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.firstView}>
@@ -112,6 +165,7 @@ const Login: React.FC<Props> = (props) => {
               focus={true}
               setNumber={textChangedHandler}
               number={inputState.value}
+              setCountryCode={setCountryCode}
             />
             {!inputState.isValid && inputState.touched && (
               <View style={styles.errorContainer}>
@@ -127,7 +181,7 @@ const Login: React.FC<Props> = (props) => {
             <Button
               onPress={() => verifyPhoneHandler()}
               style={styles.fourthView}>
-              <Text style={styles.thirdText}>Continue</Text>
+              <Text style={styles.thirdText}>Send SMS</Text>
             </Button>
           </View>
         </View>

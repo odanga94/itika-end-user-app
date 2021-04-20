@@ -16,11 +16,12 @@ import ReduxThunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import {Root} from 'native-base';
 
 import Stack from './src/Screens';
 import authReducer from './src/store/reducers/user/auth';
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyA7pNSJGB6fqJ5Y8OngV0kav42wAkp_i3g',
   authDomain: 'itika-6fe70.firebaseapp.com',
   projectId: 'itika-6fe70',
@@ -53,9 +54,11 @@ const App = () => {
   }, []);
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
-        <Stack />
-      </SafeAreaProvider>
+      <Root>
+        <SafeAreaProvider>
+          <Stack />
+        </SafeAreaProvider>
+      </Root>
     </Provider>
   );
 };

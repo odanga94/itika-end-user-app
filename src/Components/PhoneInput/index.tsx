@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -21,6 +21,7 @@ interface Props {
   focus: boolean;
   number: string;
   setNumber: (text: string) => void;
+  setCountryCode: (text: string) => void | undefined;
 }
 
 const PhoneInput: React.FC<Props> = (props) => {
@@ -28,11 +29,20 @@ const PhoneInput: React.FC<Props> = (props) => {
   const [code, setCode] = useState<CountryCode>('KE');
   //const [number, setNumber] = useState<string>('');
   const [callingCode, setCallingCode] = useState<string>('254');
+
   const onSelect = (country: Country) => {
     setCode(country.cca2);
     setCallingCode(country.callingCode[0]);
   };
-  const {enableEvent, focus, number, setNumber} = props;
+
+  const {enableEvent, focus, number, setNumber, setCountryCode} = props;
+
+  useEffect(() => {
+    if (setCountryCode) {
+      setCountryCode(`+${callingCode}`);
+    }
+  }, [callingCode, setCountryCode]);
+
   return (
     <View style={styles.firstView} pointerEvents={enableEvent}>
       <View style={styles.secondView}>
