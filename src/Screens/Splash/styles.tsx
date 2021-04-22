@@ -2,8 +2,6 @@ import {StyleSheet, Dimensions} from 'react-native';
 
 import constant from '../../utils/constant';
 
-const { width, height } = Dimensions.get('window');
-
 export default StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -11,7 +9,7 @@ export default StyleSheet.create({
   },
   firstView: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff',
   },
   backgroundColorImage: {
     flex: 1,
@@ -27,7 +25,7 @@ export default StyleSheet.create({
     width: 200,
     resizeMode: 'stretch',
     marginTop: 65,
-    marginBottom: -40
+    marginBottom: -40,
   },
   firstText: {
     color: constant.primaryTextColor,
@@ -78,5 +76,16 @@ export default StyleSheet.create({
     fontFamily: 'poppins-regular',
     fontSize: 14,
     color: '#505050',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+  centered: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    position: 'absolute',
+    bottom: constant.styleGuide.height / 6,
   },
 });

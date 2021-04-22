@@ -30,9 +30,12 @@ interface Props {
 }
 
 const Restaurants: React.FC<Props> = (props) => {
-  const userProfile = useSelector((state: any) => state.profile);
-  console.log(userProfile);
-  
+  /* const userProfile = useSelector((state: any) => state.profile);
+  console.log(userProfile); */
+
+  /* const userId = useSelector((state: any) => state.auth.userId);
+  console.log('uid', userId); */
+
   const [address, setAddress] = useState<string>('');
   const [gpsLoc, setGpsLoc] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);

@@ -35,6 +35,7 @@ export const editProfile = (
     lastName: string;
     email: string;
     password: string;
+    phone: string;
   },
 ) => {
   return async (dispatch: any) => {

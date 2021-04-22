@@ -38,11 +38,14 @@ interface Props {
 }
 
 const Auth: React.FC<Props> = (props) => {
+  const {navigation} = props;
+
+  const dispatch = useDispatch();
+
   const [isEmailAuth, setIsEmailAuth] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [credentials, setCredentials] = useState();
-  const dispatch = useDispatch();
 
   const authHandler = async () => {
     if (!formIsValid) {
@@ -51,12 +54,16 @@ const Auth: React.FC<Props> = (props) => {
       ]);
       return;
     }
-    console.log(credentials);
+    //console.log(credentials);
     setIsLoading(true);
     try {
       await dispatch(
         authActions.logIn(credentials.email, credentials.password),
       );
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      });
     } catch (err) {
       console.log(err);
       Alert.alert('Something went wrong', err.message, [{text: 'Okay'}]);

@@ -22,7 +22,7 @@ import Spinner from '../../Components/UI/Spinner';
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
 import * as profileActions from '../../store/actions/user/profile';
-//import {firebaseAppAuth} from '../../../App';
+import {firebaseAppAuth} from '../../../App';
 
 const image = require('../../../assets/Artboard.png');
 
@@ -93,7 +93,7 @@ const SignUp: React.FC<Props> = (props) => {
   );
 
   const registrationHandler = async () => {
-    console.log(formState.formIsValid, formState.inputValues);
+    //console.log(formState.formIsValid, formState.inputValues);
     if (!formState.formIsValid) {
       Alert.alert('Wrong Input!', 'Please check the errors in the form.', [
         {text: 'Okay'},
@@ -102,11 +102,13 @@ const SignUp: React.FC<Props> = (props) => {
     }
     setIsLoading(true);
     try {
+      const phone = firebaseAppAuth.currentUser?.phoneNumber;
       const userData = {
         firstName: formState.inputValues.firstName,
         lastName: formState.inputValues.lastName,
         email: formState.inputValues.email,
         password: formState.inputValues.password,
+        phone: phone,
       };
       await dispatch(profileActions.editProfile(userId, userData));
       navigation.reset({

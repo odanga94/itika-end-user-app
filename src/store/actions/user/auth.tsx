@@ -50,7 +50,7 @@ export const logIn = (email: string, password: string) => {
         email,
         password,
       );
-      console.log('res', response);
+      //console.log('res', response);
       if (response.user) {
         dispatch(authenticate(response.user.uid, false, false));
       }
@@ -62,10 +62,14 @@ export const logIn = (email: string, password: string) => {
 
 export const logOut = () => {
   return async (dispatch: any) => {
-    await firebaseAppAuth.signOut();
-    dispatch({
-      type: LOG_OUT,
-    });
+    try {
+      await firebaseAppAuth.signOut();
+      dispatch({
+        type: LOG_OUT,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
     /* dispatch({
       type: RESET_ORDERS,
     });
