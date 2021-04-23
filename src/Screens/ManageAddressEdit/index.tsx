@@ -35,21 +35,28 @@ const ManageAddressEdit: React.FC<Props> = (props) => {
   const [gpsLoc, setGpsLoc] = useState<any>(null);
   const {navigation} = props;
   useEffect(() => {
-    Geolocation.getCurrentPosition(async (info: any) => {
-      const {latitude, longitude} = info.coords;
-      const region = {
-        latitude: latitude,
-        longitude: longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      setGpsLoc(region);
-    });
+    Geolocation.getCurrentPosition(
+      async (info: any) => {
+        const {latitude, longitude} = info.coords;
+        const region = {
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        };
+        setGpsLoc(region);
+      },
+      (err) => console.log(err),
+      {enableHighAccuracy: true, timeout: 10000, maximumAge: 1800000},
+    );
   }, []);
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <KeyboardAwareScrollView
         resetScrollToCoords={{x: 0, y: 0}}
         showsVerticalScrollIndicator={false}
@@ -168,7 +175,11 @@ const ManageAddressEdit: React.FC<Props> = (props) => {
               </View>
             </TouchableWithoutFeedback>
           </View>
-          <Button style={styles.button} onPress={() => Alert.alert('pressed')}>
+          <Button
+            style={styles.button}
+            onPress={() =>
+              Alert.alert('Pressed', 'Work in progress!', [{text: 'Okay'}])
+            }>
             <Text style={styles.buttonText}>Save</Text>
           </Button>
         </View>

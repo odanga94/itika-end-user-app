@@ -4,6 +4,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
+import constant from '../../utils/constant';
 
 const orderIcon = require('../../../assets/oderplaced.png');
 
@@ -18,7 +19,10 @@ const DoneOrder: React.FC<Props> = (props) => {
   }, 2000);
   return (
     <View style={styles.firstView}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.secondView}>
         <Image source={orderIcon} style={styles.imgIcon} resizeMode="contain" />
       </View>

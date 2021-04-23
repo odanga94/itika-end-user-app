@@ -40,7 +40,7 @@ export default StyleSheet.create({
     fontSize: 12,
     left: 3,
     fontWeight: '500',
-    color: constant.lightText,
+    color: '#505050',
   },
   firstText: {
     paddingTop: iphoneX ? 2 : 5,
@@ -63,6 +63,6 @@ export default StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     left: 2,
-    color: constant.lightText,
+    color: '#505050',
   },
 });

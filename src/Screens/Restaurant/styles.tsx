@@ -19,10 +19,11 @@ export default StyleSheet.create({
     flex: 1,
     top: 20,
     flexDirection: 'row',
+    alignSelf: 'center',
   },
   firstIcon: {
-    height: 20,
-    width: 20,
+    height: 23,
+    width: 23,
   },
   firstText: {
     left: 5,

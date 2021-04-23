@@ -41,8 +41,8 @@ const Account: React.FC<Props> = (props) => {
           </View>
         </View>
         <View style={styles.commonView}>
-          <Text style={styles.firstText}>Richard jain</Text>
-          <Text style={styles.secondText}>richdr@emailid.com</Text>
+          <Text style={styles.firstText}>Jon Doe</Text>
+          <Text style={styles.secondText}>jondoe@emailid.com</Text>
         </View>
       </View>
       <View style={styles.fourthView}>
@@ -55,7 +55,7 @@ const Account: React.FC<Props> = (props) => {
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('PaymentOptions')}>
           <View style={styles.fifthView}>
-            <Text style={styles.commonText}>Payment Option</Text>
+            <Text style={styles.commonText}>Payment Options</Text>
             <Image source={icon} style={styles.icons} resizeMode="contain" />
           </View>
         </TouchableWithoutFeedback>

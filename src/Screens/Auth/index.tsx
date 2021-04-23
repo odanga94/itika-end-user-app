@@ -5,14 +5,10 @@ import {
   ScrollView,
   View,
   Text,
-  StyleSheet,
   Image,
   Dimensions,
-  TouchableOpacity,
-  TouchableNativeFeedback,
   Platform,
   Alert,
-  Linking,
 } from 'react-native';
 //import * as facebook from 'expo-facebook';
 //import * as firebase from 'firebase';
@@ -30,8 +26,6 @@ import SignInWithEmailForm from '../../Components/SignInWithEmail';
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
 import constant from '../../utils/constant';
-
-const {height} = Dimensions.get('window');
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -176,7 +170,7 @@ const Auth: React.FC<Props> = (props) => {
     <View style={{flex: 1, padding: 20, justifyContent: 'space-between'}}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={height / 4.5}
+        keyboardVerticalOffset={constant.styleGuide.height / 4.5}
         style={{flex: 1}}>
         <ScrollView contentContainerStyle={styles.screen}>
           <View style={styles.imageContainer}>

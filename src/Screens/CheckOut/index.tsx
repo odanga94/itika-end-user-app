@@ -12,6 +12,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import styles from './styles';
 import Button from '../../Components/Button';
+import constant from '../../utils/constant';
 import {RootStackParamList} from '../AppNavigator';
 
 const backIcon = require('../../../assets/back.png');
@@ -40,7 +41,10 @@ const CheckOut: React.FC<Props> = (props) => {
   const {navigation} = props;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.container}>
         <View style={styles.firstView}>
           <TouchableWithoutFeedback onPress={() => navigation.goBack()}>

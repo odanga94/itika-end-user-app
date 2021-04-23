@@ -40,7 +40,7 @@ const PaymentOptions: React.FC<Props> = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.firstView}>
-        <Header navigation={navigation} title="Payment" />
+        <Header navigation={navigation} title="Payment Options" />
       </View>
       <View style={styles.commonView}>
         <FlatList

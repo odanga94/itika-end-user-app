@@ -17,6 +17,7 @@ import AddFood from '../../Components/AddFood';
 import BillDetails from '../../Components/BillDetails';
 
 import styles from './styles';
+import constant from '../../utils/constant';
 
 interface Props {
   addedFood: any;
@@ -63,7 +64,10 @@ const Cart: React.FC<Props> = (props) => {
   };
   return (
     <SafeAreaView style={styles.commonView}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       {route.params !== undefined || addFood.length !== 0 ? (
         <View style={styles.commonView}>
           <View style={styles.headerView}>
@@ -117,7 +121,7 @@ const Cart: React.FC<Props> = (props) => {
           />
           <Text style={styles.emptyTextFirst}>Your Cart is empty.</Text>
           <Text style={styles.emptyTextSecond}>
-            Add something from the menu
+            Send a package or request an errand from the home screen.
           </Text>
         </View>
       )}

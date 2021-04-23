@@ -15,6 +15,7 @@ import {RootStackParamList} from '../AppNavigator';
 import Header from '../../Components/Header';
 import Button from '../../Components/Button';
 import styles from './styles';
+import constant from '../../utils/constant';
 
 const homeIcon = require('../../../assets/home.png');
 
@@ -27,13 +28,11 @@ const ManageAddress: React.FC<Props> = (props) => {
   const [saveAddress, updateSaveAddress] = useState([
     {
       id: '1',
-      address:
-        'GeekyAnts Software, Bannerghatta Main Road, Btm Layout, 2nd Stage, 2nd Main Road, No 18, First Floor, Benguluru, Karnataka 560076 .',
+      address: 'TRV Office Plaza, Muthithi Road, Nairobi.',
     },
     {
       id: '2',
-      address:
-        'GeekyAnts Software, Bannerghatta Main Road, Btm Layout, 2nd Stage, 2nd Main Road, No 18, First Floor, Benguluru, Karnataka 560076 .',
+      address: 'T-Mall, Langata Road, TMALL.',
     },
   ]);
   const deleteAddress = (ind: number) => {
@@ -44,7 +43,10 @@ const ManageAddress: React.FC<Props> = (props) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.firstView}>
         <Header navigation={navigation} title="Manage Address" />
       </View>

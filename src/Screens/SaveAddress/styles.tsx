@@ -38,7 +38,7 @@ export default StyleSheet.create({
     left: 20,
   },
   secondView: {
-    flex: 1,
+    flex: 1.5,
     backgroundColor: constant.commonColor,
   },
   thirdView: {

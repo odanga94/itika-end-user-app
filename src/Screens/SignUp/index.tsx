@@ -134,7 +134,7 @@ const SignUp: React.FC<Props> = (props) => {
         style={styles.firstView}>
         <StatusBar
           barStyle="light-content"
-          backgroundColor={constant.blackColor}
+          backgroundColor={constant.primaryColor}
         />
         <View style={styles.firstView}>
           <View style={styles.firstView}>

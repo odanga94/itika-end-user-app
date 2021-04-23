@@ -22,7 +22,7 @@ const RestaurantList: React.FC<Props> = (props) => {
     <View style={styles.firstView}>
       <StatusBar
         barStyle="light-content"
-        backgroundColor={constant.blackColor}
+        backgroundColor={constant.primaryColor}
       />
       <View style={styles.secondView}>
         <View style={styles.firstView}>

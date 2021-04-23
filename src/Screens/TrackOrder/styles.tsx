@@ -52,9 +52,9 @@ export default StyleSheet.create({
   },
   thirdText: {
     paddingTop: 3,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
-    color: constant.lightText,
+    color: '#505050',
   },
   sixthView: {
     paddingTop: 40,
@@ -73,10 +73,10 @@ export default StyleSheet.create({
     color: constant.thirdTextColor,
   },
   fifthText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '500',
     paddingTop: 5,
-    color: constant.secondaryTextColor,
+    color: '#505050',
   },
   driverImg: {
     height: 40,

@@ -1,6 +1,8 @@
 import {StyleSheet} from 'react-native';
 import constant from '../../utils/constant';
 
+const {width} = constant.styleGuide;
+
 export default StyleSheet.create({
   firstView: {
     flex: 1,
@@ -18,5 +20,19 @@ export default StyleSheet.create({
     marginTop: 20,
     // top: -3,
     // backgroundColor: 'red',
+  },
+  button: {
+    height: 50,
+    width: width - 110,
+    backgroundColor: constant.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  thirdText: {
+    color: constant.commonColor,
+    fontSize: 18,
+    fontWeight: '700',
   },
 });

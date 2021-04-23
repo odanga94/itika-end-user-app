@@ -94,9 +94,7 @@ const SearchLocation: React.FC<Props> = (props) => {
                     style={styles.secondIcon}
                     resizeMode="contain"
                   />
-                  <Text style={styles.fourthText}>
-                    Geekyants Software Pvt Lt...
-                  </Text>
+                  <Text style={styles.fourthText}>Westlands, Nairobi.</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>

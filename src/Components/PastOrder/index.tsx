@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Image, FlatList, SafeAreaView} from 'react-native';
+import {View, Text, Image, FlatList, SafeAreaView, Alert} from 'react-native';
 import {pastOrders} from '../../Data/data';
 import Button from '../Button';
 
@@ -10,7 +10,7 @@ const PastOrder: React.FC = () => {
   return (
     <SafeAreaView style={styles.firstView}>
       <View style={styles.secondView}>
-        <Text style={styles.firstText}>Past Order</Text>
+        <Text style={styles.firstText}>Past Orders</Text>
       </View>
       <View style={styles.thirdView}>
         <FlatList
@@ -24,7 +24,7 @@ const PastOrder: React.FC = () => {
                   <Image
                     source={item.img}
                     style={styles.img}
-                    resizeMode="contain"
+                    resizeMode="cover"
                   />
                 </View>
                 <View style={styles.firstView}>
@@ -39,8 +39,8 @@ const PastOrder: React.FC = () => {
                     <Text style={styles.fourthText}>{item.address}</Text>
                   </View>
                   <View style={styles.priceView}>
-                    <Text style={styles.fifthText}>$224</Text>
-                    <Text style={styles.sixthText}>(16 Oct 2019 11:54PM)</Text>
+                    <Text style={styles.fifthText}>KES. 1000</Text>
+                    <Text style={styles.sixthText}>(16 May 2021 11:54PM)</Text>
                   </View>
                 </View>
               </View>
@@ -60,9 +60,13 @@ const PastOrder: React.FC = () => {
                   );
                 })}
                 <Button
-                  onPress={() => console.log('pressed')}
+                  onPress={() =>
+                    Alert.alert('Pressed', 'Work in Progress!', [
+                      {text: 'Okay'},
+                    ])
+                  }
                   style={styles.button}>
-                  <Text style={styles.buttonText}>Re-order</Text>
+                  <Text style={styles.buttonText}>Re-send Package</Text>
                 </Button>
               </View>
             </View>

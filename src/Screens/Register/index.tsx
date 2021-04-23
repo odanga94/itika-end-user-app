@@ -139,7 +139,7 @@ const Login: React.FC<Props> = (props) => {
         style={styles.firstView}>
         <StatusBar
           barStyle="dark-content"
-          backgroundColor={constant.commonColor}
+          backgroundColor={constant.primaryColor}
         />
         <View style={styles.secondView}>
           <TouchableWithoutFeedback onPress={() => props.navigation.goBack()}>

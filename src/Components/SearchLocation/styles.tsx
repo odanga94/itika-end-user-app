@@ -72,14 +72,14 @@ export default StyleSheet.create({
   },
   secondText: {
     fontWeight: '500',
-    color: constant.loc,
     fontSize: 14,
     left: 10,
+    color: '#505050',
   },
   locateIcon: {
-    height: 15,
-    width: 15,
-    tintColor: constant.secondaryTextColor,
+    height: 20,
+    width: 20,
+    tintColor: constant.primaryTextColor,
   },
   tenthView: {
     top: 20,
@@ -99,9 +99,10 @@ export default StyleSheet.create({
   secondIcon: {
     height: 20,
     width: 20,
+    tintColor: constant.primaryTextColor,
   },
   fourthText: {
-    color: constant.loc,
+    color: '#505050',
     left: 5,
     fontSize: 14,
     fontWeight: '500',

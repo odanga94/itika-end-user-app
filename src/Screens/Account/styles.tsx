@@ -37,7 +37,7 @@ export default StyleSheet.create({
     color: constant.thirdTextColor,
   },
   secondText: {
-    fontSize: 12,
+    fontSize: 14,
     left: 5,
     fontWeight: '500',
     paddingTop: 35,

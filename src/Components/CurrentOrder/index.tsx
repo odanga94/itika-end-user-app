@@ -11,15 +11,15 @@ const CurrentOrder: React.FC = () => {
         <Image source={foodPic1} style={styles.img} resizeMode="contain" />
       </View>
       <View style={styles.thirdView}>
-        <Text style={styles.firstText}>Kricket Brixton</Text>
-        <Text style={styles.secondText}>Berkarar Mall</Text>
+        <Text style={styles.firstText}>Food Package</Text>
+        <Text style={styles.secondText}>Java House</Text>
         <View style={styles.fourthView}>
           <Image source={mapPoint} style={styles.mapPin} resizeMode="contain" />
-          <Text style={styles.thirdText}>299 Levent\Besiktas</Text>
+          <Text style={styles.thirdText}>Java House, Mbagathi Way</Text>
         </View>
         <View style={styles.fifthView}>
-          <Text style={styles.fifthText}>$224</Text>
-          <Text style={styles.sixthText}>(16 Oct 2019 11:54PM)</Text>
+          <Text style={styles.fifthText}>KES. 1000</Text>
+          <Text style={styles.sixthText}>(16 May 2021 11:54PM)</Text>
         </View>
       </View>
     </View>

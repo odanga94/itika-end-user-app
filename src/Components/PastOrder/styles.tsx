@@ -42,7 +42,7 @@ export default StyleSheet.create({
     fontSize: 12,
     left: 3,
     fontWeight: '500',
-    color: constant.lightText,
+    color: '#505050',
   },
   fifthText: {
     fontSize: 14,
@@ -53,13 +53,14 @@ export default StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     left: 2,
-    color: constant.lightText,
+    color: '#505050',
+    marginLeft: 5,
   },
   seventhText: {
     paddingTop: iphoneX ? 10 : 15,
     fontSize: 14,
     fontWeight: '500',
-    color: constant.lightText,
+    color: '#505050',
   },
   eighthText: {
     paddingTop: iphoneX ? 10 : 15,
@@ -78,6 +79,7 @@ export default StyleSheet.create({
   img: {
     height: 100,
     width: 100,
+    borderRadius: 10,
   },
   sixthView: {
     flexDirection: 'row',
@@ -99,7 +101,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginRight: 40,
     paddingBottom: 2,
-    borderBottomColor: constant.lightText,
+    borderBottomColor: '#505050',
   },
   button: {
     height: 45,

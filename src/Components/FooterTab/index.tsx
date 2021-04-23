@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {View, TouchableOpacity, Image, Text} from 'react-native';
 import styles from './styles';
+import HomeIcon from 'react-native-vector-icons/FontAwesome';
+import SupportIcon from 'react-native-vector-icons/MaterialIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const resIcon = require('../../../assets/fork.png');
 const resIconColor = require('../../../assets/fork-color.png');
@@ -10,6 +13,8 @@ const cartIcon = require('../../../assets/mine.png');
 const cartIconColor = require('../../../assets/cart-color.png');
 const accIcon = require('../../../assets/user.png');
 const accIconColor = require('../../../assets/user-color.png');
+
+import constant from '../../utils/constant';
 
 interface Props {
   state: object | any;
@@ -32,14 +37,38 @@ const FooterTab: React.FC<Props> = ({state, descriptors, navigation}) => {
         const isFocused = state.index === index;
         let iconName;
 
-        if (route.name === 'Restaurants') {
-          iconName = isFocused ? resIconColor : resIcon;
-        } else if (route.name === 'Favourite') {
-          iconName = isFocused ? favIconColor : favIcon;
+        if (route.name === 'Home') {
+          iconName = (
+            <HomeIcon
+              name="home"
+              size={30}
+              color={isFocused ? constant.primaryTextColor : '#ccc'}
+            />
+          );
+        } else if (route.name === 'Support') {
+          iconName = (
+            <SupportIcon
+              name="help-outline"
+              size={30}
+              color={isFocused ? constant.primaryTextColor : '#ccc'}
+            />
+          );
         } else if (route.name === 'Cart') {
-          iconName = isFocused ? cartIconColor : cartIcon;
+          iconName = (
+            <IonIcon
+              name="cart-outline"
+              size={30}
+              color={isFocused ? constant.primaryTextColor : '#ccc'}
+            />
+          );
         } else if (route.name === 'Account') {
-          iconName = isFocused ? accIconColor : accIcon;
+          iconName = (
+            <IonIcon
+              name="md-person"
+              size={30}
+              color={isFocused ? constant.primaryTextColor : '#ccc'}
+            />
+          );
         }
 
         const onPress = () => {
@@ -71,11 +100,12 @@ const FooterTab: React.FC<Props> = ({state, descriptors, navigation}) => {
             onPress={onPress}
             onLongPress={onLongPress}
             style={styles.touch}>
-            <Image
+            {/* <Image
               source={iconName}
               style={styles.image}
               resizeMode="contain"
-            />
+            /> */}
+            {iconName}
             <Text style={isFocused ? styles.focusedText : styles.text}>
               {label}
             </Text>

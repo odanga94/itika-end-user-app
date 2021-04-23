@@ -55,7 +55,10 @@ const Filter: React.FC<Props> = (props) => {
   const {navigation} = props;
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.firstView}>
         <View style={styles.secondView}>
           <Text style={styles.commonText}>Reset</Text>

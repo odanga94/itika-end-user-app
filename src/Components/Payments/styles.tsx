@@ -22,13 +22,13 @@ export default StyleSheet.create({
     paddingTop: 8,
     fontSize: 13,
     fontWeight: '500',
-    color: constant.secondaryTextColor,
+    color: '#505050',
   },
   thirdText: {
     paddingTop: 2,
     fontSize: 12,
     fontWeight: '500',
-    color: constant.secondaryTextColor,
+    color: '#505050',
   },
   thirdView: {
     left: 20,

@@ -8,6 +8,7 @@ import styles from './styles';
 import Button from '../../Components/Button';
 import PastOrder from '../../Components/PastOrder';
 import CurrentOrder from '../../Components/CurrentOrder';
+import constant from '../../utils/constant';
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -17,16 +18,16 @@ const Orders: React.FC<Props> = (props) => {
   const {navigation} = props;
   const [foodItems] = useState<any>([
     {
-      id: '1',
+      id: '66',
       name: 'Chicken Lollipop',
       itemNo: 2,
-      price: '$ 9.88',
+      price: 'KES. 200',
     },
     {
-      id: '2',
+      id: '77',
       name: 'Chicken Kebab',
       itemNo: 1,
-      price: '$ 8.88',
+      price: 'KES. 300',
     },
   ]);
 
@@ -34,10 +35,13 @@ const Orders: React.FC<Props> = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.commonView}>
         <View style={styles.secondView}>
-          <Header navigation={navigation} title="Your Order" />
+          <Header navigation={navigation} title="Your Orders" />
         </View>
         <View style={styles.ninthView}>
           <FlatList
@@ -50,7 +54,7 @@ const Orders: React.FC<Props> = (props) => {
                 <Button
                   style={styles.button}
                   onPress={() => navigation.navigate('TrackOrder')}>
-                  <Text style={styles.buttonText}>Track Order</Text>
+                  <Text style={styles.buttonText}>Track Package</Text>
                 </Button>
                 <View style={styles.commonView}>
                   <PastOrder />

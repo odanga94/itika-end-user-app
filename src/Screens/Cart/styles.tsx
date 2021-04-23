@@ -88,5 +88,6 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: constant.thirdTextColor,
+    textAlign: 'center',
   },
 });

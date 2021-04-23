@@ -22,14 +22,14 @@ interface Props {
 const TrackOrder: React.FC<Props> = (props) => {
   const {navigation} = props;
   const region = {
-    latitude: 12.912,
-    longitude: 77.6228,
+    latitude: -1.3135071,
+    longitude: 36.8101053,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   };
   const destLoc = {
-    latitude: 12.9107,
-    longitude: 77.6018,
+    latitude: -1.2687054,
+    longitude: 36.8073188,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   };
@@ -54,9 +54,12 @@ const TrackOrder: React.FC<Props> = (props) => {
   const {googleApiKey} = config;
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
       <View style={styles.firstView}>
-        <Header navigation={navigation} title="Track Order" />
+        <Header navigation={navigation} title="Track Package" />
       </View>
       <View style={styles.container}>
         <MapView
@@ -105,7 +108,7 @@ const TrackOrder: React.FC<Props> = (props) => {
           <MapViewDirections
             origin={region}
             destination={destLoc}
-            strokeWidth={2}
+            strokeWidth={3}
             optimizeWaypoints={true}
             strokeColor={constant.primaryColor}
             apikey={googleApiKey}
@@ -117,15 +120,15 @@ const TrackOrder: React.FC<Props> = (props) => {
           <Text style={styles.firstText}>Order Received</Text>
         </View>
         <View style={styles.fifthView}>
-          <Text style={styles.secondText}>4 Items | $76.00</Text>
-          <Text style={styles.thirdText}>16 Oct 2019 11:54 PM</Text>
+          <Text style={styles.secondText}>4 Items | KES. 1000.00</Text>
+          <Text style={styles.thirdText}>16 May 2021 11:54 PM</Text>
         </View>
         <View style={styles.sixthView}>
           <View style={styles.seventhView}>
             <View style={styles.eighthView}>
-              <Text style={styles.fourthText}>Robert Steve</Text>
+              <Text style={styles.fourthText}>Paul Oloo</Text>
               <Text style={styles.fifthText}>
-                Robert is on his way to the restaurant to
+                Oloo is on his way to the restaurant to
               </Text>
               <Text style={styles.fifthText}>confirm your order </Text>
             </View>

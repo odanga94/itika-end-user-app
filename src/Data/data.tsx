@@ -1,5 +1,5 @@
-const img1 = require('../../assets/food-pic.png');
-const img2 = require('../../assets/image2.png');
+const img1 = require('../../assets/clothing-package.png');
+const img2 = require('../../assets/food-package.png');
 const resType = require('../../assets/background-login.png');
 const backIcon = require('../../assets/back.png');
 
@@ -13,24 +13,24 @@ const catRes4 = require('../../assets/brooke-lark-230140-unsplash.png');
 export const resDetails = [
   {
     id: '1',
-    name: 'Kricket Brixton',
-    address: '1901 Ventura Blxd Oxnard',
+    name: 'Clothing Package',
+    address: 'Sarit Centre, Karuna Road...',
     rating: 4.9,
     img: img1,
     ratingNo: '(149 ratings)',
   },
   {
     id: '2',
-    name: 'Pureto Vallarta',
-    address: '1901 Ventura Blxd Oxnard',
+    name: 'Food Package',
+    address: 'Java House Mbagathi Way...',
     img: img2,
     rating: 4.9,
     ratingNo: '(129 ratings)',
   },
   {
     id: '3',
-    name: 'Vallarta',
-    address: '1901 Ventura Blxd Oxnard',
+    name: 'Food Package',
+    address: 'Java House Mbagathi Way...',
     rating: 4.1,
     img: img1,
     ratingNo: '(129 ratings)',
@@ -146,38 +146,38 @@ export const resTypes = [
 export const catResDetails = [
   {
     id: '1',
-    name: 'Kricket Brixton',
-    name1: 'Berkarar Mall',
-    address: '1901 Ventura Blxd Oxnard',
+    name: 'Clothing Package',
+    name1: 'Mall',
+    address: 'Sarit Centre, Karuna Road...',
     rating: 4.9,
     img: catRes1,
     ratingNo: '(149 ratings)',
   },
   {
     id: '2',
-    name: 'Pureto Vallarta',
+    name: 'Food Package',
     name1: 'Restaurant',
-    address: '1901 Ventura Blxd Oxnard',
+    address: 'Java House Mbagathi Way...',
     img: catRes2,
     rating: 4.9,
     ratingNo: '(129 ratings)',
   },
   {
     id: '3',
-    name: 'Venich Beach',
-    name1: 'Soup',
-    address: '1901 Ventura Blxd Oxnard',
-    rating: 4.1,
+    name: 'Clothing Package',
+    name1: 'Mall',
+    address: 'Sarit Centre, Karuna Road...',
+    rating: 4.9,
     img: catRes3,
-    ratingNo: '(129 ratings)',
+    ratingNo: '(149 ratings)',
   },
   {
     id: '4',
-    name: 'Vallarta',
-    name1: 'Club Street',
-    address: '1901 Ventura Blxd Oxnard',
-    rating: 4.1,
+    name: 'Food Package',
+    name1: 'Restaurant',
+    address: 'Java House Mbagathi Way...',
     img: catRes4,
+    rating: 4.9,
     ratingNo: '(129 ratings)',
   },
 ];
@@ -185,43 +185,43 @@ export const catResDetails = [
 export const pastOrders = [
   {
     id: '123',
-    name: 'Kricket Brixton',
-    name1: 'Berkarar Mall',
-    address: '1901 Ventura Blxd Oxnard',
-    img: catRes1,
+    name1: 'Mall',
+    name: 'Clothing Package',
+    img: img1,
+    address: 'Mountain View',
     fooditems: [
       {
-        id: '44',
-        name: 'Chicken Lollipop',
+        id: '11',
+        name: 'Pair of Jeans',
         itemNo: 2,
-        price: '$ 9.88',
+        price: 'KES. 500',
       },
       {
-        id: '55',
-        name: 'Chicken Kebab',
+        id: '22',
+        name: 'T-shirt',
         itemNo: 1,
-        price: '$ 9.88',
+        price: 'KES. 500',
       },
     ],
   },
   {
     id: '232',
-    name: 'Pureto Vallarta',
+    name: 'Food Package',
     name1: 'Restaurant',
-    address: '1901 Ventura Blxd Oxnard',
-    img: catRes2,
+    address: 'Java House Mbagathi',
+    img: img2,
     fooditems: [
       {
         id: '66',
         name: 'Chicken Lollipop',
         itemNo: 2,
-        price: '$ 9.88',
+        price: 'KES. 200',
       },
       {
         id: '77',
         name: 'Chicken Kebab',
         itemNo: 1,
-        price: '$ 9.88',
+        price: 'KES. 300',
       },
     ],
   },

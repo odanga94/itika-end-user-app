@@ -56,7 +56,7 @@ const Restaurants: React.FC<Props> = (props) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={constant.commonColor}
+        backgroundColor={constant.primaryColor}
       />
       <ScrollView contentContainerStyle={styles.safeArea}>
         <View style={styles.firstView}>
@@ -70,13 +70,13 @@ const Restaurants: React.FC<Props> = (props) => {
                 />
 
                 <Text numberOfLines={1} style={styles.firstText}>
-                  {address && address.length > 28
+                  {/* {address && address.length > 28
                     ? `${address.substring(0, 28 - 3)}...`
-                    : address}
+                    : address} */ address}
                 </Text>
               </View>
             </TouchableOpacity>
-            <View style={styles.searchView}>
+            {/* <View style={styles.searchView}>
               <TouchableWithoutFeedback
                 onPress={() => navigation.navigate('Search')}>
                 <View style={styles.thirdView}>
@@ -97,7 +97,7 @@ const Restaurants: React.FC<Props> = (props) => {
                   />
                 </TouchableWithoutFeedback>
               </View>
-            </View>
+            </View> */}
           </View>
           {visible && (
             <Modal
@@ -115,14 +115,14 @@ const Restaurants: React.FC<Props> = (props) => {
         <View style={styles.fifthView}>
           <RestaurantCard navigation={navigation} />
         </View>
-        <View style={styles.sixthView}>
+        {/* <View style={styles.sixthView}>
           <View style={styles.seventhView}>
             <Text style={styles.secondText}>Top categories</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <CategoriesCard navigation={navigation} />
           </ScrollView>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );

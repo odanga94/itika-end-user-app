@@ -32,7 +32,7 @@ const MenuList: React.FC<Props> = (props) => {
     <View style={styles.view}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={constant.commonColor}
+        backgroundColor={constant.primaryColor}
       />
       <View style={styles.view}>
         <View style={styles.firstView}>

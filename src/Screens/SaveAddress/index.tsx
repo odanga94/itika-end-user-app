@@ -64,7 +64,7 @@ const SaveAddress: React.FC<Props> = (props) => {
           </MapView>
           <View style={styles.secondView}>
             <View style={styles.thirdView}>
-              <Text style={styles.firstText}>Your delivery location</Text>
+              <Text style={styles.firstText}>Your Location</Text>
               <View style={styles.fourthView}>
                 <Image
                   source={locIcon}

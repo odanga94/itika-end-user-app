@@ -43,7 +43,10 @@ const Splash: React.FC<Props> = (props) => {
           if (user) {
             //console.log(user, 'Auth state is preserved in firebase');
             dispatch(authActions.authenticate(user.uid, false, false));
-            navigation.navigate('Tabs');
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Tabs'}],
+            });
           } else {
             setIsLoggedInLoading(false);
           }
@@ -72,7 +75,7 @@ const Splash: React.FC<Props> = (props) => {
     <View style={styles.safeArea}>
       <StatusBar
         barStyle="light-content"
-        backgroundColor={constant.blackColor}
+        backgroundColor={constant.primaryColor}
       />
       <View style={styles.firstView}>
         <View style={styles.secondView}>

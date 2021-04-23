@@ -11,8 +11,8 @@ const Tab = createBottomTabNavigator();
 const TabNavigation: React.FC = () => {
   return (
     <Tab.Navigator tabBar={(props) => <FooterTab {...props} />}>
-      <Tab.Screen name="Restaurants" component={Restaurants} />
-      <Tab.Screen name="Favourite" component={Favourite} />
+      <Tab.Screen name="Home" component={Restaurants} />
+      <Tab.Screen name="Support" component={Favourite} />
       <Tab.Screen name="Cart" component={Cart} />
       <Tab.Screen name="Account" component={Account} />
     </Tab.Navigator>
