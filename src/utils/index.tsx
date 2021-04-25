@@ -1,10 +1,15 @@
 import {Platform} from 'react-native';
 import {PERMISSIONS, request} from 'react-native-permissions';
-import Geolocation from '@react-native-community/geolocation';
+import * as Location from 'expo-location';
 
 import config from '../../config';
 
-export const checkValidity = (value: any, rules: any, id: string, passwordValue: string) => {
+export const checkValidity = (
+  value: any,
+  rules: any,
+  id: string,
+  passwordValue: string,
+) => {
   let isValid = true;
   if (!rules) {
     return true;
@@ -85,19 +90,21 @@ export const fetchCoordinatesFromAddress = async (address: string) => {
 
 const getGpsLoc = () => {
   return new Promise((resolve) => {
-    Geolocation.getCurrentPosition(
-      async (info: any) => {
+    Location.getCurrentPositionAsync({
+      accuracy: Location.LocationAccuracy.High,
+      //timeInterval: 10000
+    })
+      .then(async (info: any) => {
         const {coords} = info;
         const resp = await fetchAddressFromCoordinatesAsync(coords);
         const response = {
           resp,
           coords,
         };
+        //console.log('locRes', response);
         resolve(response);
-      },
-      (err) => console.log(err),
-      {enableHighAccuracy: true, timeout: 10000, maximumAge: 1800000},
-    );
+      })
+      .catch((err) => console.log(err));
   });
 };
 

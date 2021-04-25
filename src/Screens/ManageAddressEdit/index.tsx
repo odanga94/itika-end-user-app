@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import {StackNavigationProp} from '@react-navigation/stack';
-import Geolocation from '@react-native-community/geolocation';
+import * as Location from 'expo-location';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {RootStackParamList} from '../AppNavigator';
@@ -35,8 +35,11 @@ const ManageAddressEdit: React.FC<Props> = (props) => {
   const [gpsLoc, setGpsLoc] = useState<any>(null);
   const {navigation} = props;
   useEffect(() => {
-    Geolocation.getCurrentPosition(
-      async (info: any) => {
+    Location.getCurrentPositionAsync({
+      accuracy: Location.LocationAccuracy.High,
+      //timeInterval: 10000
+    })
+      .then((info: any) => {
         const {latitude, longitude} = info.coords;
         const region = {
           latitude: latitude,
@@ -45,10 +48,9 @@ const ManageAddressEdit: React.FC<Props> = (props) => {
           longitudeDelta: 0.0421,
         };
         setGpsLoc(region);
-      },
-      (err) => console.log(err),
-      {enableHighAccuracy: true, timeout: 10000, maximumAge: 1800000},
-    );
+        //console.log('locRes', info);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
