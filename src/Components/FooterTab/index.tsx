@@ -5,15 +5,6 @@ import HomeIcon from 'react-native-vector-icons/FontAwesome';
 import SupportIcon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
-const resIcon = require('../../../assets/fork.png');
-const resIconColor = require('../../../assets/fork-color.png');
-const favIcon = require('../../../assets/heart1.png');
-const favIconColor = require('../../../assets/heart-color.png');
-const cartIcon = require('../../../assets/mine.png');
-const cartIconColor = require('../../../assets/cart-color.png');
-const accIcon = require('../../../assets/user.png');
-const accIconColor = require('../../../assets/user-color.png');
-
 import constant from '../../utils/constant';
 
 interface Props {

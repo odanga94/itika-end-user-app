@@ -5,6 +5,7 @@ import {
   DELETE_IMAGE,
   HAS_ORDERS,
   RESET_PROFILE,
+  CREATE_PROFILE,
 } from '../../actions/user/profile';
 
 const initialState = {
@@ -12,23 +13,25 @@ const initialState = {
   lastName: '',
   phone: '',
   email: '',
-  //imageUri: '',
+  imageUri: '',
   //hasOrders: true,
 };
 
-const profileReducer = (state = initialState, action) => {
+const profileReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case FETCH_PROFILE:
       if (action.profileData) {
         return {
           ...state,
-          name: action.profileData.name,
+          firstName: action.profileData.firstName,
+          lastName: action.profileData.lastName,
           phone: action.profileData.phone,
+          email: action.profileData.email,
           imageUri: action.profileData.profilePic,
         };
       }
       return state;
-    case EDIT_PROFILE:
+    case CREATE_PROFILE:
       return {
         ...state,
         firstName: action.userData.firstName,
@@ -36,6 +39,13 @@ const profileReducer = (state = initialState, action) => {
         phone: action.userData.phone,
         email: action.userData.email,
       };
+    case EDIT_PROFILE: {
+      return {
+        ...state,
+        firstName: action.userData.firstName,
+        lastName: action.userData.lastName,
+      };
+    }
     case UPDATE_IMAGE:
       return {
         ...state,

@@ -20,14 +20,19 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   imgView: {
-    height: 80,
-    width: 80,
-    borderRadius: 40,
+    width: height / 7,
+    height: height / 7,
+    borderRadius: 150,
+    borderWidth: 3,
+    borderColor: constant.primaryTextColor,
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginVertical: 3,
+    backgroundColor: '#ccc',
   },
   img: {
-    height: 80,
-    width: 80,
-    borderRadius: 40,
+    height: '100%',
+    width: '100%',
   },
   firstText: {
     fontSize: 18,
@@ -45,16 +50,6 @@ export default StyleSheet.create({
   },
   fourthView: {
     flex: 2,
-  },
-  camView: {
-    height: 25,
-    width: 25,
-    backgroundColor: constant.commonColor,
-    top: -20,
-    left: 50,
-    borderRadius: 12.5,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   fifthView: {
     justifyContent: 'space-between',

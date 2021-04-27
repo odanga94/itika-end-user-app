@@ -39,6 +39,7 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 export const firebaseAppAuth = firebaseApp.auth();
 export const firebaseAppDatabase = firebaseApp.database();
+export const firebaseAppStorage = firebaseApp.storage();
 
 const rootReducer = combineReducers({
   auth: authReducer,

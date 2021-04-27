@@ -6,14 +6,14 @@ import {
   StatusBar,
   Image,
   ScrollView,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import Modal from 'react-native-modal';
 import {useSelector} from 'react-redux';
 
-import {checkPermission} from '../../utils';
+import {getGpsLoc} from '../../utils';
 import RestaurantCard from '../../Components/RestaurantCard';
 import {RootStackParamList} from '../AppNavigator';
 import constant from '../../utils/constant';
@@ -40,16 +40,29 @@ const Restaurants: React.FC<Props> = (props) => {
   const [gpsLoc, setGpsLoc] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
   useEffect(() => {
-    const permission = async () => {
-      const resp: any = await checkPermission();
-      if (resp) {
-        setGpsLoc(resp.coords);
-        setAddress(resp.resp.formatted_address);
-      } else {
+    const getLocation = async () => {
+      try {
+        const response: any = await getGpsLoc();
+        //console.log('locRes', response);
+        if (response) {
+          setGpsLoc(response);
+          setAddress(response.resp.formatted_address);
+        } else {
+          setAddress('Select Address');
+        }
+      } catch (err) {
+        //console.log(err);
+        if (err.message === 'Error: Insufficient Permissions!') {
+          Alert.alert(
+            'Insufficient Permissions!',
+            'You need to grant locaton permissions to continue',
+            [{text: 'Okay'}],
+          );
+        }
         setAddress('Select Address');
       }
     };
-    permission();
+    getLocation();
   }, []);
   const {navigation} = props;
   return (
@@ -70,9 +83,11 @@ const Restaurants: React.FC<Props> = (props) => {
                 />
 
                 <Text numberOfLines={1} style={styles.firstText}>
-                  {/* {address && address.length > 28
+                  {
+                    /* {address && address.length > 28
                     ? `${address.substring(0, 28 - 3)}...`
-                    : address} */ address}
+                    : address} */ address
+                  }
                 </Text>
               </View>
             </TouchableOpacity>

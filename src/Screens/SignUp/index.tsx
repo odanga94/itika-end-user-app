@@ -110,7 +110,7 @@ const SignUp: React.FC<Props> = (props) => {
         password: formState.inputValues.password,
         phone: phone,
       };
-      await dispatch(profileActions.editProfile(userId, userData));
+      await dispatch(profileActions.createProfile(userId, userData));
       navigation.reset({
         index: 0,
         routes: [{name: 'Tabs'}],

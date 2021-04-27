@@ -1,8 +1,7 @@
-import {Platform} from 'react-native';
-import {PERMISSIONS, request} from 'react-native-permissions';
 import * as Location from 'expo-location';
 
 import config from '../../config';
+import {firebaseAppStorage} from '../../App';
 
 export const checkValidity = (
   value: any,
@@ -88,38 +87,60 @@ export const fetchCoordinatesFromAddress = async (address: string) => {
   return resp.results[0];
 };
 
-const getGpsLoc = () => {
-  return new Promise((resolve) => {
-    Location.getCurrentPositionAsync({
+export const getGpsLoc = async () => {
+  try {
+    const hasPermission = await verifyPermissions();
+    if (!hasPermission) {
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync({
       accuracy: Location.LocationAccuracy.High,
       //timeInterval: 10000
-    })
-      .then(async (info: any) => {
-        const {coords} = info;
-        const resp = await fetchAddressFromCoordinatesAsync(coords);
-        const response = {
-          resp,
-          coords,
-        };
-        //console.log('locRes', response);
-        resolve(response);
-      })
-      .catch((err) => console.log(err));
-  });
+    });
+    const resp = await fetchAddressFromCoordinatesAsync(location.coords);
+    return {
+      ...location.coords,
+      resp,
+    };
+  } catch (err) {
+    //console.log(err);
+    throw new Error(err);
+  }
 };
 
-export const checkPermission = async () => {
-  if (Platform.OS === 'ios') {
-    const result = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
-    if (result === 'granted') {
-      const resp = await getGpsLoc();
-      return resp;
-    }
-  } else {
-    const result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    if (result === 'granted') {
-      const resp = await getGpsLoc();
-      return resp;
-    }
+const verifyPermissions = async () => {
+  const result = await Location.requestForegroundPermissionsAsync();
+  //console.log('permRes', result);
+  if (result.status !== 'granted') {
+    throw new Error('Insufficient Permissions!');
   }
+  return true;
+};
+
+export const uploadImage = async (
+  imageUri: string,
+  firebaseLocation: string,
+) => {
+  try {
+    //console.log(imageUri);
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    const imageRef = firebaseAppStorage.ref(firebaseLocation);
+    await imageRef.put(blob);
+    const downloadUrl = await imageRef.getDownloadURL();
+    return downloadUrl;
+  } catch (err) {
+    console.log(err);
+    throw new Error(err);
+  }
+};
+
+export const getImageExtension = (uri: string) => {
+  let extension = '';
+  if (uri.slice(-4) === '.jpg' || uri.slice(-4) === '.png') {
+    extension = uri.slice(-4);
+  } else {
+    extension = uri.slice(-5);
+  }
+  return extension;
 };
