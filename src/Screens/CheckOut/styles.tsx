@@ -10,6 +10,10 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: constant.commonColor,
   },
+  screen: {
+    width: '100%',
+    justifyContent: 'center',
+  },
   firstView: {
     flex: iphoneX ? 0.1 : 0.2,
     flexDirection: 'row',
@@ -142,6 +146,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     top: iphoneX ? 40 : 0,
+    paddingBottom: 10,
   },
   button: {
     height: 50,

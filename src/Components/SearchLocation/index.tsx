@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-
+import {HomeStackParamList} from '../../Screens/TabNavigation';
 import {RootStackParamList} from '../../Screens/AppNavigator';
 import {fetchPrediction} from '../../utils';
 import styles from './styles';
@@ -20,7 +20,7 @@ const locateIcon = require('../../../assets/focus.png');
 interface Props {
   handlePress: () => void;
   latLong: any;
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<HomeStackParamList>;
 }
 
 const SearchLocation: React.FC<Props> = (props) => {

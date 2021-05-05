@@ -7,7 +7,7 @@ const iphoneX = height > 811;
 
 export default StyleSheet.create({
   firstView: {
-    flex: iphoneX ? 0.8 : 1,
+    //flex: iphoneX ? 0.8 : 1,
     flexDirection: 'row',
   },
   secondView: {
@@ -15,13 +15,14 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 14,
+    borderRadius: 8,
   },
   img: {
     height: 100,
     width: 100,
   },
   fourthView: {
-    flexDirection: 'row',
+    //flexDirection: 'row',
     paddingTop: 6,
   },
   fifthView: {
@@ -37,7 +38,7 @@ export default StyleSheet.create({
     width: 15,
   },
   thirdText: {
-    fontSize: 12,
+    fontSize: 14,
     left: 3,
     fontWeight: '500',
     color: '#505050',
@@ -60,7 +61,7 @@ export default StyleSheet.create({
     color: constant.thirdTextColor,
   },
   sixthText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     left: 2,
     color: '#505050',

@@ -72,9 +72,7 @@ const BillDetails: React.FC<Props> = (props) => {
             <Text style={styles.eightText}>Benguluru, karnataka 560076</Text>
           </View>
           <View style={styles.buttonView}>
-            <Button
-              onPress={() => navigation.navigate('CheckOut')}
-              style={styles.button}>
+            <Button onPress={() => {}} style={styles.button}>
               <Text style={styles.buttonText}>Make Payment</Text>
             </Button>
           </View>

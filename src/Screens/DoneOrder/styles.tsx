@@ -10,23 +10,23 @@ export default StyleSheet.create({
     backgroundColor: constant.commonColor,
   },
   secondView: {
-    height: 120,
-    width: 120,
-    borderWidth: 1.0,
-    borderRadius: 60,
+    height: constant.styleGuide.width / 2,
+    width: constant.styleGuide.height / 2,
+    /* borderWidth: 1.0,
+    borderRadius: constant.styleGuide.width / 4, */
     justifyContent: 'center',
     alignItems: 'center',
     bottom: 80,
-    borderColor: constant.primaryColor,
+    borderColor: constant.primaryTextColor,
   },
   imgIcon: {
-    height: 60,
-    width: 60,
+    height: '100%',
+    width: '100%',
   },
   firstText: {
     bottom: 25,
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: 'bold',
     color: constant.thirdTextColor,
   },
 });

@@ -3,7 +3,13 @@ import {Platform} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import Restaurants from './Restaurant';
+import Home from './Home';
+import OrderDetails, {orderDetailsScreenOptions} from './OrderDetails';
+import PickLocation, {pickLocationScreenOptions} from './PickLocation';
+import ListItems, {listItemsScreenOptions} from './ListItems';
+import CheckOut from './CheckOut';
+import DoneOrder from './DoneOrder';
+import SaveAddress from './SaveAddress';
 import Cart from './Cart';
 import Favourite from './Favourite';
 import Account, {accountScreenOptions} from './Account';
@@ -14,6 +20,16 @@ import EditProfile from './EditProfile';
 export type AccountStackParamList = {
   MyAccount: undefined;
   EditProfile: undefined;
+};
+
+export type HomeStackParamList = {
+  HomeScreen: undefined;
+  OrderDetails: object;
+  SaveAddress: object;
+  PickLocation: object;
+  CheckOut: object;
+  DoneOrder: object;
+  ListItems: object;
 };
 
 const defaultNavOptions = {
@@ -48,12 +64,56 @@ const MyAccountStack = () => {
   );
 };
 
+const HomeStack = createStackNavigator<HomeStackParamList>();
+
+const MyHomeStack = () => {
+  return (
+    <HomeStack.Navigator screenOptions={defaultNavOptions}>
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={Home}
+        options={{headerShown: false}}
+      />
+      <HomeStack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
+        options={orderDetailsScreenOptions}
+      />
+      <HomeStack.Screen
+        name="SaveAddress"
+        component={SaveAddress}
+        options={{title: 'Save Address'}}
+      />
+      <HomeStack.Screen
+        name="PickLocation"
+        component={PickLocation}
+        options={pickLocationScreenOptions}
+      />
+      <HomeStack.Screen
+        name="ListItems"
+        component={ListItems}
+        options={listItemsScreenOptions}
+      />
+      <HomeStack.Screen
+        name="CheckOut"
+        component={CheckOut}
+        options={{title: 'Check Out'}}
+      />
+      <HomeStack.Screen
+        name="DoneOrder"
+        component={DoneOrder}
+        options={{headerShown: false}}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigation: React.FC = () => {
   return (
     <Tab.Navigator tabBar={(props) => <FooterTab {...props} />}>
-      <Tab.Screen name="Home" component={Restaurants} />
+      <Tab.Screen name="Home" component={MyHomeStack} />
       <Tab.Screen name="Support" component={Favourite} />
       <Tab.Screen name="Cart" component={Cart} />
       <Tab.Screen name="Account" component={MyAccountStack} />

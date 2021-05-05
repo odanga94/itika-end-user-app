@@ -13,8 +13,6 @@ import RestaurantList from './RestaurantList';
 import MenuList from './MenuList';
 import Cart from './Cart';
 import ApplyCoupon from './ApplyCoupon';
-import CheckOut from './CheckOut';
-import DoneOrder from './DoneOrder';
 import Orders from './Orders';
 import ManageAddress from './ManageAddress';
 import ManageAddressEdit from './ManageAddressEdit';
@@ -37,8 +35,6 @@ export type RootStackParamList = {
   MenuList: undefined;
   Cart: object;
   ApplyCoupon: undefined;
-  CheckOut: undefined;
-  DoneOrder: undefined;
   RestaurantList: undefined;
   Orders: undefined;
   ManageAddress: undefined;
@@ -126,11 +122,11 @@ const AppStack = () => {
         component={Filter}
         options={{headerShown: false}}
       />
-      <RootStack.Screen
+      {/*      <RootStack.Screen
         name="SaveAddress"
         component={SaveAddress}
         options={{headerShown: false}}
-      />
+      /> */}
       <RootStack.Screen
         name="Search"
         component={Search}
@@ -149,16 +145,6 @@ const AppStack = () => {
       <RootStack.Screen
         name="ApplyCoupon"
         component={ApplyCoupon}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name="CheckOut"
-        component={CheckOut}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name="DoneOrder"
-        component={DoneOrder}
         options={{headerShown: false}}
       />
       <RootStack.Screen

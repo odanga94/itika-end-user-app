@@ -3,12 +3,18 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 
 import constants from '../../utils/constant';
 
-interface Props {}
+interface Props {
+  size: string | undefined;
+  style: any | undefined;
+}
 
-const Spinner: React.FC<Props> = () => {
+const Spinner: React.FC<Props> = (props: any) => {
   return (
-    <View style={styles.centered}>
-      <ActivityIndicator size="large" color={constants.primaryTextColor} />
+    <View style={{...styles.centered, ...props.style}}>
+      <ActivityIndicator
+        size={props.size ? props.size : 'large'}
+        color={constants.primaryTextColor}
+      />
     </View>
   );
 };

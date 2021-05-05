@@ -21,6 +21,8 @@ import {Root} from 'native-base';
 import Stack from './src/Screens';
 import authReducer from './src/store/reducers/user/auth';
 import profileReducer from './src/store/reducers/user/profile';
+import ordersReducer from './src/store/reducers/orders';
+import currentJobReducer from './src/store/reducers/currentJob';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyA7pNSJGB6fqJ5Y8OngV0kav42wAkp_i3g',
@@ -44,6 +46,8 @@ export const firebaseAppStorage = firebaseApp.storage();
 const rootReducer = combineReducers({
   auth: authReducer,
   profile: profileReducer,
+  orders: ordersReducer,
+  currentJob: currentJobReducer,
 });
 
 const store = createStore(

@@ -34,10 +34,8 @@ export default StyleSheet.create({
   button: {
     height: 50,
     width: width - 110,
-    backgroundColor: constant.primaryColor,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
     marginTop: 10,
   },
   thirdText: {

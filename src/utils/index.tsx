@@ -1,4 +1,6 @@
 import * as Location from 'expo-location';
+import * as ImgPicker from 'expo-image-picker';
+import {Alert} from 'react-native';
 
 import config from '../../config';
 import {firebaseAppStorage} from '../../App';
@@ -143,4 +145,22 @@ export const getImageExtension = (uri: string) => {
     extension = uri.slice(-5);
   }
   return extension;
+};
+
+export const verifyCameraPermissions = async () => {
+  const cameraResult = await ImgPicker.requestCameraPermissionsAsync();
+  const mediaLibResult = await ImgPicker.requestMediaLibraryPermissionsAsync();
+
+  if (
+    cameraResult.status !== 'granted' ||
+    mediaLibResult.status !== 'granted'
+  ) {
+    Alert.alert(
+      'Insufficient Permissions!',
+      'You need to grant camera permissions to take a picture',
+      [{text: 'Okay'}],
+    );
+    return false;
+  }
+  return true;
 };

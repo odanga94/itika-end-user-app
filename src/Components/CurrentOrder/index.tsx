@@ -1,25 +1,61 @@
 import React from 'react';
 import {View, Text, Image} from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useSelector} from 'react-redux';
+
+import constants from '../../utils/constant';
+
 import styles from './styles';
-const foodPic1 = require('../../../assets/food-pic-small.png');
 const mapPoint = require('../../../assets/placeholder.png');
 
-const CurrentOrder: React.FC = () => {
+interface Props {
+  currentOrder: any;
+}
+
+const CurrentOrder: React.FC<Props> = (props) => {
+  const {currentOrder} = props;
+
   return (
     <View style={styles.firstView}>
       <View style={styles.secondView}>
-        <Image source={foodPic1} style={styles.img} resizeMode="contain" />
+        {currentOrder.orderDetails.packageImage ? (
+          <Image
+            source={{uri: currentOrder.orderDetails.packageImage}}
+            style={styles.img}
+            resizeMode="contain"
+          />
+        ) : (
+          <MaterialIcons size={100} color="grey" name="image" />
+        )}
       </View>
       <View style={styles.thirdView}>
-        <Text style={styles.firstText}>Food Package</Text>
-        <Text style={styles.secondText}>Java House</Text>
+        <Text style={styles.firstText}>
+          {currentOrder.orderDetails.packageType} Package
+        </Text>
+        <Text style={styles.sixthText}>({currentOrder.readableDate})</Text>
         <View style={styles.fourthView}>
-          <Image source={mapPoint} style={styles.mapPin} resizeMode="contain" />
-          <Text style={styles.thirdText}>Java House, Mbagathi Way</Text>
+          <Text style={styles.thirdText}>
+            Pick Up:{' '}
+            <Text style={{color: constants.primaryColor}}>
+              {currentOrder.orderDetails.pickUpLocationAddress}
+            </Text>
+          </Text>
+          <Text style={styles.thirdText}>
+            Drop Off:{' '}
+            <Text style={{color: constants.primaryTextColor}}>
+              {currentOrder.orderDetails.dropOffLocationAddress}
+            </Text>
+          </Text>
         </View>
         <View style={styles.fifthView}>
-          <Text style={styles.fifthText}>KES. 1000</Text>
-          <Text style={styles.sixthText}>(16 May 2021 11:54PM)</Text>
+          <Text style={styles.thirdText}>
+            Status:{' '}
+            <Text style={styles.fifthText}>
+              {currentOrder.orderDetails.status === 'pending'
+                ? 'Finding Rider.'
+                : 'Rider is on the Way.'}
+            </Text>
+          </Text>
         </View>
       </View>
     </View>

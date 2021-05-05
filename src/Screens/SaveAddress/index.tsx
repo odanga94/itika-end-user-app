@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, Image, TouchableWithoutFeedback, Alert} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import {StackNavigationProp} from '@react-navigation/stack';
-
+import {HomeStackParamList} from '../TabNavigation';
 import {RootStackParamList} from '../AppNavigator';
 import {fetchCoordinatesFromAddress} from '../../utils';
 import Button from '../../Components/Button';
@@ -14,7 +14,7 @@ const backIcon = require('../../../assets/back.png');
 
 interface Props {
   route: any;
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<HomeStackParamList>;
 }
 
 const SaveAddress: React.FC<Props> = (props) => {
@@ -54,13 +54,13 @@ const SaveAddress: React.FC<Props> = (props) => {
                 />
               </View>
             </Marker>
-            <TouchableWithoutFeedback onPress={() => props.navigation.goBack()}>
+            {/* <TouchableWithoutFeedback onPress={() => props.navigation.goBack()}>
               <Image
                 source={backIcon}
                 style={styles.backIcon}
                 resizeMode="contain"
               />
-            </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback> */}
           </MapView>
           <View style={styles.secondView}>
             <View style={styles.thirdView}>
@@ -88,7 +88,7 @@ const SaveAddress: React.FC<Props> = (props) => {
               </View>
               <Button
                 style={styles.button}
-                onPress={() => props.navigation.navigate('Tabs')}>
+                onPress={() => props.navigation.navigate('HomeScreen')}>
                 <Text style={styles.locationText}>Confirm location</Text>
               </Button>
             </View>

@@ -45,7 +45,9 @@ const Account: React.FC<Props> = (props) => {
       }
       setProfileLoading(false);
     };
-    fetchProfile();
+    if (userId && !userProfile.firstName) {
+      fetchProfile();
+    }
   }, [dispatch, userId]);
 
   return (

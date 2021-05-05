@@ -62,9 +62,9 @@ const Orders: React.FC<Props> = (props) => {
               </View>
             }
             keyExtractor={(item) => item.id}
-            onEndReached={(info: {distanceFromEnd: number}) =>
+            /* onEndReached={(info: {distanceFromEnd: number}) =>
               console.log(info, 'check end ')
-            }
+            } */
             renderItem={({item, index}) => (
               <View
                 style={

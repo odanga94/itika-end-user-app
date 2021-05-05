@@ -2,7 +2,7 @@ import {StyleSheet, Platform} from 'react-native';
 
 import constant from '../../utils/constant';
 
-const {height, heightRatio} = constant.styleGuide;
+const {height, heightRatio, width} = constant.styleGuide;
 const iphoneX = height > 811;
 
 export default StyleSheet.create({
@@ -56,6 +56,7 @@ export default StyleSheet.create({
   },
   fifthView: {
     flex: iphoneX ? 1.8 : 2.2,
+    justifyContent: 'center',
   },
   sixthView: {
     flex: iphoneX ? 1 : 1.45,
@@ -85,5 +86,27 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     right: 80,
+  },
+  orderText: {
+    fontSize: 22,
+    marginBottom: 10,
+    color: constant.thirdTextColor,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  button: {
+    height: 45,
+    width: width - 42,
+    backgroundColor: constant.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    top: 10 * heightRatio,
+    left: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: constant.commonColor,
   },
 });

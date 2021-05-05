@@ -11,19 +11,21 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 import styles from './styles';
 import {resDetails} from '../../Data/data';
-import {RootStackParamList} from '../../Screens/AppNavigator';
+import {HomeStackParamList} from '../../Screens/TabNavigation';
 //import CardDetails from '../CardDetails';
-import Button from '../../Components/Button';
+import Button from '../Button';
 
 const pkgImage = require('../../../assets/package-yellow.png');
 const errandImage = require('../../../assets/errand.png');
 
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<HomeStackParamList>;
+  pickedLocationAddress: string;
+  pickedLocation: any;
 }
 
-const RestaurantCard: React.FC<Props> = (props) => {
-  const {navigation} = props;
+const FlowCard: React.FC<Props> = (props) => {
+  const {navigation, pickedLocationAddress, pickedLocation} = props;
 
   const handlePressed = () => {
     Alert.alert('Pressed', 'Work in progress!', [{text: 'Okay'}]);
@@ -32,25 +34,24 @@ const RestaurantCard: React.FC<Props> = (props) => {
   return (
     <View style={styles.firstView}>
       <Text style={styles.firstText}>Welcome!</Text>
-      <TouchableOpacity style={styles.secondView} onPress={handlePressed}>
+      <TouchableOpacity
+        style={styles.secondView}
+        onPress={() => {
+          navigation.navigate('OrderDetails', {
+            pickedLocationAddress: pickedLocationAddress,
+            pickedLocation: pickedLocation,
+          });
+        }}>
         <Image source={pkgImage} style={styles.image} resizeMode="contain" />
-        <Button
-          style={styles.button}
-          onPress={() => {
-            handlePressed();
-          }}>
+        <View style={styles.button}>
           <Text style={styles.thirdText}>Send Package</Text>
-        </Button>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.secondView} onPress={handlePressed}>
         <Image source={errandImage} style={styles.image} resizeMode="contain" />
-        <Button
-          style={styles.button}
-          onPress={() => {
-            handlePressed();
-          }}>
+        <View style={styles.button}>
           <Text style={styles.thirdText}>Request Errand</Text>
-        </Button>
+        </View>
       </TouchableOpacity>
       {/* <FlatList
         data={resDetails}
@@ -65,4 +66,4 @@ const RestaurantCard: React.FC<Props> = (props) => {
     </View>
   );
 };
-export default RestaurantCard;
+export default FlowCard;
