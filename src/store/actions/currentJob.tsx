@@ -10,6 +10,9 @@ export const addCurrentJob = (orderId: string) => {
       await firebaseAppDatabase
         .ref(`pending_jobs/${userId}`)
         .set({currentJobOrderId: orderId});
+      await firebaseAppDatabase
+        .ref(`user_profiles/${userId}`)
+        .update({currentJobOrderId: orderId});
       dispatch({
         type: SET_CURRENT_JOB,
         currentJobOrderId: orderId,

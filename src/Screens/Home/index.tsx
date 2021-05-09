@@ -27,6 +27,7 @@ import Spinner from '../../Components/UI/Spinner';
 import {firebaseAppDatabase} from '../../../App';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
+import * as locationActions from '../../store/actions/location';
 
 /* const searchIcon = require('../../../assets/search.png');
 const filterIcon = require('../../../assets/filter.png'); */
@@ -36,6 +37,8 @@ interface Props {
 }
 
 const Home: React.FC<Props> = (props) => {
+  const {navigation} = props;
+  const dispatch = useDispatch();
   /* const userProfile = useSelector((state: any) => state.profile);
   console.log(userProfile); */
 
@@ -47,12 +50,8 @@ const Home: React.FC<Props> = (props) => {
   const currentOrder = useSelector((state: any) =>
     state.orders.orders.find((order: any) => order.id === currentJobOrderId),
   );
+  const location = useSelector((state: any) => state.location);
 
-  const {navigation} = props;
-  const dispatch = useDispatch();
-
-  const [address, setAddress] = useState<string>('');
-  const [gpsLoc, setGpsLoc] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [fetchLocationLoading, setFetchLocationLoading] = useState<boolean>(
     false,
@@ -69,10 +68,14 @@ const Home: React.FC<Props> = (props) => {
         const response: any = await getGpsLoc();
         //console.log('locRes', response);
         if (response) {
-          setGpsLoc(response);
-          setAddress(response.resp.formatted_address);
+          dispatch(
+            locationActions.setCurrentLocation(
+              response,
+              response.resp.formatted_address,
+            ),
+          );
         } else {
-          setAddress('Select Address');
+          dispatch(locationActions.setCurrentLocation(null, 'Select Address'));
         }
       } catch (err) {
         //console.log(err);
@@ -83,25 +86,30 @@ const Home: React.FC<Props> = (props) => {
             [{text: 'Okay'}],
           );
         }
-        setAddress('Select Address');
+        dispatch(locationActions.setCurrentLocation(null, 'Select Address'));
       }
       setFetchLocationLoading(false);
     };
     getLocation();
-  }, []);
+  }, [dispatch]);
 
   const checkIfCurrentJob = useCallback(async () => {
     if (userId) {
       const dataSnapshot = await firebaseAppDatabase
-        .ref(`pending_jobs/${userId}/`)
+        .ref(`user_profiles/${userId}/currentJobOrderId`)
         .once('value');
       const resData = dataSnapshot.val();
+      //console.log('orderId', resData);
       if (resData) {
         dispatch({
           type: currentJobActions.SET_CURRENT_JOB,
-          currentJobOrderId: resData.currentJobOrderId,
+          currentJobOrderId: resData,
         });
         return;
+      } else {
+        dispatch({
+          type: currentJobActions.DELETE_CURRENT_JOB,
+        });
       }
       setIsFetchingCurrentJobDetails(false);
     }
@@ -128,13 +136,128 @@ const Home: React.FC<Props> = (props) => {
   useEffect(() => {
     if (currentJobOrderId && !currentOrder /*&& !fromCheckout*/) {
       fetchCurrentJobDetails();
+    } else if (currentJobOrderId && currentOrder) {
+      //from chec
+      setIsFetchingCurrentJobDetails(false);
     }
   }, [
     /*fromCheckout,*/ currentJobOrderId,
     currentOrder,
     fetchCurrentJobDetails,
   ]);
-  console.log(currentOrder);
+  //console.log(currentOrder);
+  useEffect(() => {
+    const currentJobRef = firebaseAppDatabase.ref(
+      `orders/${userId}/${currentJobOrderId}`,
+    );
+    const onChildChanged = async (dataSnapShot: any) => {
+      console.log('key', dataSnapShot.key);
+      if (dataSnapShot.key === 'status') {
+        console.log(dataSnapShot.val());
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'status',
+          value: dataSnapShot.val(),
+        });
+        if (dataSnapShot.val() === 'delivered') {
+          navigation.navigate('OrderComplete', {});
+        }
+      } else if (dataSnapShot.key === 'riderLocation') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'riderLocation',
+          value: dataSnapShot.val(),
+        });
+      }
+    };
+    const handleChildAdded = async (dataSnapShot: any) => {
+      console.log('key', dataSnapShot.key);
+      if (dataSnapShot.key === 'riderId') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'riderId',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'riderLocation') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'riderLocation',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'pickUpDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'pickUpDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'deliveredDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'deliveredDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'amountPaid') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'amountPaid',
+          value: dataSnapShot.val(),
+        });
+      }
+    };
+
+    if (currentJobOrderId) {
+      currentJobRef.on('child_changed', onChildChanged);
+      currentJobRef.on('child_added', handleChildAdded);
+    }
+
+    return () => {
+      currentJobRef.off('child_changed', onChildChanged);
+      currentJobRef.off('child_added', handleChildAdded);
+    };
+  }, [currentJobOrderId, dispatch, userId, navigation]);
+
+  useEffect(() => {
+    const fetchRiderDetails = async () => {
+      const dataSnapshot = await firebaseAppDatabase
+        .ref(`riders/${currentOrder.orderDetails.riderId}`)
+        .once('value');
+      const riderDetails = dataSnapshot.val();
+      const fullName = `${riderDetails.firstName} ${riderDetails.lastName}`;
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentJobOrderId,
+        valueToUpdate: 'riderName',
+        value: fullName,
+      });
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentJobOrderId,
+        valueToUpdate: 'riderPhone',
+        value: riderDetails.phone,
+      });
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentJobOrderId,
+        valueToUpdate: 'riderImage',
+        value: riderDetails.passportPhotoUrl,
+      });
+    };
+    if (currentOrder) {
+      if (
+        currentOrder.orderDetails.riderId &&
+        !currentOrder.orderDetails.riderName
+      ) {
+        fetchRiderDetails();
+      }
+    }
+  }, [currentOrder, currentJobOrderId, dispatch]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -153,13 +276,17 @@ const Home: React.FC<Props> = (props) => {
             ) : (
               <TouchableOpacity onPress={() => setVisible(true)}>
                 <View style={styles.eightView}>
-                  <MaterialIcons name="place" size={25} color="#505050" />
+                  <MaterialIcons
+                    name="place"
+                    size={25}
+                    color={constant.primaryTextColor}
+                  />
 
                   <Text numberOfLines={1} style={styles.firstText}>
                     {
                       /* {address && address.length > 28
                     ? `${address.substring(0, 28 - 3)}...`
-                    : address} */ address
+                    : address} */ location.currentAddress
                     }
                   </Text>
                 </View>
@@ -172,7 +299,7 @@ const Home: React.FC<Props> = (props) => {
               backdropOpacity={0.5}
               onBackdropPress={() => setVisible(false)}>
               <SearchLocation
-                latLong={gpsLoc}
+                latLong={location.currentGpsLoc}
                 handlePress={() => setVisible(false)}
                 navigation={navigation}
               />
@@ -191,7 +318,7 @@ const Home: React.FC<Props> = (props) => {
               <Button
                 style={styles.button}
                 onPress={() => {
-                  /*navigation.navigate('TrackOrder')*/
+                  navigation.navigate('TrackOrder', {});
                 }}>
                 <Text style={styles.buttonText}>Track Package</Text>
               </Button>
@@ -199,8 +326,8 @@ const Home: React.FC<Props> = (props) => {
           ) : (
             <FlowCard
               navigation={navigation}
-              pickedLocationAddress={address}
-              pickedLocation={gpsLoc}
+              pickedLocationAddress={location.currentAddress}
+              pickedLocation={location.currentGpsLoc}
             />
           )}
         </View>

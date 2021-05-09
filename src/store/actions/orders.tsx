@@ -3,6 +3,7 @@ import {firebaseAppDatabase} from '../../../App';
 import Order from '../../models/order';
 import {uploadImage} from '../../utils';
 import * as currentJobActions from './currentJob';
+import config from '../../../config';
 
 export const ADD_ORDER = 'ADD_ORDER';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
@@ -21,7 +22,6 @@ const getRiderDetails = async (riderId: string) => {
   //console.log(resData);
   return resData;
 };
-
 
 /* export const fetchOrders = (userId) => {
   return async (dispatch, getState) => {
@@ -141,7 +141,7 @@ export const addOrder = (userId: string, orderDetails: any) => {
       try {
         const firebaseImageUri = await uploadImage(
           orderDetails.packagePhotoUri,
-          `users/${userId}/orders/${orderId}/problemImage.jpg`,
+          `users/${userId}/orders/${orderId}/packageImage.jpg`,
         );
         firebaseAppDatabase
           .ref(`orders/${userId}/${orderId}`)

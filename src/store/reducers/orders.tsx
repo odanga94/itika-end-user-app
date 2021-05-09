@@ -38,21 +38,21 @@ const ordersReducer = (state = initialState, action: any) => {
         return false;
       });
       //console.log(orderToUpdate);
-      if (indexOfOrderToUpdate) {
-        const updatedOrder = new Order(action.orderId, {
-          ...orderToUpdate.orderDetails,
-          [action.valueToUpdate]: action.value,
-        });
-        //console.log(updatedOrder);
-        const updatedOrders = [...state.orders];
-        updatedOrders.splice(indexOfOrderToUpdate, 1, updatedOrder);
-        return {
-          ...state,
-          orders: updatedOrders,
-        };
-      } else {
-        return state;
-      }
+      //if (indexOfOrderToUpdate) {
+      const updatedOrder = new Order(action.orderId, {
+        ...orderToUpdate.orderDetails,
+        [action.valueToUpdate]: action.value,
+      });
+      //console.log(updatedOrder);
+      const updatedOrders = [...state.orders];
+      updatedOrders.splice(indexOfOrderToUpdate, 1, updatedOrder);
+      return {
+        ...state,
+        orders: updatedOrders,
+      };
+    //} else {
+    //return state;
+    //}
     case REMOVE_ORDER:
       return {
         ...state,

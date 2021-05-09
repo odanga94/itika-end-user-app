@@ -12,14 +12,16 @@ export default StyleSheet.create({
   },
   firstView: {
     height: 50 * heightRatio,
-    marginLeft: 8 * heightRatio,
-    marginRight: 8 * heightRatio,
+    /* marginLeft: 8 * heightRatio,
+    marginRight: 8 * heightRatio, */
   },
   secondView: {
     flex: 1,
-    top: 20,
     flexDirection: 'row',
-    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: constant.primaryColor,
+    width: '100%',
+    justifyContent: 'center',
   },
   firstIcon: {
     height: 23,
@@ -28,7 +30,7 @@ export default StyleSheet.create({
   firstText: {
     left: 5,
     fontSize: 16,
-    color: constant.thirdTextColor,
+    color: '#fff',
     fontWeight: '500',
   },
   thirdView: {

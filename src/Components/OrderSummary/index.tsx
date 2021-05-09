@@ -353,7 +353,7 @@ const OrderSummary = (props: any) => {
                   fontSize: 16,
                   color: constants.primaryTextColor,
                 }}>
-                {orderDetails.estimatedPrice}
+                KES. {orderDetails.estimatedPrice}
               </Text>
             </Text>
           </View>

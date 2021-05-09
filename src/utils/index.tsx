@@ -164,3 +164,32 @@ export const verifyCameraPermissions = async () => {
   }
   return true;
 };
+
+export const getEstimatedDistanceAndTime = async (
+  origin: any,
+  destination: any,
+) => {
+  try {
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin.latitude},${origin.longitude}&destinations=${destination.latitude},${destination.longitude}&key=${config.googleApiKey}`,
+    );
+    if (!response.ok) {
+      console.log(response);
+      throw new Error('Something went wrong. Try again later.');
+    }
+    const resData = await response.json();
+    if (resData) {
+      /* console.log(
+        resData.rows[0].elements[0].distance,
+        resData.rows[0].elements[0].duration,
+      ); */
+      return {
+        estimatedDistance: resData.rows[0].elements[0].distance,
+        estimatedTime: resData.rows[0].elements[0].duration,
+      };
+    }
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message);
+  }
+};

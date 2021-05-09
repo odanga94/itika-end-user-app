@@ -6,6 +6,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from './Home';
 import OrderDetails, {orderDetailsScreenOptions} from './OrderDetails';
 import PickLocation, {pickLocationScreenOptions} from './PickLocation';
+import TrackOrder from './TrackOrder';
+import OrderComplete from './OrderComplete';
 import ListItems, {listItemsScreenOptions} from './ListItems';
 import CheckOut from './CheckOut';
 import DoneOrder from './DoneOrder';
@@ -30,6 +32,8 @@ export type HomeStackParamList = {
   CheckOut: object;
   DoneOrder: object;
   ListItems: object;
+  TrackOrder: object;
+  OrderComplete: object;
 };
 
 const defaultNavOptions = {
@@ -72,6 +76,16 @@ const MyHomeStack = () => {
       <HomeStack.Screen
         name="HomeScreen"
         component={Home}
+        options={{headerShown: false}}
+      />
+      <HomeStack.Screen
+        name="TrackOrder"
+        component={TrackOrder}
+        options={{title: 'Track Order'}}
+      />
+      <HomeStack.Screen
+        name="OrderComplete"
+        component={OrderComplete}
         options={{headerShown: false}}
       />
       <HomeStack.Screen

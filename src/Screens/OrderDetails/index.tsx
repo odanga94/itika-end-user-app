@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ListItem, Left, Right, Radio} from 'native-base';
 
 import {HomeStackParamList} from '../TabNavigation';
 import Button from '../../Components/Button';
@@ -19,13 +18,11 @@ import ImagePicker from '../../Components/ImagePicker';
 import Spinner from '../../Components/UI/Spinner';
 import ListButton from '../../Components/UI/ListButton';
 
-import {fetchAddress} from '../shared/functions';
+import {getEstimatedDistanceAndTime} from '../../utils';
 
 import * as profileActions from '../../store/actions/user/profile';
 import constants from '../../utils/constant';
 import styles from './styles';
-
-const {width} = constants.styleGuide;
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
@@ -49,7 +46,7 @@ const OrderDetails: React.FC<Props> = (props) => {
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
 
-  const [estimatedPrice, setEstimatedPrice] = useState(500);
+  const [estimatedPrice, setEstimatedPrice] = useState(0);
   //const [isEdible, setIsEdible] = useState(false);
   const [packageType, setPackageType] = useState('');
   const [packageDescription, setPackageDescription] = useState('');
@@ -79,6 +76,30 @@ const OrderDetails: React.FC<Props> = (props) => {
       });
     }
   }, [selectedPackageType]);
+
+  useEffect(() => {
+    const roundUp = (num: number, precision: number) => {
+      return Math.ceil(num / precision) * precision;
+    };
+
+    const calculatePriceEstimate = async () => {
+      const baseFare = 50;
+      const rateperKm = 25;
+      const distandTime = await getEstimatedDistanceAndTime(
+        pickedLocation,
+        pickedDropOffLocation,
+      );
+      //console.log(distandTime?.estimatedDistance.value);
+      const fare =
+        baseFare + (rateperKm * distandTime?.estimatedDistance.value) / 1000;
+      setEstimatedPrice(roundUp(fare, 50));
+      //return roundUp(fare, 50);
+    };
+
+    if (pickedLocation && pickedDropOffLocation) {
+      calculatePriceEstimate();
+    }
+  }, [pickedLocation, pickedDropOffLocation]);
 
   /* useEffect(() => {
     const getAddress = async () => {
@@ -146,6 +167,14 @@ const OrderDetails: React.FC<Props> = (props) => {
       Alert.alert(
         'Wrong Input!',
         'Please enter a valid phone number to contact you on.',
+        [{text: 'Okay'}],
+      );
+      return;
+    }
+    if (!estimatedPrice) {
+      Alert.alert(
+        'Price not calculated!',
+        'Please wait for the price estimate to be calculated.',
         [{text: 'Okay'}],
       );
       return;
@@ -361,7 +390,7 @@ const OrderDetails: React.FC<Props> = (props) => {
               <Text style={styles.secondText}>Price Estimate:</Text>
               <Text
                 style={{...styles.input, color: constants.primaryTextColor}}>
-                {estimatedPrice}
+                KES. {estimatedPrice}
               </Text>
             </Fragment>
           </Fragment>

@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 import constant from '../../utils/constant';
 
-const {heightRatio, height} = constant.styleGuide;
+const {heightRatio, height, width} = constant.styleGuide;
 const iphoneX = height > 811;
 
 export default StyleSheet.create({
@@ -25,15 +25,33 @@ export default StyleSheet.create({
     width: 15,
   },
   thirdView: {
-    flex: 0.5,
+    flex: 0.66,
+  },
+  imgView: {
+    height: 50 * heightRatio,
+    width: 50 * heightRatio,
+    borderRadius: 42.5 * heightRatio,
+    borderWidth: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: constant.primaryColor,
+    marginRight: 10,
+  },
+  img: {
+    height: 50 * heightRatio,
+    width: 50 * heightRatio,
+    borderRadius: 42.5 * heightRatio,
+    borderWidth: 1.5,
+    borderColor: constant.primaryColor,
   },
   fourthView: {
     height: 50,
     left: 30,
     marginRight: 60,
-    justifyContent: 'center',
+    alignItems: 'center',
     borderBottomWidth: 0.4,
     borderBottomColor: constant.lightText,
+    flexDirection: 'row',
   },
   firstText: {
     fontSize: 16,
@@ -43,7 +61,12 @@ export default StyleSheet.create({
   },
   fifthView: {
     left: 30,
-    top: 10,
+    marginRight: 60,
+    marginVertical: 5,
+    flexDirection: 'row',
+    borderBottomColor: constant.lightText,
+    borderBottomWidth: 0.4,
+    paddingBottom: 2.5,
   },
   secondText: {
     fontSize: 13,
@@ -57,7 +80,7 @@ export default StyleSheet.create({
     color: '#505050',
   },
   sixthView: {
-    paddingTop: 40,
+    paddingTop: 10,
     left: 30,
   },
   seventhView: {
@@ -66,6 +89,7 @@ export default StyleSheet.create({
   },
   eighthView: {
     flex: 0.8,
+    justifyContent: 'center'
   },
   fourthText: {
     fontSize: 14,
@@ -75,7 +99,7 @@ export default StyleSheet.create({
   fifthText: {
     fontSize: 12,
     fontWeight: '500',
-    paddingTop: 5,
+    //paddingTop: 5,
     color: '#505050',
   },
   driverImg: {
@@ -89,5 +113,26 @@ export default StyleSheet.create({
     right: 100 * heightRatio,
     bottom: 100 * heightRatio,
     left: 100 * heightRatio,
+  },
+  markerView: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  titleText: {
+    paddingTop: iphoneX ? 2 : 5,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: constant.primaryTextColor,
+  },
+  callContainer: {
+    backgroundColor: constant.primaryTextColor,
+    borderWidth: 1,
+    borderRadius: 8,
+    flexDirection: 'row',
+    borderColor: constant.primaryTextColor,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    height: 40,
+    paddingVertical: 5,
   },
 });

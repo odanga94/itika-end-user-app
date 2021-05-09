@@ -15,6 +15,8 @@ interface Props {
 const CurrentOrder: React.FC<Props> = (props) => {
   const {currentOrder} = props;
 
+  //console.log('currOrd', currentOrder);
+
   return (
     <View style={styles.firstView}>
       <View style={styles.secondView}>
@@ -50,10 +52,18 @@ const CurrentOrder: React.FC<Props> = (props) => {
         <View style={styles.fifthView}>
           <Text style={styles.thirdText}>
             Status:{' '}
-            <Text style={styles.fifthText}>
+            <Text style={styles.fifthText} adjustsFontSizeToFit>
               {currentOrder.orderDetails.status === 'pending'
-                ? 'Finding Rider.'
-                : 'Rider is on the Way.'}
+                ? 'Finding Rider'
+                : currentOrder.orderDetails.status === 'pick_up'
+                ? 'Rider on the Way'
+                : currentOrder.orderDetails.status === 'drop_off'
+                ? 'Rider on the way to recipient'
+                : currentOrder.orderDetails.status === 'arrived_recipient'
+                ? 'Rider has arrived at destination'
+                : currentOrder.orderDetails.status === 'delivered'
+                ? 'Package has been delivered'
+                : ''}
             </Text>
           </Text>
         </View>
