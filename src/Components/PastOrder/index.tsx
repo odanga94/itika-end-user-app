@@ -1,78 +1,103 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, Image, FlatList, SafeAreaView, Alert} from 'react-native';
-import {pastOrders} from '../../Data/data';
+import {View, Text, Image, SafeAreaView, Alert} from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../Screens/AppNavigator';
+
 import Button from '../Button';
+import Order from '../../models/order';
+import constants from '../../utils/constant';
 
 import styles from './styles';
-const mapPoint = require('../../../assets/placeholder.png');
 
-const PastOrder: React.FC = () => {
+interface Props {
+  order: Order;
+  navigation: StackNavigationProp<RootStackParamList>;
+}
+
+const PastOrder: React.FC<Props> = (props) => {
+  const {order, navigation} = props;
+
   return (
     <SafeAreaView style={styles.firstView}>
-      <View style={styles.secondView}>
-        <Text style={styles.firstText}>Past Orders</Text>
-      </View>
-      <View style={styles.thirdView}>
-        <FlatList
-          data={pastOrders}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({item}) => (
-            <View style={styles.firstView}>
-              <View style={styles.fourthView}>
-                <View style={styles.fifthView}>
-                  <Image
-                    source={item.img}
-                    style={styles.img}
-                    resizeMode="cover"
-                  />
-                </View>
-                <View style={styles.firstView}>
-                  <Text style={styles.secondText}>{item.name}</Text>
-                  <Text style={styles.thirdText}>{item.name1}</Text>
-                  <View style={styles.sixthView}>
-                    <Image
-                      source={mapPoint}
-                      style={styles.mapIcon}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.fourthText}>{item.address}</Text>
-                  </View>
-                  <View style={styles.priceView}>
-                    <Text style={styles.fifthText}>KES. 1000</Text>
-                    <Text style={styles.sixthText}>(16 May 2021 11:54PM)</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.seventhView}>
-                {item.fooditems.map((itm, index) => {
-                  return (
-                    <View
-                      style={
-                        item.fooditems.length - 1 !== index
-                          ? styles.eighthView
-                          : styles.nonActiveView
-                      }
-                      key={itm.id}>
-                      <Text style={styles.eighthText}>{itm.name}</Text>
-                      <Text style={styles.seventhText}>{itm.price}</Text>
-                    </View>
-                  );
-                })}
-                <Button
-                  onPress={() =>
-                    Alert.alert('Pressed', 'Work in Progress!', [
-                      {text: 'Okay'},
-                    ])
-                  }
-                  style={styles.button}>
-                  <Text style={styles.buttonText}>Re-send Package</Text>
-                </Button>
-              </View>
-            </View>
+      <View style={{flexDirection: 'row'}}>
+        <View style={styles.secondView}>
+          {order.orderDetails.packageImage ? (
+            <Image
+              source={{uri: order.orderDetails.packageImage}}
+              style={styles.img}
+              resizeMode="contain"
+            />
+          ) : (
+            <MaterialIcons size={100} color="grey" name="image" />
           )}
-        />
+        </View>
+        <View style={styles.thirdView}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingRight: 8,
+            }}>
+            <Text style={styles.firstText}>
+              {order.orderDetails.packageType} Package
+            </Text>
+            <Text
+              style={{
+                ...styles.firstText,
+                fontWeight: 'bold',
+                color: constants.primaryTextColor,
+              }}>
+              KES. {order.orderDetails.estimatedPrice}
+            </Text>
+          </View>
+
+          <Text style={styles.sixthText}>({order.readableDate})</Text>
+          <View style={styles.fourthView}>
+            <Text style={styles.thirdText}>
+              Pick Up:{' '}
+              <Text style={{color: constants.primaryColor}}>
+                {order.orderDetails.pickUpLocationAddress}
+              </Text>
+            </Text>
+            <Text style={styles.thirdText}>
+              Drop Off:{' '}
+              <Text style={{color: constants.primaryTextColor}}>
+                {order.orderDetails.dropOffLocationAddress}
+              </Text>
+            </Text>
+          </View>
+          <View style={styles.fifthView}>
+            <Text style={styles.thirdText}>
+              Status:{' '}
+              <Text style={styles.fifthText} adjustsFontSizeToFit>
+                {order.orderDetails.status === 'pending'
+                  ? 'Finding Rider'
+                  : order.orderDetails.status === 'pick_up'
+                  ? 'Rider on the Way'
+                  : order.orderDetails.status === 'drop_off'
+                  ? 'Rider on the way to recipient'
+                  : order.orderDetails.status === 'arrived_recipient'
+                  ? 'Rider has arrived at destination'
+                  : order.orderDetails.status === 'delivered'
+                  ? 'Package has been delivered'
+                  : ''}
+              </Text>
+            </Text>
+          </View>
+        </View>
       </View>
+      <Button
+        onPress={() =>
+          navigation.navigate('PastOrderDetails', {
+            title: `Order ${order.id}`,
+            orderId: order.id,
+          })
+        }
+        style={styles.button}>
+        <Text style={styles.buttonText}>View Details</Text>
+      </Button>
     </SafeAreaView>
   );
 };

@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     fontFamily: 'poppins-regular',
   },
   imageContainer: {
-    width: height / 8,
-    height: height / 8,
+    width: height / 10,
+    height: height / 10,
     borderRadius: 150,
     borderWidth: 3,
     borderColor: constant.primaryTextColor,
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   proTextContainer: {
     justifyContent: 'center',
     marginLeft: 5,
+    flexDirection: 'row',
   },
   paymentTextContainer: {
     borderBottomColor: '#505050',

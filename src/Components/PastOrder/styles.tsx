@@ -8,41 +8,57 @@ const iphoneX = height > 811;
 export default StyleSheet.create({
   firstView: {
     flex: 1,
+    width: '95%',
+    alignSelf: 'center',
+    marginVertical: 5,
+    borderTopColor: '#ccc',
+    borderTopWidth: 1,
+    //borderBottomWidth: 1,
   },
   secondView: {
-    height: 50,
-    backgroundColor: constant.backColor,
-    marginTop: 45,
-    width: width - 40,
-    left: 20,
+    flex: 0.4,
     justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 14,
+    borderRadius: 8,
+  },
+  img: {
+    height: 100,
+    width: 100,
+  },
+  fourthView: {
+    //flexDirection: 'row',
+    paddingTop: 6,
+  },
+  fifthView: {
+    paddingTop: 20,
+    flexDirection: 'row',
   },
   thirdView: {
     flex: 1,
-    top: 20,
+    left: 8,
+  },
+  mapPin: {
+    height: 15,
+    width: 15,
+  },
+  thirdText: {
+    fontSize: 14,
+    left: 3,
+    fontWeight: '500',
+    color: '#505050',
   },
   firstText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: constant.thirdTextColor,
-    left: 20,
-  },
-  secondText: {
+    paddingTop: iphoneX ? 2 : 5,
     fontSize: 17,
     fontWeight: '500',
     color: constant.thirdTextColor,
   },
-  thirdText: {
+  secondText: {
     paddingTop: 2,
     fontSize: 17,
     fontWeight: '500',
     color: constant.thirdTextColor,
-  },
-  fourthText: {
-    fontSize: 12,
-    left: 3,
-    fontWeight: '500',
-    color: '#505050',
   },
   fifthText: {
     fontSize: 14,
@@ -50,58 +66,10 @@ export default StyleSheet.create({
     color: constant.thirdTextColor,
   },
   sixthText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     left: 2,
     color: '#505050',
-    marginLeft: 5,
-  },
-  seventhText: {
-    paddingTop: iphoneX ? 10 : 15,
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#505050',
-  },
-  eighthText: {
-    paddingTop: iphoneX ? 10 : 15,
-    fontSize: 16,
-    fontWeight: '500',
-    color: constant.thirdTextColor,
-  },
-  fourthView: {
-    height: 120,
-    flexDirection: 'row',
-    left: 20,
-  },
-  fifthView: {
-    width: 115,
-  },
-  img: {
-    height: 100,
-    width: 100,
-    borderRadius: 10,
-  },
-  sixthView: {
-    flexDirection: 'row',
-    paddingTop: 6,
-  },
-  mapIcon: {
-    height: 15,
-    width: 15,
-  },
-  seventhView: {
-    height: 185,
-    left: 20,
-  },
-  eighthView: {
-    height: 50,
-    borderBottomWidth: 0.4,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 40,
-    paddingBottom: 2,
-    borderBottomColor: '#505050',
   },
   button: {
     height: 45,
@@ -111,22 +79,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 5 * heightRatio,
+    alignSelf: 'center',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
     color: constant.commonColor,
   },
-  priceView: {
-    paddingTop: 20,
-    flexDirection: 'row',
-  },
-  nonActiveView: {
-    height: 50,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 40,
-    bottom: 10,
-  },
 });
+

@@ -2,6 +2,8 @@ import {firebaseAppAuth} from '../../../../App';
 
 /* import { RESET_ORDERS } from '../orders';*/
 import {RESET_PROFILE} from './profile';
+import {RESET_ORDERS} from '../orders';
+import {DELETE_CURRENT_JOB} from '../currentJob';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOG_OUT = 'LOG_OUT';
@@ -73,8 +75,11 @@ export const logOut = () => {
     dispatch({
       type: RESET_PROFILE,
     });
-    /* dispatch({
+    dispatch({
       type: RESET_ORDERS,
-    }); */
+    });
+    dispatch({
+      type: DELETE_CURRENT_JOB,
+    });
   };
 };

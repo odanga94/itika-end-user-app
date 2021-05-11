@@ -9,6 +9,9 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: constant.commonColor,
+    padding: 10,
+    paddingTop: 0,
+    justifyContent: 'space-between',
   },
   screen: {
     width: '100%',
@@ -143,10 +146,12 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   buttonView: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    top: iphoneX ? 40 : 0,
-    paddingBottom: 10,
+    //top: iphoneX ? 40 : 0,
+    paddingVertical: 15,
+    backgroundColor: '#f3f3f3',
   },
   button: {
     height: 50,
@@ -162,7 +167,7 @@ export default StyleSheet.create({
     color: constant.commonColor,
   },
   thirthteenthView: {
-    flex: 0.2,
+    height: height / 10,
   },
   cardIcon: {
     height: 30,

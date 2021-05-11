@@ -119,9 +119,11 @@ const TrackOrder: React.FC<Props> = (props) => {
         });
         if (dataSnapShot.val() === 'pick_up') {
           setInitRiderLocationPickUp(currentOrder.orderDetails.riderLocation);
+          setInitRiderLocationDropOff(undefined);
         }
         if (dataSnapShot.val() === 'drop_off') {
           setInitRiderLocationDropOff(currentOrder.orderDetails.riderLocation);
+          setInitRiderLocationPickUp(undefined);
         }
         if (dataSnapShot.val() === 'delivered') {
           navigation.navigate('OrderComplete', {});
@@ -147,8 +149,10 @@ const TrackOrder: React.FC<Props> = (props) => {
       } else if (dataSnapShot.key === 'riderLocation') {
         if (currentOrder.orderDetails.status === 'pick_up') {
           setInitRiderLocationPickUp(dataSnapShot.val());
+          setInitRiderLocationDropOff(undefined);
         } else if (currentOrder.orderDetails.status === 'drop_off') {
           setInitRiderLocationDropOff(dataSnapShot.val());
+          setInitRiderLocationPickUp(undefined);
         }
         dispatch({
           type: UPDATE_ORDER,

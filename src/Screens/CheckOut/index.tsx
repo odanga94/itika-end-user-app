@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {View, Text, StatusBar, Alert, ScrollView} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -73,16 +73,16 @@ const CheckOut: React.FC<Props> = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.screen}>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor={constant.primaryColor}
-        />
-        <OrderSummary
-          orderDetails={{...orderDetails, dateRequested: formattedDate}}
-        />
-        <View style={styles.container}>
-          {/*           <View style={styles.container}>
+      {/* <Fragment> */}
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={constant.primaryColor}
+      />
+      <OrderSummary
+        orderDetails={{...orderDetails, dateRequested: formattedDate}}
+      />
+      {/* <View style={styles.container}> */}
+      {/*           <View style={styles.container}>
             <View style={styles.tenthView}>
               <Text style={styles.fifthText}>PAYMENT METHOD</Text>
               <FlatList
@@ -133,19 +133,19 @@ const CheckOut: React.FC<Props> = (props) => {
               />
             </View>
           </View> */}
-          <View style={styles.thirthteenthView}>
-            <View style={styles.buttonView}>
-              {submitOrderLoading ? (
-                <Spinner size="large" style={undefined} />
-              ) : (
-                <Button style={styles.button} onPress={() => submitOrder()}>
-                  <Text style={styles.buttonText}>Check Out</Text>
-                </Button>
-              )}
-            </View>
-          </View>
+      <View style={styles.thirthteenthView}>
+        <View style={styles.buttonView}>
+          {submitOrderLoading ? (
+            <Spinner size="large" style={undefined} />
+          ) : (
+            <Button style={styles.button} onPress={() => submitOrder()}>
+              <Text style={styles.buttonText}>Check Out</Text>
+            </Button>
+          )}
         </View>
-      </ScrollView>
+      </View>
+      {/* </View> */}
+      {/* </Fragment> */}
     </SafeAreaView>
   );
 };

@@ -11,12 +11,14 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useDispatch, useSelector} from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
 import * as profileActions from '../../store/actions/user/profile';
 import Spinner from '../../Components/UI/Spinner';
 import {MaterialHeaderButton} from '../../Components/UI/HeaderButton';
+import constants from '../../utils/constant';
 
 const profileIcon = require('../../../assets/profile.png');
 const icon = require('../../../assets/left-arrow1.png');
@@ -62,7 +64,7 @@ const Account: React.FC<Props> = (props) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Spinner />
+                <Spinner size={undefined} style={undefined} />
               </View>
             ) : userProfile.imageUri ? (
               <Image source={{uri: userProfile.imageUri}} style={styles.img} />
@@ -79,14 +81,41 @@ const Account: React.FC<Props> = (props) => {
           {profileLoading ? (
             <View
               style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-              <Spinner />
+              <Spinner style={undefined} size={undefined} />
             </View>
           ) : (
             <Fragment>
-              <Text
-                style={
-                  styles.firstText
-                }>{`${userProfile.firstName} ${userProfile.lastName}`}</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.firstText}>
+                  {`${userProfile.firstName} ${userProfile.lastName}`}
+                </Text>
+                {userProfile.averageRating >= 0 ? (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      top: 30,
+                    }}>
+                    <Text
+                      style={{
+                        ...styles.firstText,
+                        top: 0,
+                        marginHorizontal: 7.5,
+                      }}>
+                      |
+                    </Text>
+                    <MaterialIcons
+                      name="star"
+                      size={23}
+                      color={constants.primaryTextColor}
+                    />
+                    <Text style={{...styles.firstText, top: 0, left: 0}}>
+                      {userProfile.averageRating.toFixed(1)}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+
               <Text style={styles.secondText}>{userProfile.email}</Text>
               <Text style={{...styles.secondText, paddingTop: 0}}>
                 {userProfile.phone}

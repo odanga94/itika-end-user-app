@@ -1,22 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Fragment} from 'react';
-import {
-  Image,
-  Text,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Linking,
-  StyleSheet,
-} from 'react-native';
-import Feather from 'react-native-vector-icons';
+import {Image, Text, View, ScrollView} from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import moment from 'moment';
 
 import Card from '../UI/Card';
 //import CustomAccordion from '../components/UI/CustomAccordion';
 
 import ENV from '../../../config';
 import constants from '../../utils/constant';
-import Spinner from '../UI/Spinner';
+//import Spinner from '../UI/Spinner';
 import styles from './styles';
 
 const tickIcon = require('../../../assets/checked.png');
@@ -34,12 +27,20 @@ const OrderSummary = (props: any) => {
   const formatToSentenceCase = (text: string) =>
     text.split('')[0].toUpperCase() + text.slice(1);
 
+  //console.log(orderDetails);
+  const getReadableDate = (date: string) => {
+    return moment(date).format('MMMM Do YYYY, h:mm a');
+  };
+
   return (
-    <Fragment>
+    <ScrollView
+      contentContainerStyle={{width: '100%', justifyContent: 'center'}}>
       <Image source={{uri: imagePreviewUrl}} style={styles.image} />
       <View style={{...styles.infoContainer, marginTop: 5, marginBottom: -5}}>
         <View style={styles.datePriceContainer}>
-          <Text style={styles.datePrice}>{orderDetails.dateRequested}</Text>
+          <Text style={styles.datePrice}>
+            {getReadableDate(orderDetails.dateRequested)}
+          </Text>
         </View>
       </View>
 
@@ -168,59 +169,6 @@ const OrderSummary = (props: any) => {
                 <Spinner />
               </View>
             ) : (
-              <Fragment>
-                <Text style={{...styles.title, textAlign: 'center'}}>
-                  <Text style={{fontFamily: 'poppins-bold'}}>Pro Details</Text>
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <View style={{flexDirection: 'row', flex: 2}}>
-                    <View style={styles.imageContainer}>
-                      <Image
-                        source={{uri: orderDetails.proImage}}
-                        style={styles.proImage}
-                      />
-                    </View>
-                    <View style={styles.proTextContainer}>
-                      <Text
-                        style={[
-                          styles.description,
-                          {textAlign: 'left', fontWeight: 'bold'},
-                        ]}>
-                        {orderDetails.proName}
-                      </Text>
-                    </View>
-                  </View>
-                  {/* orderDetails.proPhone &&
-                    orderDetails.status === 'in progress' && (
-                      <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            Linking.openURL(`tel:${orderDetails.proPhone}`);
-                          }}
-                          style={styles.button}>
-                          <Feather name="phone" color="white" size={30} />
-                          <Text
-                            style={{
-                              ...DefaultStyles.titleText,
-                              marginHorizontal: 10,
-                              color: 'white',
-                            }}>
-                            Call
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) 
-                </View>
-              </Fragment> 
             ) 
           </Card>
         )}*/
@@ -305,27 +253,112 @@ const OrderSummary = (props: any) => {
                 </Text>
               ) : null}
 
-              {
-                orderDetails.packagePhotoUri ? (
-                  <View style={styles.problemImageContainer}>
-                    <Image
-                      source={{uri: orderDetails.packagePhotoUri}}
-                      style={styles.problemImage}
-                    />
-                  </View>
-                ) : null /* : (
-            orderDetails.problemImage && (
-              <View style={styles.problemImageContainer}>
-                <Image
-                  source={{uri: orderDetails.problemImage}}
-                  style={styles.problemImage}
-                />
-              </View>
-            ) */
-              }
+              {orderDetails.packagePhotoUri || orderDetails.packageImage ? (
+                <View style={styles.problemImageContainer}>
+                  <Image
+                    source={{
+                      uri: orderDetails.packagePhotoUri
+                        ? orderDetails.packagePhotoUri
+                        : orderDetails.packageImage
+                        ? orderDetails.packageImage
+                        : '',
+                    }}
+                    style={styles.problemImage}
+                  />
+                </View>
+              ) : null}
             </View>
             // orderDetails.status !== "cancelled" && <Text style={{ ...//styles.title, marginVertical: 15 }}>Connection Fee: <Text style={{ fontFamily: 'poppins-bold' }}>KES.{totalAmount.toFixed(2)}</Text></Text
           }
+          {orderDetails.riderName ? (
+            <Card
+              style={{
+                padding: 10,
+                marginVertical: 10,
+                //height: constants.styleGuide.height / 8,
+              }}>
+              <Fragment>
+                <Text style={{...styles.title, textAlign: 'center'}}>
+                  <Text style={{fontFamily: 'poppins-bold'}}>
+                    Rider Details
+                  </Text>
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{flexDirection: 'row', flex: 2}}>
+                    <View style={styles.imageContainer}>
+                      <Image
+                        source={{uri: orderDetails.riderImage}}
+                        style={styles.proImage}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        maxHeight: 30,
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                      }}>
+                      <Text
+                        style={[
+                          styles.description,
+                          {
+                            //textAlign: 'left',
+                            fontWeight: 'bold',
+                            color: 'black',
+                            marginLeft: 5,
+                          },
+                        ]}>
+                        {orderDetails.riderName}
+                      </Text>
+                      {orderDetails.riderRating ? (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            //top: 30,
+                          }}>
+                          <Text
+                            style={[
+                              styles.description,
+                              {
+                                //textAlign: 'left',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                marginHorizontal: 7.5,
+                              },
+                            ]}>
+                            |
+                          </Text>
+                          <MaterialIcons
+                            name="star"
+                            size={23}
+                            color={constants.primaryTextColor}
+                          />
+                          <Text
+                            style={[
+                              styles.description,
+                              {
+                                //textAlign: 'left',
+                                fontWeight: 'bold',
+                                color: 'black',
+                                marginHorizontal: 7.5,
+                              },
+                            ]}>
+                            {orderDetails.riderRating.toFixed(1)}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </View>
+                  </View>
+                </View>
+              </Fragment>
+            </Card>
+          ) : null}
+
           <Text style={styles.title}>
             Your Phone:{' '}
             <Text
@@ -359,7 +392,7 @@ const OrderSummary = (props: any) => {
           </View>
         </View>
       </View>
-    </Fragment>
+    </ScrollView>
   );
 };
 

@@ -3,7 +3,7 @@ import {firebaseAppDatabase} from '../../../App';
 import Order from '../../models/order';
 import {uploadImage} from '../../utils';
 import * as currentJobActions from './currentJob';
-import config from '../../../config';
+//import config from '../../../config';
 
 export const ADD_ORDER = 'ADD_ORDER';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
@@ -23,12 +23,11 @@ const getRiderDetails = async (riderId: string) => {
   return resData;
 };
 
-/* export const fetchOrders = (userId) => {
-  return async (dispatch, getState) => {
+export const fetchOrders = (userId: string) => {
+  return async (dispatch: any) => {
     //const fetchedOrders = [];
     try {
-      const dataSnapshot = await firebase
-        .database()
+      const dataSnapshot = await firebaseAppDatabase
         .ref(`orders/${userId}`)
         .once('value');
       const resData = dataSnapshot.val();
@@ -45,50 +44,36 @@ const getRiderDetails = async (riderId: string) => {
       });
 
       for (let i = fetchedOrders.length - 1; i >= 0; i--) {
-        if (fetchedOrders[i].orderDetails.assignedProId) {
-          let proDetails = '';
-          let proImageUrl = '';
+        if (fetchedOrders[i].orderDetails.riderId) {
+          let riderDetails: any;
           try {
-            proDetails = await getProDetails(
-              fetchedOrders[i].orderDetails.problemType,
-              fetchedOrders[i].orderDetails.assignedProId,
+            riderDetails = await getRiderDetails(
+              fetchedOrders[i].orderDetails.riderId,
             );
-            //console.log(proDetails)
-          } catch (err) {
-            console.log(err);
-          }
-          try {
-            proImageUrl = await getProImageUrl(
-              fetchedOrders[i].orderDetails.problemType,
-              fetchedOrders[i].orderDetails.assignedProId,
-            );
-            //console.log(proImageUrl)
+            //console.log('rider', riderDetails)
           } catch (err) {
             console.log(err);
           }
           dispatch(
-            dispatchNewOrder(
-              fetchedOrders[i].id,
-              {
-                ...fetchedOrders[i].orderDetails,
-                proName: proDetails
-                  ? `${proDetails.firstName} ${proDetails.lastName}`
-                  : '',
-                proPhone: proDetails ? proDetails.phone : '',
-                proImage: proImageUrl ? proImageUrl : '',
-              },
-              'fetch orders',
-            ),
+            dispatchNewOrder(fetchedOrders[i].id, {
+              ...fetchedOrders[i].orderDetails,
+              riderName: riderDetails
+                ? `${riderDetails.firstName} ${riderDetails.lastName}`
+                : '',
+              riderPhone: riderDetails ? riderDetails.phone : '',
+              riderImage: riderDetails.passportPhotoUrl
+                ? riderDetails.passportPhotoUrl
+                : '',
+              riderRating: riderDetails.averageRating
+                ? riderDetails.averageRating
+                : null,
+            }),
           );
         } else {
           dispatch(
-            dispatchNewOrder(
-              fetchedOrders[i].id,
-              {
-                ...fetchedOrders[i].orderDetails,
-              },
-              'fetch orders',
-            ),
+            dispatchNewOrder(fetchedOrders[i].id, {
+              ...fetchedOrders[i].orderDetails,
+            }),
           );
         }
       }
@@ -97,7 +82,7 @@ const getRiderDetails = async (riderId: string) => {
       throw new Error('Something went wrong 😞');
     }
   };
-}; */
+};
 
 export const dispatchNewOrder = (orderId: string, orderDetails: any) => {
   return {

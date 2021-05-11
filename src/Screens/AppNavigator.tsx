@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {Platform} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
+
 import Splash from './Splash';
 import Verify from './Verify';
 import Login from './Register';
@@ -14,6 +16,7 @@ import MenuList from './MenuList';
 import Cart from './Cart';
 import ApplyCoupon from './ApplyCoupon';
 import Orders from './Orders';
+import PastOrderDetails, {pastOrderDetailsScreenOptions} from './PastOrderDetails';
 import ManageAddress from './ManageAddress';
 import ManageAddressEdit from './ManageAddressEdit';
 import PaymentOptions from './PaymentOptions';
@@ -21,6 +24,7 @@ import TrackOrder from './TrackOrder';
 import AddCard from './AddCard';
 import LogOut from './LogOut';
 import Auth from './Auth';
+import constant from '../utils/constant';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -44,14 +48,42 @@ export type RootStackParamList = {
   AddCard: undefined;
   LogOut: undefined;
   Auth: undefined;
+  PastOrderDetails: object;
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
+
+const defaultNavOptions = {
+  headerStyle: {
+    backgroundColor: Platform.OS === 'android' ? constant.primaryColor : '',
+  },
+  headerTintColor: Platform.OS === 'android' ? 'white' : constant.primaryColor,
+  headerTitleStyle: {
+    fontFamily: 'open-sans-bold',
+  },
+  headerBackTitleStyle: {
+    fontFamily: 'open-sans',
+  },
+};
+
 const OrderStack = () => {
   return (
-    <RootStack.Navigator headerMode={'none'}>
-      <RootStack.Screen name="Orders" component={Orders} />
-      <RootStack.Screen name="TrackOrder" component={TrackOrder} />
+    <RootStack.Navigator screenOptions={defaultNavOptions}>
+      <RootStack.Screen
+        name="Orders"
+        component={Orders}
+        options={{headerTitleAlign: 'center'}}
+      />
+      <RootStack.Screen
+        options={{headerShown: false}}
+        name="TrackOrder"
+        component={TrackOrder}
+      />
+       <RootStack.Screen
+        name="PastOrderDetails"
+        component={PastOrderDetails}
+        options={pastOrderDetailsScreenOptions}
+      />
     </RootStack.Navigator>
   );
 };

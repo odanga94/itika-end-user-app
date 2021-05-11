@@ -66,4 +66,31 @@ export default StyleSheet.create({
     marginRight: 40,
     bottom: 10,
   },
+  pastView: {
+    height: 50,
+    backgroundColor: constant.backColor,
+    marginTop: 30,
+    width: width - 40,
+    left: 20,
+    justifyContent: 'center',
+  },
+  firstText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: constant.thirdTextColor,
+  },
+  buttonYellow: {
+    height: 50,
+    width: '100%',
+    backgroundColor: constant.primaryTextColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  thirdText: {
+    color: constant.commonColor,
+    fontSize: 18,
+    fontWeight: '700',
+  },
 });

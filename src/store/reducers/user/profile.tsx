@@ -14,6 +14,7 @@ const initialState = {
   phone: '',
   email: '',
   imageUri: '',
+  averageRating: -1,
   //hasOrders: true,
 };
 
@@ -28,6 +29,9 @@ const profileReducer = (state = initialState, action: any) => {
           phone: action.profileData.phone,
           email: action.profileData.email,
           imageUri: action.profileData.profilePic,
+          averageRating: action.profileData.averageRating
+            ? action.profileData.averageRating
+            : -1,
         };
       }
       return state;

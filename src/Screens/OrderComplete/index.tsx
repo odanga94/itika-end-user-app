@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector /*useDispatch*/} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {RootStackParamList} from '../AppNavigator';
@@ -31,7 +31,7 @@ interface Props {
 
 const OrderComplete: React.FC<Props> = (props) => {
   const {navigation} = props;
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const currentJob = useSelector((state: any) => state.currentJob);
   //console.log(currentJob);
@@ -67,6 +67,7 @@ const OrderComplete: React.FC<Props> = (props) => {
   const submitRatingHandler = async () => {
     setSubmitLoading(true);
     try {
+      let firstRating = 0;
       await firebaseAppDatabase
         .ref(`riders/${currentOrder.orderDetails.riderId}/ratings`)
         .transaction((currentData: any) => {
@@ -77,12 +78,18 @@ const OrderComplete: React.FC<Props> = (props) => {
           };
           if (!currentData) {
             currentData = [rating];
+            firstRating = rating.rating;
             return currentData;
           } else {
             currentData.push(rating);
             return currentData;
           }
         });
+      if (firstRating) {
+        await firebaseAppDatabase
+          .ref(`riders/${currentOrder.orderDetails.riderId}`)
+          .update({averageRating: firstRating});
+      }
       await firebaseAppDatabase
         .ref(`user_profiles/${userId}/currentJobOrderId`)
         .remove();
