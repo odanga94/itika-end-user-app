@@ -28,9 +28,10 @@ const OrderSummary = (props: any) => {
     text.split('')[0].toUpperCase() + text.slice(1);
 
   //console.log(orderDetails);
-  const getReadableDate = (date: string) => {
-    return moment(date).format('MMMM Do YYYY, h:mm a');
-  };
+  /* const getReadableDate = (date: string) => {
+    console.log('date', new Date());
+    return moment(new Date()).format('MMMM Do YYYY, h:mm a');
+  }; */
 
   return (
     <ScrollView
@@ -38,9 +39,7 @@ const OrderSummary = (props: any) => {
       <Image source={{uri: imagePreviewUrl}} style={styles.image} />
       <View style={{...styles.infoContainer, marginTop: 5, marginBottom: -5}}>
         <View style={styles.datePriceContainer}>
-          <Text style={styles.datePrice}>
-            {getReadableDate(orderDetails.dateRequested)}
-          </Text>
+          <Text style={styles.datePrice}>{orderDetails.dateRequested}</Text>
         </View>
       </View>
 

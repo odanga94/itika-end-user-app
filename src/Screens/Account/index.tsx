@@ -131,6 +131,12 @@ const Account: React.FC<Props> = (props) => {
             <Image source={icon} style={styles.icons} resizeMode="contain" />
           </View>
         </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Chats')}>
+          <View style={styles.fifthView}>
+            <Text style={styles.commonText}>Chats</Text>
+            <Image source={icon} style={styles.icons} resizeMode="contain" />
+          </View>
+        </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('PaymentOptions')}>
           <View style={styles.fifthView}>

@@ -59,7 +59,7 @@ const TrackOrder: React.FC<Props> = (props) => {
   const currentOrder = useSelector((state: any) =>
     state.orders.orders.find((order: any) => order.id === currentJobOrderId),
   );
-  console.log('currOrder', currentOrder);
+  //console.log('currOrder', currentOrder);
   /* const location = useSelector((state: any) => state.location);
   console.log(location); */
   const userId = useSelector((state: any) => state.auth.userId);
@@ -448,20 +448,36 @@ const TrackOrder: React.FC<Props> = (props) => {
                 {currentOrder.orderDetails.riderName}
               </Text>
             </View>
+            {/* <View> */}
             <TouchableOpacity
               style={styles.callContainer}
               onPress={() =>
                 Linking.openURL(`tel:${currentOrder.orderDetails.riderPhone}`)
               }>
-              <Text style={{...styles.titleText, color: 'white'}}>
-                CALL RIDER
-              </Text>
               <MaterialIcons
                 name="call"
                 size={20 * heightRatio}
                 color="white"
               />
+              <Text
+                style={{...styles.titleText, color: 'white', marginLeft: 4}}>
+                RIDER
+              </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.callContainer}
+              onPress={() => navigation.navigate('AddChatRoom', {})}>
+              <FontAwesome
+                name="comments"
+                size={20 * heightRatio}
+                color="white"
+              />
+              <Text
+                style={{...styles.titleText, color: 'white', marginLeft: 4}}>
+                RIDER
+              </Text>
+            </TouchableOpacity>
+            {/* </View> */}
           </View>
         ) : null}
       </View>

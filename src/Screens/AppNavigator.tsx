@@ -16,7 +16,10 @@ import MenuList from './MenuList';
 import Cart from './Cart';
 import ApplyCoupon from './ApplyCoupon';
 import Orders from './Orders';
-import PastOrderDetails, {pastOrderDetailsScreenOptions} from './PastOrderDetails';
+import ChatHistory from './ChatHistory';
+import PastOrderDetails, {
+  pastOrderDetailsScreenOptions,
+} from './PastOrderDetails';
 import ManageAddress from './ManageAddress';
 import ManageAddressEdit from './ManageAddressEdit';
 import PaymentOptions from './PaymentOptions';
@@ -41,6 +44,8 @@ export type RootStackParamList = {
   ApplyCoupon: undefined;
   RestaurantList: undefined;
   Orders: undefined;
+  Chats: undefined;
+  ChatHistory: undefined;
   ManageAddress: undefined;
   ManageAddressEdit: undefined;
   PaymentOptions: undefined;
@@ -79,7 +84,7 @@ const OrderStack = () => {
         name="TrackOrder"
         component={TrackOrder}
       />
-       <RootStack.Screen
+      <RootStack.Screen
         name="PastOrderDetails"
         component={PastOrderDetails}
         options={pastOrderDetailsScreenOptions}
@@ -87,6 +92,19 @@ const OrderStack = () => {
     </RootStack.Navigator>
   );
 };
+
+const ChatsStack = () => {
+  return (
+    <RootStack.Navigator screenOptions={defaultNavOptions}>
+      <RootStack.Screen
+        name="ChatHistory"
+        component={ChatHistory}
+        options={{headerTitleAlign: 'center', title: 'Chats'}}
+      />
+    </RootStack.Navigator>
+  );
+};
+
 const AddressStack = () => {
   return (
     <RootStack.Navigator headerMode={'none'}>
@@ -187,6 +205,11 @@ const AppStack = () => {
       <RootStack.Screen
         name="Orders"
         component={OrderStack}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="Chats"
+        component={ChatsStack}
         options={{headerShown: false}}
       />
       <RootStack.Screen

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, Fragment} from 'react';
 import {
   View,
   Text,
@@ -104,6 +104,22 @@ const OrderComplete: React.FC<Props> = (props) => {
     setSubmitLoading(false);
   };
 
+  const skipHandler = async () => {
+    setSubmitLoading(true);
+    try {
+      await firebaseAppDatabase
+        .ref(`user_profiles/${userId}/currentJobOrderId`)
+        .remove();
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
+    } catch (err) {
+      Alert.alert('Something went wrong 😞', err.message, [{text: 'Okay'}]);
+    }
+    setSubmitLoading(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {currentOrder ? (
@@ -178,22 +194,19 @@ const OrderComplete: React.FC<Props> = (props) => {
               {submitLoading ? (
                 <Spinner size={undefined} style={undefined} />
               ) : (
-                <Button
-                  style={styles.button}
-                  onPress={() => submitRatingHandler()}>
-                  <Text style={styles.buttonText}>Submit</Text>
-                </Button>
+                <Fragment>
+                  <Button
+                    style={styles.button}
+                    onPress={() => submitRatingHandler()}>
+                    <Text style={styles.buttonText}>Submit</Text>
+                  </Button>
+                  <Button
+                    style={styles.secondButton}
+                    onPress={() => skipHandler()}>
+                    <Text style={styles.secondButtonText}>Skip</Text>
+                  </Button>
+                </Fragment>
               )}
-              <Button
-                style={styles.secondButton}
-                onPress={() =>
-                  navigation.reset({
-                    index: 0,
-                    routes: [{name: 'Home'}],
-                  })
-                }>
-                <Text style={styles.secondButtonText}>Skip</Text>
-              </Button>
             </View>
           </View>
         </KeyboardAvoidingView>

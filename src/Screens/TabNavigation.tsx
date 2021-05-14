@@ -10,6 +10,7 @@ import TrackOrder from './TrackOrder';
 import OrderComplete from './OrderComplete';
 import ListItems, {listItemsScreenOptions} from './ListItems';
 import CheckOut from './CheckOut';
+import AddChatRoom from './AddChatRoom';
 import DoneOrder from './DoneOrder';
 import SaveAddress from './SaveAddress';
 import Cart from './Cart';
@@ -33,6 +34,7 @@ export type HomeStackParamList = {
   DoneOrder: object;
   ListItems: object;
   TrackOrder: object;
+  AddChatRoom: object;
   OrderComplete: object;
 };
 
@@ -82,6 +84,11 @@ const MyHomeStack = () => {
         name="TrackOrder"
         component={TrackOrder}
         options={{title: 'Track Order'}}
+      />
+      <HomeStack.Screen
+        name="AddChatRoom"
+        component={AddChatRoom}
+        options={{title: 'Chat Room'}}
       />
       <HomeStack.Screen
         name="OrderComplete"

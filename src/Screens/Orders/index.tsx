@@ -36,22 +36,6 @@ const Orders: React.FC<Props> = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [foodItems] = useState<any>([
-    {
-      id: '66',
-      name: 'Chicken Lollipop',
-      itemNo: 2,
-      price: 'KES. 200',
-    },
-    {
-      id: '77',
-      name: 'Chicken Kebab',
-      itemNo: 1,
-      price: 'KES. 300',
-    },
-  ]);
-
-  const foodLength = foodItems.length;
 
   const loadOrders = useCallback(async () => {
     setError('');
