@@ -27,22 +27,24 @@ interface Props {
 }
 
 const ChatHistory: React.FC<Props> = (props) => {
+  const {navigation} = props;
   const dispatch = useDispatch();
 
   const orders = useSelector((state: any) => state.orders.orders);
   const userId = useSelector((state: any) => state.auth.userId);
 
   const [chats, setChats] = useState<any>([]);
-  const [fetchOrdersLoading, setFetchOrdersLoading] = useState(true);
+  const [fetchOrdersLoading, setFetchOrdersLoading] = useState(false);
   const [fetchChatsLoading, setFetchChatsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const loadOrders = useCallback(async () => {
     setError('');
     //console.log(orders.length)
-    if (orders.length === 0) {
-      setFetchChatsLoading(true);
-    }
+    //if (chats.length === 0) {
+    setFetchChatsLoading(true);
+    setFetchOrdersLoading(true);
+    //}
     try {
       await dispatch(orderActions.fetchOrders(userId));
     } catch (err) {
@@ -50,7 +52,7 @@ const ChatHistory: React.FC<Props> = (props) => {
       console.log(err);
     }
     setFetchOrdersLoading(false);
-  }, [dispatch, orders, userId]);
+  }, [dispatch, userId]);
 
   useEffect(() => {
     loadOrders();
@@ -89,26 +91,28 @@ const ChatHistory: React.FC<Props> = (props) => {
   if (error) {
     return <ErrorMessage retry={loadOrders} error={error} />;
   }
+  //console.log(fetchChatsLoading);
 
-  if (!chats) {
+  if (chats.length === 0) {
     return (
       <View style={{flex: 1, justifyContent: 'center', paddingHorizontal: 20}}>
-        <Text style={styles.firstText}>
+        <Text style={{...styles.firstText, textAlign: 'center'}}>
           You don't have any chats with riders yet.
         </Text>
         <Button
           style={styles.buttonYellow}
           onPress={() => {
-            /* navigation.reset({
+            navigation.reset({
               index: 0,
               routes: [{name: 'Tabs'}],
-            }); */
+            });
           }}>
           <Text style={styles.buttonText}>Go to Home</Text>
         </Button>
       </View>
     );
   }
+  //console.log(chats);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +133,14 @@ const ChatHistory: React.FC<Props> = (props) => {
           console.log(info, 'check end ')
         } */
             renderItem={({item}) => {
-              //console.log('it', item);
+              console.log('it', item);
+              const timeStampArr = Object.keys(item);
+              //console.log(timeStampArr);
+              const chatTimeStamp = timeStampArr[timeStampArr.length - 5];
+              //console.log('ts', chatTimeStamp);
+
+              const chatDetails = item[chatTimeStamp];
+              console.log(chatDetails);
               return (
                 <TouchableOpacity style={styles.chatContainer}>
                   <View
@@ -138,8 +149,13 @@ const ChatHistory: React.FC<Props> = (props) => {
                       justifyContent: 'space-between',
                     }}>
                     <Text style={styles.firstText}>{item.riderName} </Text>
-                    <Text>{item.dateCreated}</Text>
+                    <Text>
+                      {new Date(chatDetails.createdAt).toDateString()}
+                    </Text>
                   </View>
+                  <Text style={{...styles.firstText, fontWeight: 'normal'}}>
+                    {chatDetails.text}
+                  </Text>
                 </TouchableOpacity>
               );
             }}

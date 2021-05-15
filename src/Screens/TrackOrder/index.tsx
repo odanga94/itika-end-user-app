@@ -108,9 +108,9 @@ const TrackOrder: React.FC<Props> = (props) => {
       `orders/${userId}/${currentJobOrderId}`,
     );
     const onChildChanged = async (dataSnapShot: any) => {
-      console.log('key', dataSnapShot.key);
+      //console.log('key', dataSnapShot.key);
       if (dataSnapShot.key === 'status') {
-        console.log(dataSnapShot.val());
+        //console.log(dataSnapShot.val());
         dispatch({
           type: UPDATE_ORDER,
           orderId: currentJobOrderId,
@@ -138,7 +138,7 @@ const TrackOrder: React.FC<Props> = (props) => {
       }
     };
     const handleChildAdded = async (dataSnapShot: any) => {
-      console.log('key', dataSnapShot.key);
+      //console.log('key', dataSnapShot.key);
       if (dataSnapShot.key === 'riderId') {
         dispatch({
           type: UPDATE_ORDER,

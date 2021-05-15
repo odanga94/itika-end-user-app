@@ -24,6 +24,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
+  sendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5,
+    right: 2,
+  },
+  bottomComponentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  systemMessageText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  systemMessageWrapper: {
+    backgroundColor: constant.primaryColor,
+    padding: 5,
+    borderRadius: 8,
+  },
 });
 
 export default styles;
