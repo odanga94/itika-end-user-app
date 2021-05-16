@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useEffect, Fragment, useState} from 'react';
 import {View, Text, Alert, Platform, ActionSheetIOS} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
@@ -23,20 +23,23 @@ import Button from '../../Components/Button';
 import Spinner from '../../Components/UI/Spinner';
 import styles from './styles';
 import constants from '../../utils/constant';
-import {verifyCameraPermissions} from '../../utils';
+import {
+  verifyCameraPermissions,
+  uploadImage,
+  getImageExtension,
+} from '../../utils';
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
+  route: any;
 }
 
 const AddChatRoom: React.FC<Props> = (props) => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   const dispatch = useDispatch();
 
   const userId = useSelector((state: any) => state.auth.userId);
-  const currentJobOrderId = useSelector(
-    (state: any) => state.currentJob.currentJobOrderId,
-  );
+  const currentJobOrderId = route.params.orderId;
   //console.log(currentJobOrderId);
   const currentOrder = useSelector((state: any) =>
     state.orders.orders.find((order: any) => order.id === currentJobOrderId),
@@ -64,9 +67,16 @@ const AddChatRoom: React.FC<Props> = (props) => {
     //   },
     // },
   ]);
-  const [img, setImg] = useState('');
+  const [sendImageLoading, setSendImageLoading] = useState(false);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Order ${currentJobOrderId}`,
+    });
+  }, [currentJobOrderId, navigation]);
 
   const editPictureHandler = async (config: string) => {
+    setSendImageLoading(true);
     const hasPermissions = await verifyCameraPermissions();
     if (!hasPermissions) {
       return;
@@ -86,9 +96,55 @@ const AddChatRoom: React.FC<Props> = (props) => {
       });
     }
     if (image.uri) {
-      setImg(image.uri);
+      const message: any = {
+        _id: '',
+        createdAt: '',
+        user: null,
+        image: '',
+        messageType: '',
+        // Mark the message as sent, using one tick
+        sent: true,
+        // Mark the message as received, using two tick
+        received: false,
+        // Mark the message as pending with a clock loader
+        pending: false,
+      };
+      message._id = Date.now();
+      message.createdAt = new Date().toString();
+      message.user = {
+        _id: userId,
+        name: userProfile.firstName
+          ? `${userProfile.firstName} ${userProfile.lastName}`
+          : 'Loading...',
+        avatar: userProfile.imageUri ? userProfile.imageUri : '',
+      };
+      message.image = image.uri;
+      message.messageType = 'image';
+      try {
+        const imgExt = getImageExtension(image.uri);
+        const imgUrl = await uploadImage(
+          image.uri,
+          `users/${userId}/orders/${currentOrder.id}/${Date.now()}${imgExt}`,
+        );
+        const chatIdRef = await firebaseAppDatabase
+          .ref(`orders/${userId}/${currentOrder.id}/chat`)
+          .push({...message, image: imgUrl});
+        dispatch({
+          type: UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'chat',
+          value: {
+            ...currentOrder.orderDetails.chat,
+            [chatIdRef.key]: {...message, image: imgUrl},
+          },
+        });
+        setMessages(GiftedChat.append(messages, message));
+      } catch (err) {
+        console.log(err);
+        Alert.alert('Something went wrong 😔', err.message, [{text: 'Okay'}]);
+      }
     }
-    return image.uri;
+    setSendImageLoading(false);
   };
 
   const launchCameraActionSheet = () => {
@@ -132,10 +188,24 @@ const AddChatRoom: React.FC<Props> = (props) => {
 
   const handleSend = async (newMessage: any = []) => {
     //console.log(newMessage);
+    if (currentOrder.orderDetails.status === 'delivered') {
+      Alert.alert(
+        "Can't Send",
+        'You can no longer send messages in this chat because the order was completed.',
+        [{text: 'Okay'}],
+      );
+      return;
+    }
     try {
       const newMessageObj = {
         ...newMessage[0],
         createdAt: new Date().toString(),
+        // Mark the message as sent, using one tick
+        sent: true,
+        // Mark the message as received, using two tick
+        received: false,
+        // Mark the message as pending with a clock loader
+        pending: false,
       };
       const chatIdRef = await firebaseAppDatabase
         .ref(`orders/${userId}/${currentJobOrderId}/chat`)
@@ -149,7 +219,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
           [chatIdRef.key]: newMessageObj,
         },
       });
-      setMessages(GiftedChat.append(messages, newMessage));
+      setMessages(GiftedChat.append(messages, newMessageObj));
     } catch (err) {
       console.log(err);
       Alert.alert('Something went wrong 😔', err.message, [{text: 'Okay'}]);
@@ -172,11 +242,19 @@ const AddChatRoom: React.FC<Props> = (props) => {
     return (
       <Send {...props}>
         <View style={styles.sendingContainer}>
-          <MaterialIcons
-            name="send"
-            size={32}
-            color={constants.primaryTextColor}
-          />
+          {currentOrder.orderDetails.status === 'delivered' ? (
+            <MaterialIcons
+              name="cancel"
+              size={32}
+              color={constants.primaryColor}
+            />
+          ) : (
+            <MaterialIcons
+              name="send"
+              size={32}
+              color={constants.primaryTextColor}
+            />
+          )}
         </View>
       </Send>
     );
@@ -209,7 +287,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
       <Actions
         {...props}
         options={{
-          ['Send Image']: () => editPictureHandler('launch-camera'),
+          ['Send Image']: () => launchCameraActionSheet(),
         }}
         icon={() => (
           <MaterialIcons
@@ -260,18 +338,18 @@ const AddChatRoom: React.FC<Props> = (props) => {
 
     if (!currentOrder.orderDetails.chat) {
       initializeChatRoom();
-    } else {
-      const chatsArr = [];
+    } else if (messages.length === 0) {
+      const chatsArr: any = [];
       const chatKeysArr = Object.keys(currentOrder.orderDetails.chat);
       //for(let i = chatKeysArr.length - 5; i <)
-      console.log('keys', chatKeysArr);
+      //console.log('keys', chatKeysArr);
       for (let i = chatKeysArr.length - 1; i >= 0; i--) {
         chatsArr.push(currentOrder.orderDetails.chat[chatKeysArr[i]]);
       }
-      console.log(chatsArr);
-      setMessages(chatsArr);
+      //console.log(chatsArr);
+      setMessages((prevState: any) => GiftedChat.append(prevState, chatsArr));
     }
-  }, [currentOrder, userId, dispatch, currentJobOrderId]);
+  }, [dispatch, currentJobOrderId]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -290,6 +368,91 @@ const AddChatRoom: React.FC<Props> = (props) => {
     }
   }, [dispatch, userId, userProfile]);
 
+  useEffect(() => {
+    const currentChatRef = firebaseAppDatabase.ref(
+      `orders/${userId}/${currentJobOrderId}/chat`,
+    );
+    const handleMessageAdded = async (dataSnapShot: any) => {
+      const messageId = dataSnapShot.key;
+      const messageDetails = dataSnapShot.val();
+      if (messageDetails.user && messageDetails.user._id !== userId) {
+        const messageIdsArr = Object.keys(currentOrder.orderDetails.chat);
+        if (!messageIdsArr.find((id) => id === messageId)) {
+          const newMessageDetails = {
+            ...messageDetails,
+            received: true,
+          };
+          await currentChatRef.update({[messageId]: newMessageDetails});
+          dispatch({
+            type: UPDATE_ORDER,
+            orderId: currentJobOrderId,
+            valueToUpdate: 'chat',
+            value: {
+              ...currentOrder.orderDetails.chat,
+              [messageId]: newMessageDetails,
+            },
+          });
+          setMessages((prevState: any) =>
+            GiftedChat.append(prevState, newMessageDetails),
+          );
+        }
+      }
+    };
+
+    if (currentJobOrderId && currentOrder) {
+      currentChatRef.on('child_added', handleMessageAdded);
+    }
+
+    return () => {
+      currentChatRef.off('child_added', handleMessageAdded);
+    };
+  }, [currentOrder, currentJobOrderId, userId, dispatch]);
+
+  useEffect(() => {
+    const currentChatRef = firebaseAppDatabase.ref(
+      `orders/${userId}/${currentJobOrderId}/chat`,
+    );
+    const handleMessageUpdated = async (dataSnapShot: any) => {
+      const messageId = dataSnapShot.key;
+      const messageDetails = dataSnapShot.val();
+      if (messageDetails.user && messageDetails.user._id === userId) {
+        if (messageDetails.received === true) {
+          dispatch({
+            type: UPDATE_ORDER,
+            orderId: currentJobOrderId,
+            valueToUpdate: 'chat',
+            value: {
+              ...currentOrder.orderDetails.chat,
+              [messageId]: {
+                ...messageDetails,
+                received: true,
+              },
+            },
+          });
+          //console.log('mgs', messages);
+          const indexOfMessageToUpdate = messages.findIndex((message: any) => {
+            //console.log(typeof message._id, message._id);
+            //console.log(typeof messageDetails._id, messageDetails._id);
+            return message._id === messageDetails._id;
+          });
+          //console.log(indexOfMessageToUpdate, messageDetails);
+          const updatedMessages = [...messages];
+          //console.log('new', updatedMessages);
+          updatedMessages.splice(indexOfMessageToUpdate, 1, messageDetails);
+          setMessages(updatedMessages);
+        }
+      }
+    };
+
+    if (currentJobOrderId && currentOrder) {
+      currentChatRef.on('child_changed', handleMessageUpdated);
+    }
+
+    return () => {
+      currentChatRef.off('child_changed', handleMessageUpdated);
+    };
+  }, [currentOrder, messages, currentJobOrderId, userId, dispatch]);
+
   //console.log(userProfile);
 
   return (
@@ -302,26 +465,38 @@ const AddChatRoom: React.FC<Props> = (props) => {
         <Text style={styles.thirdText}>Close Modal</Text>
       </Button>
     </View> */
-    <GiftedChat
-      messages={messages}
-      onSend={(newMessage) => handleSend(newMessage)}
-      user={{
-        _id: userId,
-        name: userProfile.firstName
-          ? `${userProfile.firstName} ${userProfile.lastName}`
-          : 'Loading...',
-        avatar: userProfile.imageUri ? userProfile.imageUri : '',
-      }}
-      isTyping
-      keyboardShouldPersistTaps="never"
-      renderBubble={renderBubble}
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderLoading={renderLoading}
-      renderSystemMessage={renderSystemMessage}
-      renderActions={renderActions}
-    />
+    <Fragment>
+      <GiftedChat
+        messages={messages}
+        onSend={(newMessage) => handleSend(newMessage)}
+        user={{
+          _id: userId,
+          name: userProfile.firstName
+            ? `${userProfile.firstName} ${userProfile.lastName}`
+            : 'Loading...',
+          avatar: userProfile.imageUri ? userProfile.imageUri : '',
+        }}
+        isTyping
+        keyboardShouldPersistTaps="never"
+        renderBubble={renderBubble}
+        renderSend={renderSend}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
+        renderLoading={renderLoading}
+        renderSystemMessage={renderSystemMessage}
+        renderActions={renderActions}
+        placeholder={
+          currentOrder.orderDetails.status === 'delivered'
+            ? 'You can no longer send messages.'
+            : 'Type a message...'
+        }
+      />
+      {sendImageLoading ? (
+        <View style={styles.spinnerContainer}>
+          <Spinner style={undefined} size={undefined} />
+        </View>
+      ) : null}
+    </Fragment>
   );
 };
 

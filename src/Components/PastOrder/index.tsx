@@ -3,7 +3,7 @@ import React from 'react';
 import {View, Text, Image, SafeAreaView, Alert} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../../Screens/AppNavigator';
+import {OrdersStackParamList} from '../../Screens/TabNavigation';
 
 import Button from '../Button';
 import Order from '../../models/order';
@@ -13,7 +13,7 @@ import styles from './styles';
 
 interface Props {
   order: Order;
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<OrdersStackParamList>;
 }
 
 const PastOrder: React.FC<Props> = (props) => {

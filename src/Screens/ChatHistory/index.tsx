@@ -133,30 +133,41 @@ const ChatHistory: React.FC<Props> = (props) => {
           console.log(info, 'check end ')
         } */
             renderItem={({item}) => {
-              console.log('it', item);
+              //console.log('it', item);
               const timeStampArr = Object.keys(item);
               //console.log(timeStampArr);
               const chatTimeStamp = timeStampArr[timeStampArr.length - 5];
               //console.log('ts', chatTimeStamp);
 
               const chatDetails = item[chatTimeStamp];
-              console.log(chatDetails);
+              //console.log(chatDetails);
               return (
-                <TouchableOpacity style={styles.chatContainer}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text style={styles.firstText}>{item.riderName} </Text>
-                    <Text>
-                      {new Date(chatDetails.createdAt).toDateString()}
+                <View style={{backgroundColor: '#f5f5f5'}}>
+                  <TouchableOpacity
+                    style={styles.chatContainer}
+                    onPress={() =>
+                      navigation.navigate('AddChatRoom', {
+                        orderId: item.id,
+                      })
+                    }>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text style={styles.firstText}>{item.riderName} </Text>
+                      <Text>
+                        {new Date(chatDetails.createdAt).toDateString()}{' '}
+                        {new Date(chatDetails.createdAt).toLocaleTimeString(
+                          'en-US',
+                        )}
+                      </Text>
+                    </View>
+                    <Text style={{...styles.firstText, fontWeight: 'normal'}}>
+                      {chatDetails.text ? chatDetails.text : 'Photo'}
                     </Text>
-                  </View>
-                  <Text style={{...styles.firstText, fontWeight: 'normal'}}>
-                    {chatDetails.text}
-                  </Text>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
               );
             }}
           />

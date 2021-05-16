@@ -125,9 +125,9 @@ const Account: React.FC<Props> = (props) => {
         </View>
       </View>
       <View style={styles.fourthView}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Orders')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Cart')}>
           <View style={styles.fifthView}>
-            <Text style={styles.commonText}>Your Orders</Text>
+            <Text style={styles.commonText}>Cart</Text>
             <Image source={icon} style={styles.icons} resizeMode="contain" />
           </View>
         </TouchableWithoutFeedback>
@@ -151,9 +151,17 @@ const Account: React.FC<Props> = (props) => {
             <Image source={icon} style={styles.icons} resizeMode="contain" />
           </View>
         </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Legal')}>
+          <View style={styles.fifthView}>
+            <Text style={styles.commonText}>Legal</Text>
+            <Image source={icon} style={styles.icons} resizeMode="contain" />
+          </View>
+        </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => navigation.navigate('LogOut')}>
           <View style={styles.sixthView}>
-            <Text style={styles.thirdText}>Logout</Text>
+            <Text style={{...styles.thirdText, color: constants.primaryColor}}>
+              Logout
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </View>

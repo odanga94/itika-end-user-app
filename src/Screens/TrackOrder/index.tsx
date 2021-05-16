@@ -181,6 +181,13 @@ const TrackOrder: React.FC<Props> = (props) => {
           valueToUpdate: 'amountPaid',
           value: dataSnapShot.val(),
         });
+      } else if (dataSnapShot.key === 'chat') {
+        dispatch({
+          type: UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'chat',
+          value: dataSnapShot.val(),
+        });
       }
     };
 
@@ -466,7 +473,11 @@ const TrackOrder: React.FC<Props> = (props) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.callContainer}
-              onPress={() => navigation.navigate('AddChatRoom', {})}>
+              onPress={() =>
+                navigation.navigate('AddChatRoom', {
+                  orderId: currentOrder.id,
+                })
+              }>
               <FontAwesome
                 name="comments"
                 size={20 * heightRatio}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, TouchableOpacity, Image, Text} from 'react-native';
 import styles from './styles';
 import HomeIcon from 'react-native-vector-icons/FontAwesome';
-import SupportIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import constant from '../../utils/constant';
@@ -38,16 +38,16 @@ const FooterTab: React.FC<Props> = ({state, descriptors, navigation}) => {
           );
         } else if (route.name === 'Support') {
           iconName = (
-            <SupportIcon
+            <MaterialIcons
               name="help-outline"
               size={30}
               color={isFocused ? constant.primaryTextColor : '#ccc'}
             />
           );
-        } else if (route.name === 'Cart') {
+        } else if (route.name === 'Orders') {
           iconName = (
-            <IonIcon
-              name="cart-outline"
+            <MaterialIcons
+              name="history"
               size={30}
               color={isFocused ? constant.primaryTextColor : '#ccc'}
             />

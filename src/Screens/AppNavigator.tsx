@@ -9,21 +9,17 @@ import OtpVerify from './OtpVerify';
 import SignUp from './SignUp';
 import TabNavigation from './TabNavigation';
 import Filter from './Filter';
-import SaveAddress from './SaveAddress';
 import Search from './Search';
 import RestaurantList from './RestaurantList';
 import MenuList from './MenuList';
 import Cart from './Cart';
 import ApplyCoupon from './ApplyCoupon';
-import Orders from './Orders';
 import ChatHistory from './ChatHistory';
-import PastOrderDetails, {
-  pastOrderDetailsScreenOptions,
-} from './PastOrderDetails';
+import AddChatRoom from './AddChatRoom';
 import ManageAddress from './ManageAddress';
 import ManageAddressEdit from './ManageAddressEdit';
+import Legal from './Legal';
 import PaymentOptions from './PaymentOptions';
-import TrackOrder from './TrackOrder';
 import AddCard from './AddCard';
 import LogOut from './LogOut';
 import Auth from './Auth';
@@ -43,17 +39,17 @@ export type RootStackParamList = {
   Cart: object;
   ApplyCoupon: undefined;
   RestaurantList: undefined;
-  Orders: undefined;
   Chats: undefined;
   ChatHistory: undefined;
+  AddChatRoom: object;
   ManageAddress: undefined;
   ManageAddressEdit: undefined;
+  Legal: undefined;
   PaymentOptions: undefined;
-  TrackOrder: undefined;
   AddCard: undefined;
   LogOut: undefined;
   Auth: undefined;
-  PastOrderDetails: object;
+  Cart: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();
@@ -71,28 +67,6 @@ const defaultNavOptions = {
   },
 };
 
-const OrderStack = () => {
-  return (
-    <RootStack.Navigator screenOptions={defaultNavOptions}>
-      <RootStack.Screen
-        name="Orders"
-        component={Orders}
-        options={{headerTitleAlign: 'center'}}
-      />
-      <RootStack.Screen
-        options={{headerShown: false}}
-        name="TrackOrder"
-        component={TrackOrder}
-      />
-      <RootStack.Screen
-        name="PastOrderDetails"
-        component={PastOrderDetails}
-        options={pastOrderDetailsScreenOptions}
-      />
-    </RootStack.Navigator>
-  );
-};
-
 const ChatsStack = () => {
   return (
     <RootStack.Navigator screenOptions={defaultNavOptions}>
@@ -101,6 +75,7 @@ const ChatsStack = () => {
         component={ChatHistory}
         options={{headerTitleAlign: 'center', title: 'Chats'}}
       />
+      <RootStack.Screen name="AddChatRoom" component={AddChatRoom} />
     </RootStack.Navigator>
   );
 };
@@ -127,7 +102,10 @@ const PaymentStack = () => {
 
 const AppStack = () => {
   return (
-    <RootStack.Navigator initialRouteName="Splash" headerMode={'screen'}>
+    <RootStack.Navigator
+      initialRouteName="Splash"
+      headerMode={'screen'}
+      screenOptions={defaultNavOptions}>
       <RootStack.Screen
         name="Splash"
         component={Splash}
@@ -188,11 +166,6 @@ const AppStack = () => {
         options={{headerShown: false}}
       />
       <RootStack.Screen
-        name="Cart"
-        component={Cart}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
         name="ApplyCoupon"
         component={ApplyCoupon}
         options={{headerShown: false}}
@@ -200,11 +173,6 @@ const AppStack = () => {
       <RootStack.Screen
         name="RestaurantList"
         component={RestaurantList}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name="Orders"
-        component={OrderStack}
         options={{headerShown: false}}
       />
       <RootStack.Screen
@@ -222,6 +190,12 @@ const AppStack = () => {
         component={PaymentStack}
         options={{headerShown: false}}
       />
+      <RootStack.Screen
+        name="Cart"
+        component={Cart}
+        //options={{headerShown: false}}
+      />
+      <RootStack.Screen name="Legal" component={Legal} />
       <RootStack.Screen
         name="LogOut"
         component={LogOut}

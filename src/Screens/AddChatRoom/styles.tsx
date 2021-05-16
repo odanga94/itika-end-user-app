@@ -49,6 +49,13 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 8,
   },
+  spinnerContainer: {
+    position: 'absolute',
+    bottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+  },
 });
 
 export default styles;

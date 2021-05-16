@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../AppNavigator';
+import {OrdersStackParamList} from '../TabNavigation';
 
 import {firebaseAppDatabase} from '../../../App';
 import OrderSummary from '../../Components/OrderSummary';
@@ -13,7 +13,7 @@ import styles from './styles';
 import * as orderActions from '../../store/actions/orders';
 
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<OrdersStackParamList>;
   route: any;
 }
 

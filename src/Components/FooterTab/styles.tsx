@@ -29,13 +29,13 @@ export default StyleSheet.create({
   },
   focusedText: {
     color: '#f9a11b',
-    top: 5,
+    //top: 5,
     fontSize: 10,
     fontWeight: '700',
   },
   text: {
     color: 'gray',
-    top: 5,
+    //top: 5,
     fontSize: 10,
     fontWeight: '700',
   },

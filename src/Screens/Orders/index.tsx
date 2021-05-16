@@ -5,7 +5,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
 
 import Header from '../../Components/Header';
-import {RootStackParamList} from '../AppNavigator';
+import {OrdersStackParamList} from '../TabNavigation';
 import styles from './styles';
 import Button from '../../Components/Button';
 import PastOrder from '../../Components/PastOrder';
@@ -16,7 +16,7 @@ import constant from '../../utils/constant';
 import * as orderActions from '../../store/actions/orders';
 
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<OrdersStackParamList>;
 }
 
 const Orders: React.FC<Props> = (props) => {

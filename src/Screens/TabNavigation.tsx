@@ -4,9 +4,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from './Home';
+import Orders from './Orders';
+import TrackOrder from './TrackOrder';
+import PastOrderDetails, {
+  pastOrderDetailsScreenOptions,
+} from './PastOrderDetails';
 import OrderDetails, {orderDetailsScreenOptions} from './OrderDetails';
 import PickLocation, {pickLocationScreenOptions} from './PickLocation';
-import TrackOrder from './TrackOrder';
 import OrderComplete from './OrderComplete';
 import ListItems, {listItemsScreenOptions} from './ListItems';
 import CheckOut from './CheckOut';
@@ -36,6 +40,12 @@ export type HomeStackParamList = {
   TrackOrder: object;
   AddChatRoom: object;
   OrderComplete: object;
+};
+
+export type OrdersStackParamList = {
+  Orders: undefined;
+  PastOrderDetails: object;
+  TrackOrder: undefined;
 };
 
 const defaultNavOptions = {
@@ -88,7 +98,7 @@ const MyHomeStack = () => {
       <HomeStack.Screen
         name="AddChatRoom"
         component={AddChatRoom}
-        options={{title: 'Chat Room'}}
+        //options={{title: 'Chat Room'}}
       />
       <HomeStack.Screen
         name="OrderComplete"
@@ -129,6 +139,30 @@ const MyHomeStack = () => {
   );
 };
 
+const OrdersStack = createStackNavigator<OrdersStackParamList>();
+
+const MyOrdersStack = () => {
+  return (
+    <OrdersStack.Navigator screenOptions={defaultNavOptions}>
+      <OrdersStack.Screen
+        name="Orders"
+        component={Orders}
+        options={{headerTitleAlign: 'center'}}
+      />
+      <OrdersStack.Screen
+        options={{headerShown: false}}
+        name="TrackOrder"
+        component={TrackOrder}
+      />
+      <OrdersStack.Screen
+        name="PastOrderDetails"
+        component={PastOrderDetails}
+        options={pastOrderDetailsScreenOptions}
+      />
+    </OrdersStack.Navigator>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigation: React.FC = () => {
@@ -136,7 +170,7 @@ const TabNavigation: React.FC = () => {
     <Tab.Navigator tabBar={(props) => <FooterTab {...props} />}>
       <Tab.Screen name="Home" component={MyHomeStack} />
       <Tab.Screen name="Support" component={Favourite} />
-      <Tab.Screen name="Cart" component={Cart} />
+      <Tab.Screen name="Orders" component={MyOrdersStack} />
       <Tab.Screen name="Account" component={MyAccountStack} />
     </Tab.Navigator>
   );
