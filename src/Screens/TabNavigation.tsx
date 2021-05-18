@@ -18,7 +18,8 @@ import AddChatRoom from './AddChatRoom';
 import DoneOrder from './DoneOrder';
 import SaveAddress from './SaveAddress';
 import Cart from './Cart';
-import Favourite from './Favourite';
+import Support, {supportScreenOptions} from './Support';
+import SupportChatRoom from './SupportChatRoom';
 import Account, {accountScreenOptions} from './Account';
 import FooterTab from '../Components/FooterTab';
 import constant from '../utils/constant';
@@ -46,6 +47,11 @@ export type OrdersStackParamList = {
   Orders: undefined;
   PastOrderDetails: object;
   TrackOrder: undefined;
+};
+
+export type SupportStackParamList = {
+  Support: undefined;
+  SupportChatRoom: object;
 };
 
 const defaultNavOptions = {
@@ -163,13 +169,28 @@ const MyOrdersStack = () => {
   );
 };
 
+const SupportStack = createStackNavigator<SupportStackParamList>();
+
+const MySupportStack = () => {
+  return (
+    <SupportStack.Navigator screenOptions={defaultNavOptions}>
+      <SupportStack.Screen
+        name="Support"
+        component={Support}
+        options={supportScreenOptions}
+      />
+      <SupportStack.Screen name="SupportChatRoom" component={SupportChatRoom} />
+    </SupportStack.Navigator>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigation: React.FC = () => {
   return (
     <Tab.Navigator tabBar={(props) => <FooterTab {...props} />}>
       <Tab.Screen name="Home" component={MyHomeStack} />
-      <Tab.Screen name="Support" component={Favourite} />
+      <Tab.Screen name="Support" component={MySupportStack} />
       <Tab.Screen name="Orders" component={MyOrdersStack} />
       <Tab.Screen name="Account" component={MyAccountStack} />
     </Tab.Navigator>

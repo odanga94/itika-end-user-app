@@ -58,7 +58,7 @@ const Legal: React.FC<Props> = (props) => {
             style={styles.chatContainer}
             onPress={() => {
               Linking.openURL(
-                'https://drive.google.com/file/d/1gqXMafAuQTT_6FgaKJQhooRlScEb4ENq/view?usp=sharing',
+                'https://drive.google.com/file/d/1MCoxOZ3xXNNf1ILcORWAqozYwVKStifK/view?usp=sharing',
               );
             }}>
             <View

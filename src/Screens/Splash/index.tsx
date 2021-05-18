@@ -97,7 +97,17 @@ const Splash: React.FC<Props> = (props) => {
         </View>
         <View style={{paddingHorizontal: 30, bottom: 10}}>
           <Text style={styles.terms}>
-            By signing up, you agree to our Terms and Conditions and
+            By signing up, you agree to our{' '}
+            <Text
+              style={{color: constant.primaryTextColor}}
+              onPress={() =>
+                Linking.openURL(
+                  'https://drive.google.com/file/d/1MCoxOZ3xXNNf1ILcORWAqozYwVKStifK/view?usp=sharing',
+                )
+              }>
+              Terms and Conditions
+            </Text>{' '}
+            and
             <Text> </Text>
             <Text
               style={{color: constant.primaryTextColor}}

@@ -20,6 +20,7 @@ import {Root} from 'native-base';
 
 import Stack from './src/Screens';
 import authReducer from './src/store/reducers/user/auth';
+import supportReducer from './src/store/reducers/support';
 import profileReducer from './src/store/reducers/user/profile';
 import ordersReducer from './src/store/reducers/orders';
 import currentJobReducer from './src/store/reducers/currentJob';
@@ -50,6 +51,7 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
   currentJob: currentJobReducer,
   location: locationReducer,
+  support: supportReducer,
 });
 
 const store = createStore(
