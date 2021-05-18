@@ -49,33 +49,6 @@ const supportReducer = (state = initialState, action: any) => {
         ...state,
         chats: updatedChats,
       };
-    case UPDATE_CHAT_STATUS:
-      let indexOfChatToUpdateStatus: number;
-      const chatToUpdateStatus: any = state.chats.find((chat: Chat, index) => {
-        if (chat.id === action.chatId) {
-          indexOfChatToUpdateStatus = index;
-          return true;
-        }
-        return false;
-      });
-      //console.log(chatToUpdate);
-      //if (indexOfChatToUpdate) {
-      const updatedChatStatus = new Chat(action.chatId, {
-        ...chatToUpdateStatus.chatDetails,
-        status: action.value,
-      });
-      //console.log(updatedChat);
-      const updatedChatsStatus = [...state.chats];
-      updatedChatsStatus.splice(
-        indexOfChatToUpdateStatus,
-        1,
-        updatedChatStatus,
-      );
-      return {
-        ...state,
-        chats: updatedChatsStatus,
-      };
-
     case SET_CHATS:
       return {
         ...state,

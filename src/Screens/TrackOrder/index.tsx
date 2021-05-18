@@ -8,6 +8,7 @@ import {
   Text,
   Linking,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
@@ -23,7 +24,9 @@ import mapStyle from '../../utils/customMap';
 import {getEstimatedDistanceAndTime} from '../../utils/index';
 import ENV from '../../../config';
 import styles from './styles';
-import {UPDATE_ORDER} from '../../store/actions/orders';
+import {UPDATE_ORDER, cancelOrder} from '../../store/actions/orders';
+import Button from '../../Components/Button';
+import Spinner from '../../Components/UI/Spinner';
 
 const homeIcon = require('../../../assets/home-white.png');
 const locIcon = require('../../../assets/mapPointer-white.png');
@@ -98,10 +101,40 @@ const TrackOrder: React.FC<Props> = (props) => {
   //console.log('markers', markers);
   const [estimatedDistance, setEstimatedDistance] = useState('');
   const [estimeatedTime, setEstimatedTime] = useState('');
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const mapRef = useRef(null);
 
   const markersLength = markers.length;
+
+  const cancelOrderHandler = () => {
+    Alert.alert(
+      'Are you sure?',
+      `Are you really sure you want to cancel this order?`,
+      [
+        {
+          text: 'No',
+          onPress: () => {
+            return;
+          },
+          style: 'default',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            setCancelLoading(true);
+            await dispatch(cancelOrder(currentJobOrderId, userId));
+            setCancelLoading(false);
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'HomeScreen'}],
+            });
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
 
   useEffect(() => {
     const currentJobRef = firebaseAppDatabase.ref(
@@ -421,6 +454,27 @@ const TrackOrder: React.FC<Props> = (props) => {
             <Text style={styles.thirdText}>{currentOrder.readableDate}</Text>
           </View>
         </View>
+        {currentOrder.orderDetails.status === 'pending' ? (
+          <View style={styles.buttonView}>
+            {cancelLoading ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                }}>
+                <Spinner style={undefined} size={undefined} />
+              </View>
+            ) : (
+              <Button
+                style={styles.button}
+                onPress={() => cancelOrderHandler()}>
+                <Text style={styles.buttonText}>Cancel Order</Text>
+              </Button>
+            )}
+          </View>
+        ) : null}
+
         <View style={styles.fifthView}>
           {estimatedDistance ? (
             <Text style={styles.secondText}>

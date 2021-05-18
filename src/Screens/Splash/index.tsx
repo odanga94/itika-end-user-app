@@ -94,6 +94,17 @@ const Splash: React.FC<Props> = (props) => {
               <Text style={styles.fifthText}>Login </Text>
             </View>
           </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('ResetPassword')}>
+            <View style={{...styles.fifthView, marginTop: 10}}>
+              <Text style={{...styles.fourthText, fontSize: 16}}>
+                Forgot Password?{' '}
+              </Text>
+              <Text style={{...styles.fifthText, fontSize: 16}}>
+                Reset Password
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <View style={{paddingHorizontal: 30, bottom: 10}}>
           <Text style={styles.terms}>

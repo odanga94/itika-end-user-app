@@ -16,7 +16,7 @@ export default StyleSheet.create({
     resizeMode: 'cover',
   },
   secondView: {
-    flex: 2,
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -45,7 +45,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    marginTop: 50,
+    marginTop: 25,
   },
   thirdText: {
     color: '#fff',

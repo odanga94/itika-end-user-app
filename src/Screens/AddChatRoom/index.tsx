@@ -166,6 +166,14 @@ const AddChatRoom: React.FC<Props> = (props) => {
       title: 'Choose Image',
     };
     const handleClicked = async (buttonIndexNumber: number) => {
+      if (currentOrder.orderDetails.status === 'delivered') {
+        Alert.alert(
+          "Can't Send",
+          'You can no longer send messages in this chat because the order was completed.',
+          [{text: 'Okay'}],
+        );
+        return;
+      }
       switch (buttonIndexNumber) {
         case 0:
           editPictureHandler('launch-camera');

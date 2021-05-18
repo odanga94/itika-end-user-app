@@ -21,6 +21,7 @@ import ListButton from '../../Components/UI/ListButton';
 import {getEstimatedDistanceAndTime} from '../../utils';
 
 import * as profileActions from '../../store/actions/user/profile';
+import * as appSettingsActions from '../../store/actions/app-settings';
 import constants from '../../utils/constant';
 import styles from './styles';
 
@@ -36,6 +37,9 @@ const OrderDetails: React.FC<Props> = (props) => {
 
   const userId = useSelector((state: any) => state.auth.userId);
   const phoneNumber = useSelector((state: any) => state.profile.phone);
+  const baseFee = useSelector((state: any) => state.appSettings.baseFee);
+  const pricePerKm = useSelector((state: any) => state.appSettings.pricePerKm);
+  //console.log(baseFee, pricePerKm);
 
   const pickedLocationAddress = route.params.pickedLocationAddress;
   const pickedLocation = route.params.pickedLocation;
@@ -56,6 +60,7 @@ const OrderDetails: React.FC<Props> = (props) => {
 
   const [addOrderLoading, setAddOrderLoading] = useState<boolean>(false);
   const [addOrderError, setAddOrderError] = useState<boolean>(false);
+  const [fetchAppSettings, setFetchAppSettings] = useState<boolean>(false);
 
   useEffect(() => {
     if (!phoneNumber && userId) {
@@ -68,6 +73,20 @@ const OrderDetails: React.FC<Props> = (props) => {
       setClientPhone(phoneNumber);
     }
   }, [phoneNumber]);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setFetchAppSettings(true);
+      try {
+        await dispatch(appSettingsActions.fetchAppSettings());
+      } catch (err) {
+        Alert.alert('Something went wrong.', err.message, [{text: 'Okay'}]);
+      }
+      setFetchAppSettings(false);
+    };
+
+    fetchSettings();
+  }, [dispatch]);
 
   useEffect(() => {
     if (selectedPackageType && Object.keys(selectedPackageType).length > 0) {
@@ -83,23 +102,21 @@ const OrderDetails: React.FC<Props> = (props) => {
     };
 
     const calculatePriceEstimate = async () => {
-      const baseFare = 50;
-      const rateperKm = 25;
       const distandTime = await getEstimatedDistanceAndTime(
         pickedLocation,
         pickedDropOffLocation,
       );
       //console.log(distandTime?.estimatedDistance.value);
       const fare =
-        baseFare + (rateperKm * distandTime?.estimatedDistance.value) / 1000;
+        baseFee + (pricePerKm * distandTime?.estimatedDistance.value) / 1000;
       setEstimatedPrice(roundUp(fare, 50));
       //return roundUp(fare, 50);
     };
 
-    if (pickedLocation && pickedDropOffLocation) {
+    if (pickedLocation && pickedDropOffLocation && baseFee && pricePerKm) {
       calculatePriceEstimate();
     }
-  }, [pickedLocation, pickedDropOffLocation]);
+  }, [pickedLocation, pickedDropOffLocation, baseFee, pricePerKm]);
 
   /* useEffect(() => {
     const getAddress = async () => {
@@ -305,9 +322,12 @@ const OrderDetails: React.FC<Props> = (props) => {
                   navigation.navigate('ListItems', {
                     items: [
                       'Clothes',
-                      'Pet Goods',
+                      'Pet Food and Accessories',
                       'Food',
                       'Documents',
+                      'Beauty Products',
+                      'Household Goods',
+                      'Pastries',
                       'Others',
                     ],
                     alreadySelected: selectedPackageType,

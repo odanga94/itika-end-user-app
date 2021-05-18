@@ -41,7 +41,7 @@ const PastOrder: React.FC<Props> = (props) => {
               paddingRight: 8,
             }}>
             <Text style={styles.firstText}>
-              {order.orderDetails.packageType} Package
+              {order.orderDetails.packageType}
             </Text>
             <Text
               style={{
@@ -82,6 +82,8 @@ const PastOrder: React.FC<Props> = (props) => {
                   ? 'Rider has arrived at destination'
                   : order.orderDetails.status === 'delivered'
                   ? 'Package has been delivered'
+                  : order.orderDetails.status === 'cancelled'
+                  ? 'Cancelled'
                   : ''}
               </Text>
             </Text>

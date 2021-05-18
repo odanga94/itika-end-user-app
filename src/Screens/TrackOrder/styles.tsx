@@ -135,4 +135,27 @@ export default StyleSheet.create({
     height: 40,
     paddingVertical: 5,
   },
+  button: {
+    height: 50,
+    width: width - 110,
+    backgroundColor: constant.primaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: constant.commonColor,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  buttonView: {
+    width: width - 110,
+    borderRadius: 8,
+    //backgroundColor: constant.backColor,
+    flexDirection: 'row',
+    marginTop: 10,
+    flex: 0.5,
+    alignSelf: 'center',
+  },
 });

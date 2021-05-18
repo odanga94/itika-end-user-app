@@ -144,6 +144,31 @@ export const addOrder = (userId: string, orderDetails: any) => {
   };
 };
 
+export const cancelOrder = (orderId: string, clientId: string) => {
+  return async (dispatch: any) => {
+    try {
+      await firebaseAppDatabase
+        .ref(`pending_jobs/${clientId}/currentJobOrderId`)
+        .remove();
+      await firebaseAppDatabase
+        .ref(`user_profiles/${clientId}/currentJobOrderId`)
+        .remove();
+      await firebaseAppDatabase
+        .ref(`orders/${clientId}/${orderId}`)
+        .update({status: 'cancelled'});
+      dispatch({
+        type: UPDATE_ORDER,
+        valueToUpdate: 'status',
+        value: 'cancelled',
+        orderId,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error('Something went wrong 😞.  Please try again later.');
+    }
+  };
+};
+
 /* export const fetchProDetails = (problemType, proId, orderId) => {
   return async (dispatch) => {
     //console.log('fromFetchPro', problemType, proId, orderId);

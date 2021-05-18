@@ -107,7 +107,9 @@ const Orders: React.FC<Props> = (props) => {
             onRefresh={loadOrders}
             refreshing={isLoading}
             data={orders.filter(
-              (order: any) => order.orderDetails.status === 'delivered',
+              (order: any) =>
+                order.orderDetails.status === 'delivered' ||
+                order.orderDetails.status === 'cancelled',
             )}
             scrollEnabled={true}
             ListHeaderComponent={

@@ -4,6 +4,7 @@ import {firebaseAppAuth} from '../../../../App';
 import {RESET_PROFILE} from './profile';
 import {RESET_ORDERS} from '../orders';
 import {DELETE_CURRENT_JOB} from '../currentJob';
+import {RESET_CHATS, RESET_CHAT_ID_BEING_PROCESSED} from '../support';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOG_OUT = 'LOG_OUT';
@@ -80,6 +81,12 @@ export const logOut = () => {
     });
     dispatch({
       type: DELETE_CURRENT_JOB,
+    });
+    dispatch({
+      type: RESET_CHATS,
+    });
+    dispatch({
+      type: RESET_CHAT_ID_BEING_PROCESSED,
     });
   };
 };

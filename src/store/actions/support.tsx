@@ -4,7 +4,6 @@ import Chat from '../../models/chat';
 export const SET_CHATS = 'SET_CHATS';
 export const ADD_CHAT_AND_FIRST_MESSAGE = 'ADD_CHAT';
 export const UPDATE_CHAT = 'UPDATE_CHAT';
-export const UPDATE_CHAT_STATUS = 'UPDATE_CHAT_STATUS';
 export const SET_CHAT_ID_BEING_PROCESSED = 'SET_CHAT_ID_BEING_PROCESSED';
 export const RESET_CHATS = 'RESET_CHATS';
 export const RESET_CHAT_ID_BEING_PROCESSED = 'RESET_CHAT_ID_BEING_PROCESSED';
@@ -20,10 +19,8 @@ export const fetchChats = (userId: string) => {
       if (chats) {
         let chatsArr: Chat[] = [];
         Object.keys(chats).forEach((chatId: string) => {
-          if (chatId !== 'status') {
-            const newChat = new Chat(chatId, chats[chatId]);
-            chatsArr.push(newChat);
-          }
+          const newChat = new Chat(chatId, chats[chatId]);
+          chatsArr.push(newChat);
         });
         dispatch({
           type: SET_CHATS,
@@ -42,12 +39,12 @@ export const addChatAndFirstMessage = (userId: string, chatDetails: any) => {
     try {
       const newChatIdRef = await firebaseAppDatabase
         .ref(`support_chats/${userId}/`)
-        .push({status: 'open'});
+        .push();
       const firstMessageIdRef = await newChatIdRef.push({
         ...chatDetails,
       });
       const newChat = new Chat(newChatIdRef.key, {
-        [firstMessageIdRef.key]: {...chatDetails, status: 'open'},
+        [firstMessageIdRef.key]: {...chatDetails},
       });
       dispatch({
         type: ADD_CHAT_AND_FIRST_MESSAGE,

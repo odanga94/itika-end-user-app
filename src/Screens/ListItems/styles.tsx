@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    position: 'absolute',
-    bottom: 20,
+    //position: 'absolute',
+    //bottom: 20,
   },
   thirdText: {
     color: constants.commonColor,

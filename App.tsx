@@ -25,6 +25,7 @@ import profileReducer from './src/store/reducers/user/profile';
 import ordersReducer from './src/store/reducers/orders';
 import currentJobReducer from './src/store/reducers/currentJob';
 import locationReducer from './src/store/reducers/location';
+import appSettingsReducer from './src/store/reducers/app-settings';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyA7pNSJGB6fqJ5Y8OngV0kav42wAkp_i3g',
@@ -52,6 +53,7 @@ const rootReducer = combineReducers({
   currentJob: currentJobReducer,
   location: locationReducer,
   support: supportReducer,
+  appSettings: appSettingsReducer,
 });
 
 const store = createStore(

@@ -23,6 +23,7 @@ import PaymentOptions from './PaymentOptions';
 import AddCard from './AddCard';
 import LogOut from './LogOut';
 import Auth from './Auth';
+import ResetPassword from './ResetPassword';
 import constant from '../utils/constant';
 
 export type RootStackParamList = {
@@ -36,7 +37,7 @@ export type RootStackParamList = {
   Filter: undefined;
   SaveAddress: object;
   MenuList: undefined;
-  Cart: object;
+  //Cart: object;
   ApplyCoupon: undefined;
   RestaurantList: undefined;
   Chats: undefined;
@@ -49,6 +50,7 @@ export type RootStackParamList = {
   AddCard: undefined;
   LogOut: undefined;
   Auth: undefined;
+  ResetPassword: undefined;
   Cart: undefined;
 };
 
@@ -136,6 +138,15 @@ const AppStack = () => {
         component={Auth}
         options={{
           title: 'Sign In',
+          headerShown: true,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <RootStack.Screen
+        name="ResetPassword"
+        component={ResetPassword}
+        options={{
+          title: 'Reset Password',
           headerShown: true,
           headerTitleAlign: 'center',
         }}

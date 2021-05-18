@@ -20,7 +20,6 @@ import {firebaseAppDatabase} from '../../../App';
 import {
   UPDATE_CHAT,
   addChatAndFirstMessage,
-  UPDATE_CHAT_STATUS,
   RESET_CHAT_ID_BEING_PROCESSED,
 } from '../../store/actions/support';
 import * as profileActions from '../../store/actions/user/profile';
@@ -78,6 +77,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
   ]);
   const [sendImageLoading, setSendImageLoading] = useState(false);
   const [leftChatRoom, setLeftChatRoom] = useState(false);
+  const [chatStatus, setChatStatus] = useState('open');
 
   useEffect(() => {
     navigation.setOptions({
@@ -85,6 +85,18 @@ const SupportChatRoom: React.FC<Props> = (props) => {
       headerTitleAlign: 'center',
     });
   }, [chatId, navigation]);
+
+  /* useEffect(() => {
+    console.log('use effect to update message status');
+    if (messages.length > 0) {
+      console.log('msg', messages[messages.length - 1]);
+      if (messages[messages.length - 1].status) {
+        if (messages[messages.length - 1].status === 'finalized') {
+          setChatStatus('finalized');
+        }
+      }
+    }
+  }, [messages]); */
 
   const editPictureHandler = async (config: string) => {
     setSendImageLoading(true);
@@ -174,6 +186,14 @@ const SupportChatRoom: React.FC<Props> = (props) => {
       title: 'Choose Image',
     };
     const handleClicked = async (buttonIndexNumber: number) => {
+      if (chatStatus === 'finalized') {
+        Alert.alert(
+          "Can't Send",
+          'You can no longer send messages in this chat because the issue was finalized by admin.',
+          [{text: 'Okay'}],
+        );
+        return;
+      }
       switch (buttonIndexNumber) {
         case 0:
           editPictureHandler('launch-camera');
@@ -196,7 +216,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
 
   const handleSend = async (newMessage: any = []) => {
     //console.log(newMessage);
-    if (currentChat && currentChat.chatDetails.status === 'finalized') {
+    if (chatStatus === 'finalized') {
       Alert.alert(
         "Can't Send",
         'You can no longer send messages in this chat because the issue was finalized by admin.',
@@ -214,6 +234,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
         received: false,
         // Mark the message as pending with a clock loader
         pending: false,
+        status: 'open',
       };
       const messageIdRef = await firebaseAppDatabase
         .ref(`support_chats/${userId}/${chatId}/`)
@@ -249,7 +270,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
     return (
       <Send {...props}>
         <View style={styles.sendingContainer}>
-          {currentChat && currentChat.chatDetails.status === 'finalized' ? (
+          {chatStatus === 'finalized' ? (
             <MaterialIcons
               name="cancel"
               size={32}
@@ -323,7 +344,9 @@ const SupportChatRoom: React.FC<Props> = (props) => {
         text: 'New room created.',
         createdAt: new Date().toString(),
         system: true,
+        status: 'open',
       };
+      console.log('sym', systemMessage);
       try {
         await dispatch(addChatAndFirstMessage(userId, systemMessage));
         setMessages([systemMessage]);
@@ -342,9 +365,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
       //for(let i = chatKeysArr.length - 5; i <)
       //console.log('keys', chatKeysArr);
       for (let i = chatKeysArr.length - 1; i >= 0; i--) {
-        if (chatKeysArr[i] !== 'status') {
-          chatsArr.push(currentChat.chatDetails[chatKeysArr[i]]);
-        }
+        chatsArr.push(currentChat.chatDetails[chatKeysArr[i]]);
       }
       //console.log(chatsArr);
       setMessages((prevState: any) => GiftedChat.append(prevState, chatsArr));
@@ -386,24 +407,31 @@ const SupportChatRoom: React.FC<Props> = (props) => {
     );
     const handleMessageAdded = async (dataSnapShot: any) => {
       const messageId = dataSnapShot.key;
+      //console.log(messageId);
       const messageDetails = dataSnapShot.val();
-      if (messageDetails.user && messageDetails.user._id !== userId) {
-        const messageIdsArr = Object.keys(currentChat.chatDetails);
-        if (!messageIdsArr.find((id) => id === messageId)) {
-          const newMessageDetails = {
-            ...messageDetails,
-            received: true,
-          };
-          await currentChatRef.update({[messageId]: newMessageDetails});
-          dispatch({
-            type: UPDATE_CHAT,
-            chatId: currentChat.id,
-            messageId: messageId,
-            value: {...newMessageDetails},
-          });
-          setMessages((prevState: any) =>
-            GiftedChat.append(prevState, newMessageDetails),
-          );
+      //console.log('msg', messageDetails);
+      if (messageDetails.user) {
+        if (messageDetails.user._id !== userId) {
+          const messageIdsArr = Object.keys(currentChat.chatDetails);
+          if (!messageIdsArr.find((id) => id === messageId)) {
+            const newMessageDetails = {
+              ...messageDetails,
+              received: true,
+            };
+            await currentChatRef.update({[messageId]: newMessageDetails});
+            dispatch({
+              type: UPDATE_CHAT,
+              chatId: currentChat.id,
+              messageId: messageId,
+              value: {...newMessageDetails},
+            });
+            setMessages((prevState: any) =>
+              GiftedChat.append(prevState, newMessageDetails),
+            );
+            if (messageDetails.status === 'finalized') {
+              setChatStatus('finalized');
+            }
+          }
         }
       }
     };
@@ -423,34 +451,40 @@ const SupportChatRoom: React.FC<Props> = (props) => {
     );
     const handleMessageUpdated = async (dataSnapShot: any) => {
       const messageId = dataSnapShot.key;
-      if (messageId === 'status') {
-        dispatch({
-          type: UPDATE_CHAT_STATUS,
-          chatId: currentChat.id,
-          value: dataSnapShot.val(),
-        });
-        return;
-      }
       const messageDetails = dataSnapShot.val();
-      if (messageDetails.user && messageDetails.user._id === userId) {
-        if (messageDetails.received === true) {
-          dispatch({
-            type: UPDATE_CHAT,
-            chatId: currentChat.id,
-            messageId: messageId,
-            value: {...messageDetails, received: true},
-          });
-          //console.log('mgs', messages);
-          const indexOfMessageToUpdate = messages.findIndex((message: any) => {
-            //console.log(typeof message._id, message._id);
-            //console.log(typeof messageDetails._id, messageDetails._id);
-            return message._id === messageDetails._id;
-          });
-          //console.log(indexOfMessageToUpdate, messageDetails);
-          const updatedMessages = [...messages];
-          //console.log('new', updatedMessages);
-          updatedMessages.splice(indexOfMessageToUpdate, 1, messageDetails);
-          setMessages(updatedMessages);
+      //console.log('msg', messageDetails);
+      if (messageDetails.user) {
+        if (messageDetails.user._id === userId) {
+          if (messageDetails.status === 'finalized') {
+            dispatch({
+              type: UPDATE_CHAT,
+              chatId: currentChat.id,
+              messageId: messageId,
+              value: {...messageDetails, status: 'finalized'},
+            });
+            setChatStatus('finalized');
+          }
+          if (messageDetails.received === true) {
+            dispatch({
+              type: UPDATE_CHAT,
+              chatId: currentChat.id,
+              messageId: messageId,
+              value: {...messageDetails, received: true},
+            });
+            //console.log('mgs', messages);
+            const indexOfMessageToUpdate = messages.findIndex(
+              (message: any) => {
+                //console.log(typeof message._id, message._id);
+                //console.log(typeof messageDetails._id, messageDetails._id);
+                return message._id === messageDetails._id;
+              },
+            );
+            //console.log(indexOfMessageToUpdate, messageDetails);
+            const updatedMessages = [...messages];
+            //console.log('new', updatedMessages);
+            updatedMessages.splice(indexOfMessageToUpdate, 1, messageDetails);
+            setMessages(updatedMessages);
+          }
         }
       }
     };
@@ -497,7 +531,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
         renderSystemMessage={renderSystemMessage}
         renderActions={renderActions}
         placeholder={
-          currentChat && currentChat.chatDetails.status === 'finalized'
+          chatStatus === 'finalized'
             ? 'You can no longer send messages.'
             : 'Type a message...'
         }

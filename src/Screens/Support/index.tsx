@@ -125,7 +125,7 @@ const Support: React.FC<Props> = (props) => {
               //console.log('it', item);
               const messagesIdArr = Object.keys(item.chatDetails);
               //console.log(timeStampArr);
-              const messageId = messagesIdArr[messagesIdArr.length - 2];
+              const messageId = messagesIdArr[messagesIdArr.length - 1];
               //console.log('ts', chatTimeStamp);
 
               const messageDetails = item.chatDetails[messageId];

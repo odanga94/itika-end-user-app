@@ -155,9 +155,11 @@ const ListItemsScreen: React.FC<Props> = (props) => {
           </ListItem>
         ))}
       </ScrollView>
-      <Button style={styles.button} onPress={() => submitHandler()}>
-        <Text style={styles.thirdText}>Save Item</Text>
-      </Button>
+      <View style={{marginVertical: 10, backgroundColor: '#f3f3f3'}}>
+        <Button style={styles.button} onPress={() => submitHandler()}>
+          <Text style={styles.thirdText}>Save Item</Text>
+        </Button>
+      </View>
     </View>
   );
 };
