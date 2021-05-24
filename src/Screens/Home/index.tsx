@@ -13,6 +13,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import Modal from 'react-native-modal';
 import {useSelector, useDispatch} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import database from '@react-native-firebase/database';
 
 import {getGpsLoc} from '../../utils';
 import FlowCard from '../../Components/FlowCard';
@@ -24,7 +25,6 @@ import constant from '../../utils/constant';
 import SearchLocation from '../../Components/SearchLocation';
 import styles from './styles';
 import Spinner from '../../Components/UI/Spinner';
-import {firebaseAppDatabase} from '../../../App';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
@@ -98,7 +98,7 @@ const Home: React.FC<Props> = (props) => {
 
   const checkIfCurrentJob = useCallback(async () => {
     if (userId) {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`user_profiles/${userId}/currentJobOrderId`)
         .once('value');
       const resData = dataSnapshot.val();
@@ -121,7 +121,7 @@ const Home: React.FC<Props> = (props) => {
 
   const fetchCurrentJobDetails = useCallback(async () => {
     try {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`orders/${userId}/${currentJobOrderId}`)
         .once('value');
       const resData = dataSnapshot.val();
@@ -186,7 +186,7 @@ const Home: React.FC<Props> = (props) => {
   //console.log(route);
 
   useEffect(() => {
-    const currentJobRef = firebaseAppDatabase.ref(
+    const currentJobRef = database().ref(
       `orders/${userId}/${currentJobOrderId}`,
     );
     const onChildChanged = async (dataSnapShot: any) => {
@@ -264,7 +264,7 @@ const Home: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const fetchRiderDetails = async () => {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`riders/${currentOrder.orderDetails.riderId}`)
         .once('value');
       const riderDetails = dataSnapshot.val();

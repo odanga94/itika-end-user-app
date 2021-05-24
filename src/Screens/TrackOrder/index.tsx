@@ -16,15 +16,15 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import database from '@react-native-firebase/database';
 
-import {firebaseAppDatabase} from '../../../App';
 import {HomeStackParamList} from '../TabNavigation';
 import constant from '../../utils/constant';
 import mapStyle from '../../utils/customMap';
 import {getEstimatedDistanceAndTime} from '../../utils/index';
 import ENV from '../../../config';
 import styles from './styles';
-import {UPDATE_ORDER, cancelOrder} from '../../store/actions/orders';
+import {UPDATE_ORDER} from '../../store/actions/orders';
 import Button from '../../Components/Button';
 import Spinner from '../../Components/UI/Spinner';
 
@@ -134,7 +134,7 @@ const TrackOrder: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    const currentJobRef = firebaseAppDatabase.ref(
+    const currentJobRef = database().ref(
       `orders/${userId}/${currentJobOrderId}`,
     );
     const onChildChanged = async (dataSnapShot: any) => {
@@ -234,7 +234,7 @@ const TrackOrder: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const fetchRiderDetails = async () => {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`riders/${currentOrder.orderDetails.riderId}`)
         .once('value');
       const riderDetails = dataSnapshot.val();

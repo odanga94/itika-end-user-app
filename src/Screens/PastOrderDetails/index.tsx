@@ -1,16 +1,13 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {SafeAreaView} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {OrdersStackParamList} from '../TabNavigation';
 
-import {firebaseAppDatabase} from '../../../App';
+import {OrdersStackParamList} from '../TabNavigation';
 import OrderSummary from '../../Components/OrderSummary';
 
 import Order from '../../models/order';
 import styles from './styles';
-
-import * as orderActions from '../../store/actions/orders';
 
 interface Props {
   navigation: StackNavigationProp<OrdersStackParamList>;
@@ -19,7 +16,6 @@ interface Props {
 
 const OrderDetailScreen: React.FC<Props> = (props) => {
   const {route} = props;
-  const dispatch = useDispatch();
 
   const orderId = route.params.orderId;
   const selectedOrder = useSelector((state: any) =>

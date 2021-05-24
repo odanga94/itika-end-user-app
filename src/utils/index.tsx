@@ -1,9 +1,9 @@
 import * as Location from 'expo-location';
 import * as ImgPicker from 'expo-image-picker';
 import {Alert} from 'react-native';
+import storage from '@react-native-firebase/storage';
 
 import config from '../../config';
-import {firebaseAppStorage} from '../../App';
 
 export const checkValidity = (
   value: any,
@@ -127,7 +127,7 @@ export const uploadImage = async (
     //console.log(imageUri);
     const response = await fetch(imageUri);
     const blob = await response.blob();
-    const imageRef = firebaseAppStorage.ref(firebaseLocation);
+    const imageRef = storage().ref(firebaseLocation);
     await imageRef.put(blob);
     const downloadUrl = await imageRef.getDownloadURL();
     return downloadUrl;

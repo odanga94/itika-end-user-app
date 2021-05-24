@@ -52,6 +52,8 @@ const Orders: React.FC<Props> = (props) => {
     setIsLoading(false);
   }, [dispatch, orders, userId]);
 
+  console.log('ld', isLoading);
+
   useEffect(() => {
     loadOrders();
   }, [loadOrders]);

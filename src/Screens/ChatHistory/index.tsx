@@ -12,7 +12,6 @@ import {useSelector, useDispatch} from 'react-redux';
 //import {ListItem} from 'native-base';
 import {StackNavigationProp} from '@react-navigation/stack';
 
-//import {firebaseAppDatabase} from '../../../App';
 import {RootStackParamList} from '../AppNavigator';
 import Spinner from '../../Components/UI/Spinner';
 import Button from '../../Components/Button';

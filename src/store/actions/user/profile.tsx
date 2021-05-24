@@ -1,8 +1,6 @@
-import {
-  firebaseAppDatabase,
-  firebaseAppAuth,
-  firebaseAppStorage,
-} from '../../../../App';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 import {uploadImage, getImageExtension} from '../../../utils';
 
@@ -17,18 +15,20 @@ export const RESET_PROFILE = 'RESET_PROFILE';
 export const fetchProfile = (uid: string) => {
   return async (dispatch: any) => {
     try {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`user_profiles/${uid}`)
         .once('value');
       const profileData = dataSnapshot.val();
-      const userEmail = firebaseAppAuth.currentUser?.email;
-      const userPhone = firebaseAppAuth.currentUser?.phoneNumber;
-      profileData.email = userEmail;
-      profileData.phone = userPhone;
-      dispatch({
-        type: FETCH_PROFILE,
-        profileData,
-      });
+      if (profileData) {
+        const userEmail = auth().currentUser?.email;
+        const userPhone = auth().currentUser?.phoneNumber;
+        profileData.email = userEmail;
+        profileData.phone = userPhone;
+        dispatch({
+          type: FETCH_PROFILE,
+          profileData,
+        });
+      }
       return profileData;
     } catch (err) {
       throw new Error(err);
@@ -43,20 +43,20 @@ export const createProfile = (
     lastName: string;
     email: string;
     password: string;
-    phone: string;
+    phone: any;
   },
 ) => {
   return async (dispatch: any) => {
     try {
       const date = new Date().toString();
-      const userProfileRef = firebaseAppDatabase.ref(`user_profiles/${uid}`);
+      const userProfileRef = database().ref(`user_profiles/${uid}`);
       await userProfileRef.update({
         firstName: userData.firstName,
         lastName: userData.lastName,
         createdAt: date,
       });
-      await firebaseAppAuth.currentUser?.updateEmail(userData.email);
-      await firebaseAppAuth.currentUser?.updatePassword(userData.password);
+      await auth().currentUser?.updateEmail(userData.email);
+      await auth().currentUser?.updatePassword(userData.password);
       dispatch({
         type: CREATE_PROFILE,
         userData,
@@ -80,13 +80,11 @@ export const editProfile = (
 ) => {
   return async (dispatch: any) => {
     try {
-      const userProfileRef = firebaseAppDatabase.ref(`user_profiles/${uid}`);
+      const userProfileRef = database().ref(`user_profiles/${uid}`);
       await userProfileRef.update({
         firstName: userData.firstName,
         lastName: userData.lastName,
       });
-      /* await firebaseAppAuth.currentUser?.updateEmail(userData.email);
-      await firebaseAppAuth.currentUser?.updatePassword(userData.password); */
       dispatch({
         type: EDIT_PROFILE,
         userData,
@@ -123,10 +121,8 @@ export const deleteProfilePic = (uid: string, imageUri: string) => {
   return async (dispatch: any) => {
     try {
       const imgExt = getFirebaseImageExtension(imageUri);
-      const imageRef = firebaseAppStorage.ref(
-        `users/${uid}/images/profilePic${imgExt}`,
-      );
-      const userProfileRef = firebaseAppDatabase.ref(`user_profiles/${uid}`);
+      const imageRef = storage().ref(`users/${uid}/images/profilePic${imgExt}`);
+      const userProfileRef = database().ref(`user_profiles/${uid}`);
       await imageRef.delete();
       await userProfileRef.update({profilePic: ''});
       dispatch({

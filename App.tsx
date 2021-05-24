@@ -14,8 +14,6 @@ import {combineReducers, createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
-import firebase from 'firebase/app';
-//import 'firebase/auth';
 import {Root} from 'native-base';
 
 import Stack from './src/Screens';
@@ -27,7 +25,7 @@ import currentJobReducer from './src/store/reducers/currentJob';
 import locationReducer from './src/store/reducers/location';
 import appSettingsReducer from './src/store/reducers/app-settings';
 
-export const firebaseConfig = {
+/* export const firebaseConfig = {
   apiKey: 'AIzaSyA7pNSJGB6fqJ5Y8OngV0kav42wAkp_i3g',
   authDomain: 'itika-6fe70.firebaseapp.com',
   projectId: 'itika-6fe70',
@@ -40,11 +38,7 @@ export const firebaseConfig = {
 
 // if(!firebase.apps.length){
 const firebaseApp = firebase.initializeApp(firebaseConfig);
-// }
-
-export const firebaseAppAuth = firebaseApp.auth();
-export const firebaseAppDatabase = firebaseApp.database();
-export const firebaseAppStorage = firebaseApp.storage();
+// } */
 
 const rootReducer = combineReducers({
   auth: authReducer,

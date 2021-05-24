@@ -14,9 +14,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImgPicker from 'expo-image-picker';
 import {ActionSheet} from 'native-base';
+import database from '@react-native-firebase/database';
 
 import {HomeStackParamList} from '../TabNavigation';
-import {firebaseAppDatabase} from '../../../App';
 import {UPDATE_ORDER} from '../../store/actions/orders';
 import * as profileActions from '../../store/actions/user/profile';
 import Button from '../../Components/Button';
@@ -126,7 +126,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
           image.uri,
           `users/${userId}/orders/${currentOrder.id}/${Date.now()}${imgExt}`,
         );
-        const chatIdRef = await firebaseAppDatabase
+        const chatIdRef = await database()
           .ref(`orders/${userId}/${currentOrder.id}/chat`)
           .push({...message, image: imgUrl});
         dispatch({
@@ -215,7 +215,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
         // Mark the message as pending with a clock loader
         pending: false,
       };
-      const chatIdRef = await firebaseAppDatabase
+      const chatIdRef = await database()
         .ref(`orders/${userId}/${currentJobOrderId}/chat`)
         .push({...newMessageObj});
       dispatch({
@@ -326,7 +326,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
         system: true,
       };
       try {
-        const chatIdRef = await firebaseAppDatabase
+        const chatIdRef = await database()
           .ref(`orders/${userId}/${currentJobOrderId}/chat`)
           .push({...systemMessage});
         dispatch({
@@ -377,7 +377,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
   }, [dispatch, userId, userProfile]);
 
   useEffect(() => {
-    const currentChatRef = firebaseAppDatabase.ref(
+    const currentChatRef = database().ref(
       `orders/${userId}/${currentJobOrderId}/chat`,
     );
     const handleMessageAdded = async (dataSnapShot: any) => {
@@ -417,7 +417,7 @@ const AddChatRoom: React.FC<Props> = (props) => {
   }, [currentOrder, currentJobOrderId, userId, dispatch]);
 
   useEffect(() => {
-    const currentChatRef = firebaseAppDatabase.ref(
+    const currentChatRef = database().ref(
       `orders/${userId}/${currentJobOrderId}/chat`,
     );
     const handleMessageUpdated = async (dataSnapShot: any) => {

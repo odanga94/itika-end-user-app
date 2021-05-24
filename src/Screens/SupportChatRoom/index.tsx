@@ -14,9 +14,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImgPicker from 'expo-image-picker';
 import {ActionSheet} from 'native-base';
+import database from '@react-native-firebase/database';
 
 import {HomeStackParamList} from '../TabNavigation';
-import {firebaseAppDatabase} from '../../../App';
 import {
   UPDATE_CHAT,
   addChatAndFirstMessage,
@@ -149,7 +149,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
           image.uri,
           `users/${userId}/chats/${chatId}/${Date.now()}${imgExt}`,
         );
-        const messageIdRef = await firebaseAppDatabase
+        const messageIdRef = await database()
           .ref(`support_chats/${userId}/${chatId}`)
           .push({...message, image: imgUrl});
         dispatch({
@@ -236,7 +236,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
         pending: false,
         status: 'open',
       };
-      const messageIdRef = await firebaseAppDatabase
+      const messageIdRef = await database()
         .ref(`support_chats/${userId}/${chatId}/`)
         .push({...newMessageObj});
       dispatch({
@@ -406,9 +406,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
   }, [dispatch, userId, userProfile]);
 
   useEffect(() => {
-    const currentChatRef = firebaseAppDatabase.ref(
-      `support_chats/${userId}/${chatId}`,
-    );
+    const currentChatRef = database().ref(`support_chats/${userId}/${chatId}`);
     const handleMessageAdded = async (dataSnapShot: any) => {
       const messageId = dataSnapShot.key;
       //console.log(messageId);
@@ -450,9 +448,7 @@ const SupportChatRoom: React.FC<Props> = (props) => {
   }, [currentChat, chatId, userId, dispatch]);
 
   useEffect(() => {
-    const currentChatRef = firebaseAppDatabase.ref(
-      `support_chats/${userId}/${chatId}`,
-    );
+    const currentChatRef = database().ref(`support_chats/${userId}/${chatId}`);
     const handleMessageUpdated = async (dataSnapShot: any) => {
       const messageId = dataSnapShot.key;
       const messageDetails = dataSnapShot.val();

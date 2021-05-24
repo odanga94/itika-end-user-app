@@ -1,4 +1,4 @@
-import {firebaseAppAuth} from '../../../../App';
+import auth from '@react-native-firebase/auth';
 
 /* import { RESET_ORDERS } from '../orders';*/
 import {RESET_PROFILE} from './profile';
@@ -49,10 +49,7 @@ export const authenticate = (
 export const logIn = (email: string, password: string) => {
   return async (dispatch: any) => {
     try {
-      const response = await firebaseAppAuth.signInWithEmailAndPassword(
-        email,
-        password,
-      );
+      const response = await auth().signInWithEmailAndPassword(email, password);
       //console.log('res', response);
       if (response.user) {
         dispatch(authenticate(response.user.uid, false, false));
@@ -66,7 +63,7 @@ export const logIn = (email: string, password: string) => {
 export const logOut = () => {
   return async (dispatch: any) => {
     try {
-      await firebaseAppAuth.signOut();
+      await auth().signOut();
       dispatch({
         type: LOG_OUT,
       });

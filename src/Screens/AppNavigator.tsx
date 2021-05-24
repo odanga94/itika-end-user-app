@@ -3,6 +3,7 @@ import {Platform} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Splash from './Splash';
+import UpdateApp from './UpdateApp';
 import Verify from './Verify';
 import Login from './Register';
 import OtpVerify from './OtpVerify';
@@ -28,9 +29,10 @@ import constant from '../utils/constant';
 
 export type RootStackParamList = {
   Splash: undefined;
+  UpdateApp: undefined;
   Verify: undefined;
   Login: undefined;
-  OtpVerify: undefined;
+  OtpVerify: object | undefined;
   SignUp: undefined;
   Tabs: undefined;
   Search: undefined;
@@ -111,6 +113,11 @@ const AppStack = () => {
       <RootStack.Screen
         name="Splash"
         component={Splash}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name="UpdateApp"
+        component={UpdateApp}
         options={{headerShown: false}}
       />
       <RootStack.Screen

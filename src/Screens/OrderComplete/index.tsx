@@ -15,9 +15,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector /*useDispatch*/} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import database from '@react-native-firebase/database';
 
 import {HomeStackParamList} from '../TabNavigation';
-import {firebaseAppDatabase} from '../../../App';
 import Spinner from '../../Components/UI/Spinner';
 import Button from '../../Components/Button';
 import constant from '../../utils/constant';
@@ -68,7 +68,7 @@ const OrderComplete: React.FC<Props> = (props) => {
     setSubmitLoading(true);
     try {
       let firstRating = 0;
-      await firebaseAppDatabase
+      await database()
         .ref(`riders/${currentOrder.orderDetails.riderId}/ratings`)
         .transaction((currentData: any) => {
           const rating = {
@@ -86,11 +86,11 @@ const OrderComplete: React.FC<Props> = (props) => {
           }
         });
       if (firstRating) {
-        await firebaseAppDatabase
+        await database()
           .ref(`riders/${currentOrder.orderDetails.riderId}`)
           .update({averageRating: firstRating});
       }
-      await firebaseAppDatabase
+      await database()
         .ref(`user_profiles/${userId}/currentJobOrderId`)
         .remove();
       //navigation.setParams({fromOrderComplete: true});
@@ -107,7 +107,7 @@ const OrderComplete: React.FC<Props> = (props) => {
   const skipHandler = async () => {
     setSubmitLoading(true);
     try {
-      await firebaseAppDatabase
+      await database()
         .ref(`user_profiles/${userId}/currentJobOrderId`)
         .remove();
       navigation.reset({

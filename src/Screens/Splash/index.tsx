@@ -11,14 +11,17 @@ import {
   Alert,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
+import VersionInfo from 'react-native-version-info';
+import database from '@react-native-firebase/database';
 
 import * as authActions from '../../store/actions/user/auth';
+import {fetchProfile} from '../../store/actions/user/profile';
 import Button from '../../Components/Button';
 import styles from './styles';
 import {RootStackParamList} from '../AppNavigator';
 import constant from '../../utils/constant';
-import {firebaseAppAuth} from '../../../App';
 
 const splash = require('../../../assets/launch_screen.png');
 const icon = require('../../../assets/icon-fd.png');
@@ -29,24 +32,45 @@ interface Props {
 
 const Splash: React.FC<Props> = (props) => {
   const {navigation} = props;
-  /*   const isReduxWorking = useSelector(state => state.isReduxWorking);
 
-  console.log('redux is working?', isReduxWorking); */
+  const userProfile = useSelector((state: any) => state.profile);
+
   const dispatch = useDispatch();
 
   const [isLoggedInLoading, setIsLoggedInLoading] = useState(true);
+  const [isLatestLoading, setIsLatestLoading] = useState(true);
+  const [isLatest, setIsLatest] = useState(true);
+
+  useEffect(() => {
+    const checkLatestVersion = async () => {
+      setIsLatestLoading(true);
+      try {
+        const dataSnapShot = await database().ref('app_settings').once('value');
+        const latestVersionCode = dataSnapShot.val().versionCode;
+        if (latestVersionCode !== VersionInfo.buildVersion) {
+          setIsLatest(false);
+          //console.log('take user to update app screen');
+        } else {
+          setIsLatest(true);
+        }
+      } catch (err) {
+        Alert.alert('Something went Wrong 😞', err.message, [{text: 'Okay'}]);
+        setIsLatest(false);
+      }
+      setIsLatestLoading(false);
+    };
+
+    checkLatestVersion();
+  }, []);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        await firebaseAppAuth.onAuthStateChanged((user) => {
+        await auth().onAuthStateChanged(async (user) => {
           if (user) {
             //console.log(user, 'Auth state is preserved in firebase');
             dispatch(authActions.authenticate(user.uid, false, false));
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Tabs'}],
-            });
+            await dispatch(fetchProfile(user.uid));
           } else {
             setIsLoggedInLoading(false);
           }
@@ -60,7 +84,28 @@ const Splash: React.FC<Props> = (props) => {
     checkAuthStatus();
   }, [dispatch, navigation]);
 
-  if (isLoggedInLoading) {
+  useEffect(() => {
+    if (userProfile.firstName && !isLatestLoading && isLatest) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Tabs'}],
+      });
+    } else if (!isLatestLoading && !isLatest) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'UpdateApp'}],
+      });
+    }
+    setIsLoggedInLoading(false);
+    /* else {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'SignUp'}],
+      });
+    } */
+  }, [userProfile, navigation, isLatestLoading, isLatest]);
+
+  if (isLoggedInLoading || isLatestLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <Image source={splash} style={styles.image} />

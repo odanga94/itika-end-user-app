@@ -1,17 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, Fragment} from 'react';
+import React, {useState} from 'react';
 import {
   KeyboardAvoidingView,
   ScrollView,
   View,
   Text,
   Image,
-  Dimensions,
   Platform,
   Alert,
 } from 'react-native';
 //import * as facebook from 'expo-facebook';
-//import * as firebase from 'firebase';
 //import * as Google from 'expo-google-app-auth';
 //import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import {useDispatch} from 'react-redux';

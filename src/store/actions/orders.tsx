@@ -1,4 +1,4 @@
-import {firebaseAppDatabase} from '../../../App';
+import database from '@react-native-firebase/database';
 
 import Order from '../../models/order';
 import {uploadImage} from '../../utils';
@@ -15,9 +15,7 @@ export const SET_ORDER_ID_BEING_PROCESSED = 'SET_ORDER_ID_BEING_PROCESSED';
 export const RESET_ORDER_ID_BEING_PROCESSED = 'RESET_ORDER_ID_BEING_PROCESSED';
 
 const getRiderDetails = async (riderId: string) => {
-  const dataSnapshot = await firebaseAppDatabase
-    .ref(`riders/${riderId}`)
-    .once('value');
+  const dataSnapshot = await database().ref(`riders/${riderId}`).once('value');
   const resData = dataSnapshot.val();
   //console.log(resData);
   return resData;
@@ -27,15 +25,15 @@ export const fetchOrders = (userId: string) => {
   return async (dispatch: any) => {
     //const fetchedOrders = [];
     try {
-      const dataSnapshot = await firebaseAppDatabase
+      const dataSnapshot = await database()
         .ref(`orders/${userId}`)
         .once('value');
       const resData = dataSnapshot.val();
       if (!resData) {
-        dispatch({
+        /* dispatch({
           type: SET_ORDERS,
           orders: [],
-        });
+        }); */
         return;
       }
 
@@ -100,9 +98,7 @@ export const addOrder = (userId: string, orderDetails: any) => {
         ...orderDetails,
         packagePhotoUri: null,
       };
-      const orderRef = await firebaseAppDatabase
-        .ref(`orders/${userId}`)
-        .push(details);
+      const orderRef = await database().ref(`orders/${userId}`).push(details);
       const orderRefArray = orderRef.toString().split('/');
       orderId = orderRefArray[orderRefArray.length - 1];
       //console.log('[ORDER_ID]', orderId);
@@ -128,7 +124,7 @@ export const addOrder = (userId: string, orderDetails: any) => {
           orderDetails.packagePhotoUri,
           `users/${userId}/orders/${orderId}/packageImage.jpg`,
         );
-        firebaseAppDatabase
+        database()
           .ref(`orders/${userId}/${orderId}`)
           .update({packageImage: firebaseImageUri});
         dispatch({
@@ -147,13 +143,13 @@ export const addOrder = (userId: string, orderDetails: any) => {
 export const cancelOrder = (orderId: string, clientId: string) => {
   return async (dispatch: any) => {
     try {
-      await firebaseAppDatabase
+      await database()
         .ref(`pending_jobs/${clientId}/currentJobOrderId`)
         .remove();
-      await firebaseAppDatabase
+      await database()
         .ref(`user_profiles/${clientId}/currentJobOrderId`)
         .remove();
-      await firebaseAppDatabase
+      await database()
         .ref(`orders/${clientId}/${orderId}`)
         .update({status: 'cancelled'});
       dispatch({

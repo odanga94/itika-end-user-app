@@ -1,4 +1,5 @@
-import {firebaseAppDatabase} from '../../../App';
+import database from '@react-native-firebase/database';
+
 import Chat from '../../models/chat';
 
 export const SET_CHATS = 'SET_CHATS';
@@ -11,7 +12,7 @@ export const RESET_CHAT_ID_BEING_PROCESSED = 'RESET_CHAT_ID_BEING_PROCESSED';
 export const fetchChats = (userId: string) => {
   return async (dispatch: any) => {
     try {
-      const dataSnapShot = await firebaseAppDatabase
+      const dataSnapShot = await database()
         .ref(`support_chats/${userId}`)
         .once('value');
       const chats = dataSnapShot.val();
@@ -37,7 +38,7 @@ export const fetchChats = (userId: string) => {
 export const addChatAndFirstMessage = (userId: string, chatDetails: any) => {
   return async (dispatch: any) => {
     try {
-      const newChatIdRef = await firebaseAppDatabase
+      const newChatIdRef = await database()
         .ref(`support_chats/${userId}/`)
         .push();
       const firstMessageIdRef = await newChatIdRef.push({

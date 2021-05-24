@@ -13,6 +13,7 @@ import {
 import Swiper from 'react-native-swiper';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 
 import Input from '../../Components/Input';
 import constant from '../../utils/constant';
@@ -22,7 +23,6 @@ import Spinner from '../../Components/UI/Spinner';
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
 import * as profileActions from '../../store/actions/user/profile';
-import {firebaseAppAuth} from '../../../App';
 
 const image = require('../../../assets/Artboard.png');
 
@@ -102,7 +102,7 @@ const SignUp: React.FC<Props> = (props) => {
     }
     setIsLoading(true);
     try {
-      const phone = firebaseAppAuth.currentUser?.phoneNumber;
+      const phone = auth().currentUser?.phoneNumber;
       const userData = {
         firstName: formState.inputValues.firstName,
         lastName: formState.inputValues.lastName,
@@ -121,7 +121,7 @@ const SignUp: React.FC<Props> = (props) => {
     setIsLoading(false);
   };
 
-  //console.log('user', firebaseAppAuth.currentUser);
+  //console.log('user', auth().currentUser);
   /* useEffect(() => {
     setFormIsValid(formState.formIsValid);
     setCredentials({...formState.inputValues});
@@ -235,7 +235,7 @@ const SignUp: React.FC<Props> = (props) => {
                       flex: 1,
                       alignSelf: 'center',
                     }}>
-                    <Spinner />
+                    <Spinner style={undefined} size={undefined} />
                   </View>
                 ) : (
                   <Button

@@ -1,12 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, Fragment, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   KeyboardAvoidingView,
   ScrollView,
   View,
   Text,
   Image,
-  Dimensions,
   Platform,
   Alert,
 } from 'react-native';
@@ -16,11 +15,10 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import Button from '../../Components/Button';
 import Spinner from '../../Components/UI/Spinner';
 import Input from '../../Components/Input';
-import {firebaseAppAuth} from '../../../App';
+import auth from '@react-native-firebase/auth';
 import {RootStackParamList} from '../AppNavigator';
 import styles from './styles';
 import constant from '../../utils/constant';
-import {checkValidity} from '../../utils/';
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -28,8 +26,6 @@ interface Props {
 
 const ResetPassword: React.FC<Props> = (props) => {
   const {navigation} = props;
-
-  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
@@ -45,7 +41,7 @@ const ResetPassword: React.FC<Props> = (props) => {
     //console.log(credentials);
     setIsLoading(true);
 
-    await firebaseAppAuth
+    await auth()
       .sendPasswordResetEmail(email)
       .then(() => {
         Alert.alert(
