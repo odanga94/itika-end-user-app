@@ -16,7 +16,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector /*useDispatch*/} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {RootStackParamList} from '../AppNavigator';
+import {HomeStackParamList} from '../TabNavigation';
 import {firebaseAppDatabase} from '../../../App';
 import Spinner from '../../Components/UI/Spinner';
 import Button from '../../Components/Button';
@@ -26,7 +26,7 @@ import styles from './styles';
 const {heightRatio, height} = constant.styleGuide;
 
 interface Props {
-  navigation: StackNavigationProp<RootStackParamList>;
+  navigation: StackNavigationProp<HomeStackParamList>;
 }
 
 const OrderComplete: React.FC<Props> = (props) => {
@@ -96,7 +96,7 @@ const OrderComplete: React.FC<Props> = (props) => {
       //navigation.setParams({fromOrderComplete: true});
       navigation.reset({
         index: 0,
-        routes: [{name: 'Home'}],
+        routes: [{name: 'HomeScreen', params: {fromComplete: true}}],
       });
     } catch (err) {
       Alert.alert('Something went wrong 😞', err.message, [{text: 'Okay'}]);
@@ -112,7 +112,7 @@ const OrderComplete: React.FC<Props> = (props) => {
         .remove();
       navigation.reset({
         index: 0,
-        routes: [{name: 'Home'}],
+        routes: [{name: 'HomeScreen', params: {fromComplete: true}}],
       });
     } catch (err) {
       Alert.alert('Something went wrong 😞', err.message, [{text: 'Okay'}]);

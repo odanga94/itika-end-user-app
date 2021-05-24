@@ -121,13 +121,10 @@ const TrackOrder: React.FC<Props> = (props) => {
         },
         {
           text: 'Yes',
-          onPress: async () => {
-            setCancelLoading(true);
-            await dispatch(cancelOrder(currentJobOrderId, userId));
-            setCancelLoading(false);
+          onPress: () => {
             navigation.reset({
               index: 0,
-              routes: [{name: 'HomeScreen'}],
+              routes: [{name: 'HomeScreen', params: {cancelJob: true}}],
             });
           },
           style: 'destructive',
@@ -474,14 +471,16 @@ const TrackOrder: React.FC<Props> = (props) => {
             )}
           </View>
         ) : null}
+        {currentOrder.orderDetails.status !== 'pending' ? (
+          <View style={styles.fifthView}>
+            {estimatedDistance ? (
+              <Text style={styles.secondText}>
+                {estimatedDistance} away | {estimeatedTime}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
 
-        <View style={styles.fifthView}>
-          {estimatedDistance ? (
-            <Text style={styles.secondText}>
-              {estimatedDistance} away | {estimeatedTime}
-            </Text>
-          ) : null}
-        </View>
         {currentOrder.orderDetails.riderName ? (
           <View
             style={{

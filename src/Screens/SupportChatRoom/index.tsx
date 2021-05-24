@@ -368,6 +368,10 @@ const SupportChatRoom: React.FC<Props> = (props) => {
         chatsArr.push(currentChat.chatDetails[chatKeysArr[i]]);
       }
       //console.log(chatsArr);
+      //console.log('last chat?', chatsArr[chatsArr.length - 1]);
+      if (chatsArr[0].status === 'finalized') {
+        setChatStatus('finalized');
+      }
       setMessages((prevState: any) => GiftedChat.append(prevState, chatsArr));
     }
   }, [dispatch, chatId, currentChat, userId]);

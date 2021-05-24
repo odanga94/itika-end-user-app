@@ -28,16 +28,18 @@ import {firebaseAppDatabase} from '../../../App';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
+import {toUpper} from 'lodash';
 
 /* const searchIcon = require('../../../assets/search.png');
 const filterIcon = require('../../../assets/filter.png'); */
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
+  route: any;
 }
 
 const Home: React.FC<Props> = (props) => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   const dispatch = useDispatch();
   /* const userProfile = useSelector((state: any) => state.profile);
   console.log(userProfile); */
@@ -60,6 +62,7 @@ const Home: React.FC<Props> = (props) => {
     isFetchingCurrentJobDetails,
     setIsFetchingCurrentJobDetails,
   ] = useState<boolean>(true);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -100,6 +103,7 @@ const Home: React.FC<Props> = (props) => {
         .once('value');
       const resData = dataSnapshot.val();
       //console.log('orderId', resData);
+      // if package is delivered go to Order Complete
       if (resData) {
         dispatch({
           type: currentJobActions.SET_CURRENT_JOB,
@@ -130,22 +134,57 @@ const Home: React.FC<Props> = (props) => {
   }, [currentJobOrderId, dispatch, userId]);
 
   useEffect(() => {
+    if (route.params && route.params.cancelJob) {
+      return;
+    }
     checkIfCurrentJob();
-  }, [checkIfCurrentJob]);
+  }, [route, checkIfCurrentJob]);
+
+  //console.log(route);
+  //console.log('cl', cancelLoading);
 
   useEffect(() => {
+    const cancelJobHandler = async () => {
+      setCancelLoading(true);
+      try {
+        await dispatch(orderActions.cancelOrder(currentJobOrderId, userId));
+      } catch (err) {
+        Alert.alert(
+          'Something went wrong 😞',
+          'We were unable to cancel your order at this time. Please try again later.',
+          [{text: 'Okay'}],
+        );
+      }
+      setCancelLoading(false);
+      navigation.setParams({cancelJob: false});
+    };
+
     if (currentJobOrderId && !currentOrder /*&& !fromCheckout*/) {
       fetchCurrentJobDetails();
     } else if (currentJobOrderId && currentOrder) {
-      //from chec
       setIsFetchingCurrentJobDetails(false);
+      if (currentOrder.orderDetails.status === 'delivered') {
+        if (route.params && route.params.fromComplete) {
+          return;
+        }
+        navigation.navigate('OrderComplete', {});
+      }
+      if (route.params && route.params.cancelJob) {
+        cancelJobHandler();
+      }
     }
   }, [
     /*fromCheckout,*/ currentJobOrderId,
     currentOrder,
     fetchCurrentJobDetails,
+    navigation,
+    route,
+    dispatch,
+    userId,
   ]);
   //console.log(currentOrder);
+  //console.log(route);
+
   useEffect(() => {
     const currentJobRef = firebaseAppDatabase.ref(
       `orders/${userId}/${currentJobOrderId}`,
@@ -160,9 +199,9 @@ const Home: React.FC<Props> = (props) => {
           valueToUpdate: 'status',
           value: dataSnapShot.val(),
         });
-        if (dataSnapShot.val() === 'delivered') {
+        /* if (dataSnapShot.val() === 'delivered') {
           navigation.navigate('OrderComplete', {});
-        }
+        } */
       } else if (dataSnapShot.key === 'riderLocation') {
         dispatch({
           type: orderActions.UPDATE_ORDER,
@@ -307,7 +346,7 @@ const Home: React.FC<Props> = (props) => {
           )}
         </View>
         <View style={styles.fifthView}>
-          {isFetchingCurrentJobDetails ? (
+          {isFetchingCurrentJobDetails || cancelLoading ? (
             <Spinner size="large" style="undefined" />
           ) : currentOrder ? (
             <View style={{flex: 1, justifyContent: 'center'}}>
