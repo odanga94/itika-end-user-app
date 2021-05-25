@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "201382863145-ilqh5puelb2sa8igpk8saa33ih0f8qm8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itika",
+            "certificate_hash": "17cf6d0302a922058d248250a6cdb034d16b1bd9"
+          }
+        },
+        {
           "client_id": "201382863145-9bedi7ojb4ku5j4v4bla47v98g2f3hsl.apps.googleusercontent.com",
           "client_type": 3
         }

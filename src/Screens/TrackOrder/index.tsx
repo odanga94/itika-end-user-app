@@ -190,6 +190,28 @@ const TrackOrder: React.FC<Props> = (props) => {
           valueToUpdate: 'riderLocation',
           value: dataSnapShot.val(),
         });
+      } else if (dataSnapShot.key === 'status') {
+        if (dataSnapShot.val() === 'cancelled') {
+          cancelOrderHandler();
+          return;
+        }
+        dispatch({
+          type: UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'status',
+          value: dataSnapShot.val(),
+        });
+        if (dataSnapShot.val() === 'pick_up') {
+          setInitRiderLocationPickUp(currentOrder.orderDetails.riderLocation);
+          setInitRiderLocationDropOff(undefined);
+        }
+        if (dataSnapShot.val() === 'drop_off') {
+          setInitRiderLocationDropOff(currentOrder.orderDetails.riderLocation);
+          setInitRiderLocationPickUp(undefined);
+        }
+        if (dataSnapShot.val() === 'delivered') {
+          navigation.navigate('OrderComplete', {});
+        }
       } else if (dataSnapShot.key === 'pickUpDate') {
         dispatch({
           type: UPDATE_ORDER,

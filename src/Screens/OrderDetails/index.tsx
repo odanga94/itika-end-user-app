@@ -114,6 +114,7 @@ const OrderDetails: React.FC<Props> = (props) => {
     };
 
     if (pickedLocation && pickedDropOffLocation && baseFee && pricePerKm) {
+      //console.log('loc', pickedLocation, pickedDropOffLocation)
       calculatePriceEstimate();
     }
   }, [pickedLocation, pickedDropOffLocation, baseFee, pricePerKm]);

@@ -28,7 +28,6 @@ import Spinner from '../../Components/UI/Spinner';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
-import {toUpper} from 'lodash';
 
 /* const searchIcon = require('../../../assets/search.png');
 const filterIcon = require('../../../assets/filter.png'); */
@@ -143,22 +142,22 @@ const Home: React.FC<Props> = (props) => {
   //console.log(route);
   //console.log('cl', cancelLoading);
 
-  useEffect(() => {
-    const cancelJobHandler = async () => {
-      setCancelLoading(true);
-      try {
-        await dispatch(orderActions.cancelOrder(currentJobOrderId, userId));
-      } catch (err) {
-        Alert.alert(
-          'Something went wrong 😞',
-          'We were unable to cancel your order at this time. Please try again later.',
-          [{text: 'Okay'}],
-        );
-      }
-      setCancelLoading(false);
-      navigation.setParams({cancelJob: false});
-    };
+  const cancelJobHandler = async () => {
+    setCancelLoading(true);
+    try {
+      await dispatch(orderActions.cancelOrder(currentJobOrderId, userId));
+    } catch (err) {
+      Alert.alert(
+        'Something went wrong 😞',
+        'We were unable to cancel your order at this time. Please try again later.',
+        [{text: 'Okay'}],
+      );
+    }
+    setCancelLoading(false);
+    navigation.setParams({cancelJob: false});
+  };
 
+  useEffect(() => {
     if (currentJobOrderId && !currentOrder /*&& !fromCheckout*/) {
       fetchCurrentJobDetails();
     } else if (currentJobOrderId && currentOrder) {
@@ -189,8 +188,9 @@ const Home: React.FC<Props> = (props) => {
     const currentJobRef = database().ref(
       `orders/${userId}/${currentJobOrderId}`,
     );
+
     const onChildChanged = async (dataSnapShot: any) => {
-      //console.log('key', dataSnapShot.key);
+      console.log('key', dataSnapShot.key);
       if (dataSnapShot.key === 'status') {
         //console.log(dataSnapShot.val());
         dispatch({
@@ -199,9 +199,13 @@ const Home: React.FC<Props> = (props) => {
           valueToUpdate: 'status',
           value: dataSnapShot.val(),
         });
-        /* if (dataSnapShot.val() === 'delivered') {
-          navigation.navigate('OrderComplete', {});
-        } */
+        if (dataSnapShot.val() === 'cancelled') {
+          //job cancelled while in home
+          if (route.params && route.params.cancelJob) {
+            return;
+          }
+          cancelJobHandler();
+        }
       } else if (dataSnapShot.key === 'riderLocation') {
         dispatch({
           type: orderActions.UPDATE_ORDER,
@@ -211,6 +215,7 @@ const Home: React.FC<Props> = (props) => {
         });
       }
     };
+
     const handleChildAdded = async (dataSnapShot: any) => {
       //console.log('key', dataSnapShot.key);
       if (dataSnapShot.key === 'riderId') {
@@ -232,6 +237,13 @@ const Home: React.FC<Props> = (props) => {
           type: orderActions.UPDATE_ORDER,
           orderId: currentJobOrderId,
           valueToUpdate: 'pickUpDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'arrivedAtRecipientDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentJobOrderId,
+          valueToUpdate: 'arrivedAtRecipientDate',
           value: dataSnapShot.val(),
         });
       } else if (dataSnapShot.key === 'deliveredDate') {
