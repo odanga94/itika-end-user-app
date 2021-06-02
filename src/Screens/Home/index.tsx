@@ -1,13 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, Fragment} from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   StatusBar,
-  ScrollView,
   TouchableOpacity,
   Alert,
+  Image,
+  FlatList,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import Modal from 'react-native-modal';
@@ -29,8 +30,8 @@ import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
 
-/* const searchIcon = require('../../../assets/search.png');
-const filterIcon = require('../../../assets/filter.png'); */
+const pkgImage = require('../../../assets/package-yellow.png');
+const errandImage = require('../../../assets/errand.png');
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
@@ -44,13 +45,12 @@ const Home: React.FC<Props> = (props) => {
   console.log(userProfile); */
 
   const userId = useSelector((state: any) => state.auth.userId);
-  const currentJobOrderId = useSelector(
-    (state: any) => state.currentJob.currentJobOrderId,
+  const currentJobsOrderIds = useSelector(
+    (state: any) => state.currentJob.currentJobs,
   );
   //console.log(currentJobOrderId);
-  const currentOrder = useSelector((state: any) =>
-    state.orders.orders.find((order: any) => order.id === currentJobOrderId),
-  );
+  const orders = useSelector((state: any) => state.orders.orders);
+
   const location = useSelector((state: any) => state.location);
 
   const [visible, setVisible] = useState<boolean>(false);
@@ -61,7 +61,9 @@ const Home: React.FC<Props> = (props) => {
     isFetchingCurrentJobDetails,
     setIsFetchingCurrentJobDetails,
   ] = useState<boolean>(true);
+  const [isCheckingCurrentJobs, setIsCheckingCurrentJobs] = useState(true);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [currentOrders, setCurrentOrders] = useState<any>([]);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -95,74 +97,71 @@ const Home: React.FC<Props> = (props) => {
     getLocation();
   }, [dispatch]);
 
-  const checkIfCurrentJob = useCallback(async () => {
+  const checkIfCurrentJobs = useCallback(async () => {
     if (userId) {
+      //console.log('checking...');
       const dataSnapshot = await database()
-        .ref(`user_profiles/${userId}/currentJobOrderId`)
+        .ref(`user_profiles/${userId}/processing_orders`)
         .once('value');
       const resData = dataSnapshot.val();
-      //console.log('orderId', resData);
+      console.log('res', resData);
       // if package is delivered go to Order Complete
       if (resData) {
-        dispatch({
-          type: currentJobActions.SET_CURRENT_JOB,
-          currentJobOrderId: resData,
-        });
+        for (let orderId in resData) {
+          //console.log(orderId)
+          dispatch({
+            type: currentJobActions.SET_CURRENT_JOB,
+            currentJobOrderId: orderId,
+          });
+        }
+        setIsCheckingCurrentJobs(false);
         return;
-      } else {
+      } /* else {
         dispatch({
           type: currentJobActions.DELETE_CURRENT_JOB,
         });
-      }
+      } */
+      setIsCheckingCurrentJobs(false);
       setIsFetchingCurrentJobDetails(false);
     }
   }, [userId, dispatch]);
 
-  const fetchCurrentJobDetails = useCallback(async () => {
+  const fetchCurrentJobsDetails = useCallback(async () => {
     try {
-      const dataSnapshot = await database()
-        .ref(`orders/${userId}/${currentJobOrderId}`)
-        .once('value');
-      const resData = dataSnapshot.val();
-      dispatch(orderActions.dispatchNewOrder(currentJobOrderId, resData));
+      for (let i = 0; i < currentJobsOrderIds.length; i++) {
+        const dataSnapshot = await database()
+          .ref(`orders/${userId}/${currentJobsOrderIds[i].id}`)
+          .once('value');
+        const resData = dataSnapshot.val();
+        dispatch(
+          orderActions.dispatchNewOrder(currentJobsOrderIds[i].id, resData),
+        );
+      }
       setIsFetchingCurrentJobDetails(false);
     } catch (err) {
       console.log(err);
       setIsFetchingCurrentJobDetails(false);
     }
-  }, [currentJobOrderId, dispatch, userId]);
+  }, [dispatch, currentJobsOrderIds, userId]);
 
   useEffect(() => {
     if (route.params && route.params.cancelJob) {
       return;
     }
-    checkIfCurrentJob();
-  }, [route, checkIfCurrentJob]);
+    checkIfCurrentJobs();
+  }, [route, checkIfCurrentJobs]);
 
   //console.log(route);
   //console.log('cl', cancelLoading);
 
-  const cancelJobHandler = async () => {
-    setCancelLoading(true);
-    try {
-      await dispatch(orderActions.cancelOrder(currentJobOrderId, userId));
-    } catch (err) {
-      Alert.alert(
-        'Something went wrong 😞',
-        'We were unable to cancel your order at this time. Please try again later.',
-        [{text: 'Okay'}],
-      );
-    }
-    setCancelLoading(false);
-    navigation.setParams({cancelJob: false});
-  };
-
+  //console.log(currentJobsOrderIds);
   useEffect(() => {
-    if (currentJobOrderId && !currentOrder /*&& !fromCheckout*/) {
-      fetchCurrentJobDetails();
-    } else if (currentJobOrderId && currentOrder) {
+    if (currentJobsOrderIds.length > 0 && !isCheckingCurrentJobs) {
+      //console.log('infinite loop 2?');
+      fetchCurrentJobsDetails();
+    } /* else if (currentJobsOrderIds.length > 0 && currentOrders.length > 0) {
       setIsFetchingCurrentJobDetails(false);
-      if (currentOrder.orderDetails.status === 'delivered') {
+      if (currentOrders[0].orderDetails.status === 'delivered') {
         if (route.params && route.params.fromComplete) {
           return;
         }
@@ -171,144 +170,97 @@ const Home: React.FC<Props> = (props) => {
       if (route.params && route.params.cancelJob) {
         cancelJobHandler();
       }
-    }
-  }, [
-    /*fromCheckout,*/ currentJobOrderId,
-    currentOrder,
-    fetchCurrentJobDetails,
-    navigation,
-    route,
-    dispatch,
-    userId,
-  ]);
-  //console.log(currentOrder);
-  //console.log(route);
+    } */
+  }, [currentJobsOrderIds, fetchCurrentJobsDetails, isCheckingCurrentJobs]);
 
   useEffect(() => {
-    const currentJobRef = database().ref(
-      `orders/${userId}/${currentJobOrderId}`,
-    );
-
-    const onChildChanged = async (dataSnapShot: any) => {
-      console.log('key', dataSnapShot.key);
-      if (dataSnapShot.key === 'status') {
-        //console.log(dataSnapShot.val());
+    const cancelJobHandler = async () => {
+      setCancelLoading(true);
+      try {
+        await dispatch(
+          orderActions.cancelOrder(route.params.orderIdToCancel, userId),
+        );
         dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'status',
-          value: dataSnapShot.val(),
+          type: currentJobActions.DELETE_CURRENT_JOB,
+          currentJobOrderId: route.params.orderIdToCancel,
         });
-        if (dataSnapShot.val() === 'cancelled') {
-          //job cancelled while in home
-          if (route.params && route.params.cancelJob) {
-            return;
-          }
-          cancelJobHandler();
-        }
-      } else if (dataSnapShot.key === 'riderLocation') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'riderLocation',
-          value: dataSnapShot.val(),
-        });
+      } catch (err) {
+        Alert.alert(
+          'Something went wrong 😞',
+          'We were unable to cancel your order at this time. Please try again later.',
+          [{text: 'Okay'}],
+        );
       }
+      setCancelLoading(false);
+      navigation.setParams({cancelJob: false, orderIdToCancel: null});
     };
 
-    const handleChildAdded = async (dataSnapShot: any) => {
-      //console.log('key', dataSnapShot.key);
-      if (dataSnapShot.key === 'riderId') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'riderId',
-          value: dataSnapShot.val(),
-        });
-      } else if (dataSnapShot.key === 'riderLocation') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'riderLocation',
-          value: dataSnapShot.val(),
-        });
-      } else if (dataSnapShot.key === 'pickUpDate') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'pickUpDate',
-          value: dataSnapShot.val(),
-        });
-      } else if (dataSnapShot.key === 'arrivedAtRecipientDate') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'arrivedAtRecipientDate',
-          value: dataSnapShot.val(),
-        });
-      } else if (dataSnapShot.key === 'deliveredDate') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'deliveredDate',
-          value: dataSnapShot.val(),
-        });
-      } else if (dataSnapShot.key === 'amountPaid') {
-        dispatch({
-          type: orderActions.UPDATE_ORDER,
-          orderId: currentJobOrderId,
-          valueToUpdate: 'amountPaid',
-          value: dataSnapShot.val(),
-        });
-      }
-    };
-
-    if (currentJobOrderId && currentOrder) {
-      currentJobRef.on('child_changed', onChildChanged);
-      currentJobRef.on('child_added', handleChildAdded);
+    if (
+      route.params &&
+      route.params.cancelJob &&
+      route.params.orderIdToCancel
+    ) {
+      cancelJobHandler();
     }
+  }, [route, dispatch, navigation, userId]);
 
-    return () => {
-      currentJobRef.off('child_changed', onChildChanged);
-      currentJobRef.off('child_added', handleChildAdded);
-    };
-  }, [currentJobOrderId, dispatch, userId, navigation]);
+  useEffect(() => {
+    if (
+      orders.length > 0 &&
+      currentJobsOrderIds.length > 0 &&
+      !isFetchingCurrentJobDetails
+    ) {
+      const currOrdersArr = [];
+      for (let i = 0; i < currentJobsOrderIds.length; i++) {
+        const order = orders.find(
+          (ord: any) => ord.id === currentJobsOrderIds[i].id,
+        );
+        if (order) {
+          currOrdersArr.push(order);
+        }
+      }
+      //console.log('loop running');
+      setCurrentOrders(currOrdersArr);
+    }
+  }, [orders, currentJobsOrderIds, isFetchingCurrentJobDetails]);
+  //console.log('currOrd', currentOrders);
+  //console.log(route);
 
   useEffect(() => {
     const fetchRiderDetails = async () => {
       const dataSnapshot = await database()
-        .ref(`riders/${currentOrder.orderDetails.riderId}`)
+        .ref(`riders/${currentOrders[0].orderDetails.riderId}`)
         .once('value');
       const riderDetails = dataSnapshot.val();
       const fullName = `${riderDetails.firstName} ${riderDetails.lastName}`;
       dispatch({
         type: orderActions.UPDATE_ORDER,
-        orderId: currentJobOrderId,
+        orderId: currentJobsOrderIds[0].id,
         valueToUpdate: 'riderName',
         value: fullName,
       });
       dispatch({
         type: orderActions.UPDATE_ORDER,
-        orderId: currentJobOrderId,
+        orderId: currentJobsOrderIds[0].id,
         valueToUpdate: 'riderPhone',
         value: riderDetails.phone,
       });
       dispatch({
         type: orderActions.UPDATE_ORDER,
-        orderId: currentJobOrderId,
+        orderId: currentJobsOrderIds[0].id,
         valueToUpdate: 'riderImage',
         value: riderDetails.passportPhotoUrl,
       });
     };
-    if (currentOrder) {
+    if (currentOrders.length > 0) {
       if (
-        currentOrder.orderDetails.riderId &&
-        !currentOrder.orderDetails.riderName
+        currentOrders[0].orderDetails.riderId &&
+        !currentOrders[0].orderDetails.riderName
       ) {
         fetchRiderDetails();
       }
     }
-  }, [currentOrder, currentJobOrderId, dispatch]);
+  }, [currentOrders, currentJobsOrderIds, dispatch]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -316,73 +268,136 @@ const Home: React.FC<Props> = (props) => {
         barStyle="dark-content"
         backgroundColor={constant.primaryColor}
       />
-      <ScrollView contentContainerStyle={styles.safeArea}>
-        <View style={styles.firstView}>
-          <View style={styles.secondView}>
-            {fetchLocationLoading ? (
-              <Spinner
-                style={{justifyContent: 'flex-start', marginTop: -2}}
-                size={undefined}
-              />
-            ) : (
-              <TouchableOpacity onPress={() => setVisible(true)}>
-                <View style={styles.eightView}>
-                  <MaterialIcons
-                    name="place"
-                    size={25}
-                    color={constant.primaryTextColor}
-                  />
+      <View style={styles.firstView}>
+        <View style={styles.secondView}>
+          {fetchLocationLoading ? (
+            <Spinner
+              style={{justifyContent: 'flex-start', marginTop: -2}}
+              size={undefined}
+            />
+          ) : (
+            <TouchableOpacity onPress={() => setVisible(true)}>
+              <View style={styles.eightView}>
+                <MaterialIcons
+                  name="place"
+                  size={25}
+                  color={constant.primaryTextColor}
+                />
 
-                  <Text numberOfLines={1} style={styles.firstText}>
-                    {
-                      /* {address && address.length > 28
+                <Text numberOfLines={1} style={styles.firstText}>
+                  {
+                    /* {address && address.length > 28
                     ? `${address.substring(0, 28 - 3)}...`
                     : address} */ location.currentAddress
-                    }
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-          {visible && (
-            <Modal
-              isVisible={visible}
-              backdropOpacity={0.5}
-              onBackdropPress={() => setVisible(false)}>
-              <SearchLocation
-                latLong={location.currentGpsLoc}
-                handlePress={() => setVisible(false)}
-                navigation={navigation}
-              />
-            </Modal>
+                  }
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
         </View>
-        <View style={styles.fifthView}>
-          {isFetchingCurrentJobDetails || cancelLoading ? (
-            <Spinner size="large" style="undefined" />
-          ) : currentOrder ? (
-            <View style={{flex: 1, justifyContent: 'center'}}>
-              <Text style={styles.orderText}>
-                Your Package is being Processed!
-              </Text>
-              <CurrentOrder currentOrder={currentOrder} />
-              <Button
-                style={styles.button}
-                onPress={() => {
-                  navigation.navigate('TrackOrder', {});
-                }}>
-                <Text style={styles.buttonText}>Track Package</Text>
-              </Button>
-            </View>
-          ) : (
-            <FlowCard
+        {visible && (
+          <Modal
+            isVisible={visible}
+            backdropOpacity={0.5}
+            onBackdropPress={() => setVisible(false)}>
+            <SearchLocation
+              latLong={location.currentGpsLoc}
+              handlePress={() => setVisible(false)}
               navigation={navigation}
-              pickedLocationAddress={location.currentAddress}
-              pickedLocation={location.currentGpsLoc}
             />
-          )}
-        </View>
-        {/* <View style={styles.sixthView}>
+          </Modal>
+        )}
+      </View>
+      <View style={styles.fifthView}>
+        {isFetchingCurrentJobDetails || cancelLoading ? (
+          <Spinner size="large" style="undefined" />
+        ) : currentOrders.length > 0 ? (
+          <View style={{flex: 1}}>
+            <View style={{flex: 5}}>
+              <FlatList
+                //onRefresh={loadOrders}
+                refreshing={isFetchingCurrentJobDetails}
+                data={currentOrders}
+                scrollEnabled={true}
+                ListHeaderComponent={
+                  <View style={styles.pastView}>
+                    <Text
+                      style={{
+                        ...styles.firstText,
+                        textAlign: 'center',
+                        color: '#505050',
+                      }}>
+                      Processing Orders
+                    </Text>
+                  </View>
+                }
+                showsVerticalScrollIndicator={true}
+                keyExtractor={(item) => item.id}
+                /* onEndReached={(info: {distanceFromEnd: number}) =>
+              console.log(info, 'check end ')
+            } */
+                renderItem={({item}) => {
+                  //console.log('it', item);
+                  return (
+                    <Fragment key={item.id}>
+                      <CurrentOrder
+                        currentOrder={item}
+                        userId={userId}
+                        route={route}
+                      />
+                      <Button
+                        style={styles.button}
+                        onPress={() => {
+                          navigation.navigate('TrackOrder', {orderId: item.id});
+                        }}>
+                        <Text style={styles.buttonText}>Track Package</Text>
+                      </Button>
+                      <View style={styles.orderContainer} />
+                    </Fragment>
+                  );
+                }}
+              />
+            </View>
+
+            <View style={styles.touchableContainer}>
+              <TouchableOpacity
+                style={styles.touchable}
+                onPress={() => {
+                  navigation.navigate('OrderDetails', {
+                    pickedLocationAddress: location.currentAddress,
+                    pickedLocation: location.currentGpsLoc,
+                  });
+                }}>
+                <Image
+                  source={pkgImage}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+
+                <Text style={styles.touchableText}>Send Package</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.touchable}
+                onPress={() => Alert.alert('Work in Progress!')}>
+                <Image
+                  source={errandImage}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+
+                <Text style={styles.touchableText}>Request Errand</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <FlowCard
+            navigation={navigation}
+            pickedLocationAddress={location.currentAddress}
+            pickedLocation={location.currentGpsLoc}
+          />
+        )}
+      </View>
+      {/* <View style={styles.sixthView}>
           <View style={styles.seventhView}>
             <Text style={styles.secondText}>Top categories</Text>
           </View>
@@ -390,7 +405,6 @@ const Home: React.FC<Props> = (props) => {
             <CategoriesCard navigation={navigation} />
           </ScrollView>
         </View> */}
-      </ScrollView>
     </SafeAreaView>
   );
 };

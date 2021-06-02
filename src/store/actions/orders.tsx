@@ -143,11 +143,9 @@ export const addOrder = (userId: string, orderDetails: any) => {
 export const cancelOrder = (orderId: string, clientId: string) => {
   return async (dispatch: any) => {
     try {
+      await database().ref(`pending_orders/${clientId}/${orderId}`).remove();
       await database()
-        .ref(`pending_jobs/${clientId}/currentJobOrderId`)
-        .remove();
-      await database()
-        .ref(`user_profiles/${clientId}/currentJobOrderId`)
+        .ref(`user_profiles/${clientId}/processing_orders/${orderId}`)
         .remove();
       await database()
         .ref(`orders/${clientId}/${orderId}`)

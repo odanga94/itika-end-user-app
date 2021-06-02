@@ -8,11 +8,11 @@ export const addCurrentJob = (orderId: string) => {
     const {userId} = getState().auth;
     try {
       await database()
-        .ref(`pending_jobs/${userId}`)
-        .set({currentJobOrderId: orderId});
+        .ref(`pending_orders/${userId}`)
+        .update({[orderId]: orderId});
       await database()
-        .ref(`user_profiles/${userId}`)
-        .update({currentJobOrderId: orderId});
+        .ref(`user_profiles/${userId}/processing_orders`)
+        .update({[orderId]: orderId});
       dispatch({
         type: SET_CURRENT_JOB,
         currentJobOrderId: orderId,

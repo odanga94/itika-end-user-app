@@ -33,6 +33,7 @@ const locIcon = require('../../../assets/mapPointer-white.png');
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
+  route: any;
 }
 
 const region = {
@@ -52,12 +53,10 @@ const destLoc = {
 const {heightRatio} = constant.styleGuide;
 
 const TrackOrder: React.FC<Props> = (props) => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   const dispatch = useDispatch();
 
-  const currentJobOrderId = useSelector(
-    (state: any) => state.currentJob.currentJobOrderId,
-  );
+  const currentJobOrderId = route.params.orderId;
   //console.log(currentJobOrderId);
   const currentOrder = useSelector((state: any) =>
     state.orders.orders.find((order: any) => order.id === currentJobOrderId),
@@ -67,45 +66,45 @@ const TrackOrder: React.FC<Props> = (props) => {
   console.log(location); */
   const userId = useSelector((state: any) => state.auth.userId);
 
-  const [markers, setMarkers] = useState([
-    {
-      titl: 'src',
-      descrip: currentOrder.orderDetails.pickUpLocationAddress,
-      coordinate: {
-        latitude: currentOrder
-          ? currentOrder.orderDetails.pickUpLocation.latitude
-          : region.latitude,
-        longitude: currentOrder
-          ? currentOrder.orderDetails.pickUpLocation.longitude
-          : region.longitude,
-      },
-    },
-    {
-      titl: 'dest',
-      descrip: currentOrder.orderDetails.dropOffLocationAddress,
-      coordinate: {
-        latitude: currentOrder
-          ? currentOrder.orderDetails.dropOffLocation.latitude
-          : destLoc.latitude,
-        longitude: currentOrder
-          ? currentOrder.orderDetails.dropOffLocation.longitude
-          : destLoc.longitude,
-      },
-    },
-  ]);
-  const [initRiderLocationPickUp, setInitRiderLocationPickUp] = useState<any>();
-  const [initRiderLocationDropOff, setInitRiderLocationDropOff] = useState<
-    any
-  >();
-  //console.log('initRegion', initRiderLocationPickUp);
+  const [markers, setMarkers] = useState<any>([]);
   //console.log('markers', markers);
   const [estimatedDistance, setEstimatedDistance] = useState('');
   const [estimeatedTime, setEstimatedTime] = useState('');
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [initRiderLocationPickUp, setInitRiderLocationPickUp] = useState<any>();
+  const [initRiderLocationDropOff, setInitRiderLocationDropOff] = useState<
+    any
+  >();
 
   const mapRef = useRef(null);
 
   const markersLength = markers.length;
+
+  useEffect(() => {
+    if (currentOrder) {
+      setMarkers([
+        {
+          titl: 'src',
+          descrip: currentOrder.orderDetails.pickUpLocationAddress,
+          coordinate: {
+            latitude: currentOrder.orderDetails.pickUpLocation.latitude,
+
+            longitude: currentOrder.orderDetails.pickUpLocation.longitude,
+          },
+        },
+        {
+          titl: 'dest',
+          descrip: currentOrder.orderDetails.dropOffLocationAddress,
+          coordinate: {
+            latitude: currentOrder.orderDetails.dropOffLocation.latitude,
+            longitude: currentOrder.orderDetails.dropOffLocation.longitude,
+          },
+        },
+      ]);
+    }
+  }, [currentOrder]);
+
+  console.log('mrks', markers);
 
   const cancelOrderHandler = () => {
     Alert.alert(
@@ -124,7 +123,12 @@ const TrackOrder: React.FC<Props> = (props) => {
           onPress: () => {
             navigation.reset({
               index: 0,
-              routes: [{name: 'HomeScreen', params: {cancelJob: true}}],
+              routes: [
+                {
+                  name: 'HomeScreen',
+                  params: {cancelJob: true, orderIdToCancel: currentJobOrderId},
+                },
+              ],
             });
           },
           style: 'destructive',
@@ -334,41 +338,42 @@ const TrackOrder: React.FC<Props> = (props) => {
               },
             )
           }>
-          {markers.map((marker, index) =>
-            markersLength - 1 === index ? (
-              <Marker
-                key={index}
-                coordinate={marker.coordinate}
-                description={marker.descrip}
-                title={marker.titl}>
-                <View
-                  style={{
-                    ...styles.secondView,
-                    backgroundColor: constant.primaryTextColor,
-                  }}>
-                  <Image
-                    style={styles.icon}
-                    source={locIcon}
-                    resizeMode="contain"
-                  />
-                </View>
-              </Marker>
-            ) : (
-              <Marker
-                key={index}
-                coordinate={marker.coordinate}
-                description={marker.descrip}
-                title={marker.titl}>
-                <View style={styles.secondView}>
-                  <Image
-                    style={styles.icon}
-                    source={homeIcon}
-                    resizeMode="contain"
-                  />
-                </View>
-              </Marker>
-            ),
-          )}
+          {markers.length > 0 &&
+            markers.map((marker: any, index: any) =>
+              markersLength - 1 === index ? (
+                <Marker
+                  key={index}
+                  coordinate={marker.coordinate}
+                  description={marker.descrip}
+                  title={marker.titl}>
+                  <View
+                    style={{
+                      ...styles.secondView,
+                      backgroundColor: constant.primaryTextColor,
+                    }}>
+                    <Image
+                      style={styles.icon}
+                      source={locIcon}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </Marker>
+              ) : (
+                <Marker
+                  key={index}
+                  coordinate={marker.coordinate}
+                  description={marker.descrip}
+                  title={marker.titl}>
+                  <View style={styles.secondView}>
+                    <Image
+                      style={styles.icon}
+                      source={homeIcon}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </Marker>
+              ),
+            )}
           {currentOrder.orderDetails.riderLocation ? (
             <Marker
               coordinate={currentOrder.orderDetails.riderLocation}

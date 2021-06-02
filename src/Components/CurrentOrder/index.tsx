@@ -1,21 +1,146 @@
-import React from 'react';
-import {View, Text, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Image, Alert} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import database from '@react-native-firebase/database';
 
 import constants from '../../utils/constant';
+import * as orderActions from '../../store/actions/orders';
+import * as currentJobActions from '../../store/actions/currentJob';
+import Spinner from '../../Components/UI/Spinner';
 
 import styles from './styles';
 const mapPoint = require('../../../assets/placeholder.png');
 
 interface Props {
   currentOrder: any;
+  userId: string;
+  route: any;
 }
 
 const CurrentOrder: React.FC<Props> = (props) => {
-  const {currentOrder} = props;
+  const {currentOrder, userId, route} = props;
+  const dispatch = useDispatch();
 
-  //console.log('currOrd', currentOrder);
+  const [cancelLoading, setCancelLoading] = useState(false);
+
+  useEffect(() => {
+    const cancelJobHandler = async () => {
+      setCancelLoading(true);
+      try {
+        await dispatch(orderActions.cancelOrder(currentOrder.id, userId));
+        dispatch({
+          type: currentJobActions.DELETE_CURRENT_JOB,
+          currentJobOrderId: currentOrder.id,
+        });
+      } catch (err) {
+        Alert.alert(
+          'Something went wrong 😞',
+          'We were unable to cancel your order at this time. Please try again later.',
+          [{text: 'Okay'}],
+        );
+      }
+      setCancelLoading(false);
+    };
+
+    const currentJobRef = database().ref(`orders/${userId}/${currentOrder.id}`);
+
+    const onChildChanged = async (dataSnapShot: any) => {
+      console.log('key', dataSnapShot.key);
+      if (dataSnapShot.key === 'status') {
+        //console.log(dataSnapShot.val());
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'status',
+          value: dataSnapShot.val(),
+        });
+        if (dataSnapShot.val() === 'cancelled') {
+          //job cancelled while in home
+          if (
+            route.params &&
+            route.params.cancelJob &&
+            route.params.orderIdToCancel
+          ) {
+            return;
+          }
+          cancelJobHandler();
+        }
+      } else if (dataSnapShot.key === 'riderLocation') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'riderLocation',
+          value: dataSnapShot.val(),
+        });
+      }
+    };
+
+    const handleChildAdded = async (dataSnapShot: any) => {
+      //console.log('key', dataSnapShot.key);
+      if (dataSnapShot.key === 'riderId') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'riderId',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'riderLocation') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'riderLocation',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'pickUpDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'pickUpDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'arrivedAtRecipientDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'arrivedAtRecipientDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'deliveredDate') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'deliveredDate',
+          value: dataSnapShot.val(),
+        });
+      } else if (dataSnapShot.key === 'amountPaid') {
+        dispatch({
+          type: orderActions.UPDATE_ORDER,
+          orderId: currentOrder.id,
+          valueToUpdate: 'amountPaid',
+          value: dataSnapShot.val(),
+        });
+      }
+    };
+
+    if (currentOrder) {
+      currentJobRef.on('child_changed', onChildChanged);
+      currentJobRef.on('child_added', handleChildAdded);
+    }
+
+    return () => {
+      currentJobRef.off('child_changed', onChildChanged);
+      currentJobRef.off('child_added', handleChildAdded);
+    };
+  }, [currentOrder, dispatch, userId, route]);
+
+  if (cancelLoading) {
+    return (
+      <View>
+        <Spinner size="large" style="undefined" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.firstView}>
