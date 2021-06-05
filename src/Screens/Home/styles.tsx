@@ -99,7 +99,7 @@ export default StyleSheet.create({
   button: {
     height: 45,
     width: width - 42,
-    backgroundColor: constant.primaryColor,
+    backgroundColor: constant.primaryTextColor,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,

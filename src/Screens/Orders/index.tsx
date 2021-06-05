@@ -17,25 +17,26 @@ import * as orderActions from '../../store/actions/orders';
 
 interface Props {
   navigation: StackNavigationProp<OrdersStackParamList>;
+  route: any;
 }
 
 const Orders: React.FC<Props> = (props) => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   const dispatch = useDispatch();
 
-  const currentJobOrderId = useSelector(
-    (state: any) => state.currentJob.currentJobOrderId,
+  const currentJobsOrderIds = useSelector(
+    (state: any) => state.currentJob.currentJobs,
   );
   //console.log(currentJobOrderId);
-  const currentOrder = useSelector((state: any) =>
-    state.orders.orders.find((order: any) => order.id === currentJobOrderId),
-  );
   const userId = useSelector((state: any) => state.auth.userId);
   const orders = useSelector((state: any) => state.orders.orders);
   //console.log(orders);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentOrders, setCurrentOrders] = useState<any>([]);
+  const [completeOrder, setCompleteOrder] = useState(false);
+  const [justDeleted, setJustDeleted] = useState(false);
 
   const loadOrders = useCallback(async () => {
     setError('');
@@ -52,7 +53,7 @@ const Orders: React.FC<Props> = (props) => {
     setIsLoading(false);
   }, [dispatch, orders, userId]);
 
-  console.log('ld', isLoading);
+  //console.log('ld', isLoading);
 
   useEffect(() => {
     loadOrders();
@@ -63,6 +64,47 @@ const Orders: React.FC<Props> = (props) => {
       setIsLoading(false);
     }
   }, [orders]);
+
+  useEffect(() => {
+    if (
+      orders.length > 0 &&
+      currentJobsOrderIds.length > 0 &&
+      !isLoading &&
+      currentOrders.length === 0
+    ) {
+      const currOrdersArr = [];
+      for (let i = 0; i < currentJobsOrderIds.length; i++) {
+        const order = orders.find(
+          (ord: any) => ord.id === currentJobsOrderIds[i].id,
+        );
+        if (order) {
+          currOrdersArr.push(order);
+        }
+      }
+      console.log('loop running');
+      setCurrentOrders(currOrdersArr);
+    }
+  }, [currentOrders, orders, currentJobsOrderIds, isLoading]);
+
+  useEffect(() => {
+    const WillFocusSub = navigation.addListener('focus', () => {
+      if (orders.length > 0 && currentJobsOrderIds.length > 0 && !isLoading) {
+        const currOrdersArr = [];
+        for (let i = 0; i < currentJobsOrderIds.length; i++) {
+          const order = orders.find(
+            (ord: any) => ord.id === currentJobsOrderIds[i].id,
+          );
+          if (order) {
+            currOrdersArr.push(order);
+          }
+        }
+        console.log('focus loop running');
+        setCurrentOrders(currOrdersArr);
+      }
+    });
+
+    return WillFocusSub;
+  }, [navigation, currentJobsOrderIds, orders, isLoading]);
 
   if (isLoading) {
     return (
@@ -76,7 +118,7 @@ const Orders: React.FC<Props> = (props) => {
     return <ErrorMessage retry={loadOrders} error={error} />;
   }
 
-  if (orders.length === 0 && !currentOrder) {
+  if (orders.length === 0 && !currentOrders) {
     return (
       <View style={{flex: 1, justifyContent: 'center', paddingHorizontal: 20}}>
         <Text style={styles.firstText}>
@@ -104,30 +146,82 @@ const Orders: React.FC<Props> = (props) => {
         backgroundColor={constant.primaryColor}
       />
       <View style={styles.commonView}>
-        <View style={styles.ninthView}>
+        {/* <View style={styles.ninthView}> */}
+        {currentOrders.length > 0 ? (
+          <View style={{flex: 1}}>
+            <FlatList
+              //onRefresh={loadOrders}
+              refreshing={isLoading}
+              data={currentOrders}
+              scrollEnabled={true}
+              ListHeaderComponent={
+                <View
+                  style={{
+                    ...styles.pastView,
+                    backgroundColor: constant.primaryTextColor,
+                  }}>
+                  <Text
+                    style={{
+                      ...styles.firstText,
+                      textAlign: 'center',
+                      color: '#fff',
+                    }}>
+                    Processing Orders
+                  </Text>
+                </View>
+              }
+              showsVerticalScrollIndicator={true}
+              keyExtractor={(item) => item.id}
+              /* onEndReached={(info: {distanceFromEnd: number}) =>
+              console.log(info, 'check end ')
+            } */
+              renderItem={({item}) => {
+                //console.log('it', item);
+                return (
+                  <Fragment key={item.id}>
+                    <CurrentOrder
+                      currentOrder={item}
+                      userId={userId}
+                      route={route}
+                      navigation={navigation}
+                      completeOrder={completeOrder}
+                      setCompleteOrder={setCompleteOrder}
+                      justDeleted={justDeleted}
+                      setJustDeleted={setJustDeleted}
+                    />
+                    <Button
+                      style={styles.button}
+                      onPress={() => {
+                        navigation.navigate('TrackOrder', {orderId: item.id});
+                      }}>
+                      <Text style={styles.buttonText}>Track Package</Text>
+                    </Button>
+                    <View style={styles.orderContainer} />
+                  </Fragment>
+                );
+              }}
+            />
+          </View>
+        ) : null}
+        <View style={{flex: 1.5}}>
           <FlatList
             onRefresh={loadOrders}
             refreshing={isLoading}
-            data={orders.filter(
-              (order: any) =>
-                order.orderDetails.status === 'delivered' ||
-                order.orderDetails.status === 'cancelled',
-            )}
+            data={orders
+              .filter(
+                (order: any) =>
+                  order.orderDetails.status === 'delivered' ||
+                  order.orderDetails.status === 'cancelled',
+              )
+              .sort((a: any, b: any) =>
+                new Date(a.orderDetails.dateRequested).getTime() >
+                new Date(b.orderDetails.dateRequested).getTime()
+                  ? -1
+                  : 1,
+              )}
             scrollEnabled={true}
             ListHeaderComponent={
-              <View style={{marginTop: 10}}>
-                {currentOrder ? (
-                  <Fragment>
-                    <CurrentOrder currentOrder={currentOrder} />
-                    <View style={styles.commonView}>
-                      <Button
-                        style={styles.button}
-                        onPress={() => navigation.navigate('TrackOrder')}>
-                        <Text style={styles.buttonText}>Track Package</Text>
-                      </Button>
-                    </View>
-                  </Fragment>
-                ) : null}
+              <View style={{marginTop: 5}}>
                 <View style={styles.pastView}>
                   <Text style={{...styles.firstText, textAlign: 'center'}}>
                     Past Orders
@@ -152,6 +246,7 @@ const Orders: React.FC<Props> = (props) => {
             }}
           />
         </View>
+        {/* </View> */}
       </View>
     </SafeAreaView>
   );

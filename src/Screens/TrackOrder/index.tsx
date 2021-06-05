@@ -104,12 +104,12 @@ const TrackOrder: React.FC<Props> = (props) => {
     }
   }, [currentOrder]);
 
-  console.log('mrks', markers);
+  //console.log('mrks', markers);
 
   const cancelOrderHandler = () => {
     Alert.alert(
       'Are you sure?',
-      `Are you really sure you want to cancel this order?`,
+      'Are you really sure you want to cancel this order?',
       [
         {
           text: 'No',
@@ -160,7 +160,17 @@ const TrackOrder: React.FC<Props> = (props) => {
           setInitRiderLocationPickUp(undefined);
         }
         if (dataSnapShot.val() === 'delivered') {
-          navigation.navigate('OrderComplete', {});
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'OrderComplete',
+                params: {
+                  orderId: currentOrder.id,
+                },
+              },
+            ],
+          });
         }
       } else if (dataSnapShot.key === 'riderLocation') {
         dispatch({
@@ -214,7 +224,17 @@ const TrackOrder: React.FC<Props> = (props) => {
           setInitRiderLocationPickUp(undefined);
         }
         if (dataSnapShot.val() === 'delivered') {
-          navigation.navigate('OrderComplete', {});
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'OrderComplete',
+                params: {
+                  orderId: currentOrder.id,
+                },
+              },
+            ],
+          });
         }
       } else if (dataSnapShot.key === 'pickUpDate') {
         dispatch({

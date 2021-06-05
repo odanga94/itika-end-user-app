@@ -29,6 +29,7 @@ import Spinner from '../../Components/UI/Spinner';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
+import Order from '../../models/order';
 
 const pkgImage = require('../../../assets/package-yellow.png');
 const errandImage = require('../../../assets/errand.png');
@@ -64,6 +65,8 @@ const Home: React.FC<Props> = (props) => {
   const [isCheckingCurrentJobs, setIsCheckingCurrentJobs] = useState(true);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [currentOrders, setCurrentOrders] = useState<any>([]);
+  const [completeOrder, setCompleteOrder] = useState(false);
+  const [justDeleted, setJustDeleted] = useState(false);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -104,7 +107,7 @@ const Home: React.FC<Props> = (props) => {
         .ref(`user_profiles/${userId}/processing_orders`)
         .once('value');
       const resData = dataSnapshot.val();
-      console.log('res', resData);
+      //console.log('res', resData);
       // if package is delivered go to Order Complete
       if (resData) {
         for (let orderId in resData) {
@@ -127,6 +130,7 @@ const Home: React.FC<Props> = (props) => {
   }, [userId, dispatch]);
 
   const fetchCurrentJobsDetails = useCallback(async () => {
+    //console.log('fetching curr Jobs');
     try {
       for (let i = 0; i < currentJobsOrderIds.length; i++) {
         const dataSnapshot = await database()
@@ -206,9 +210,11 @@ const Home: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (
-      orders.length > 0 &&
-      currentJobsOrderIds.length > 0 &&
-      !isFetchingCurrentJobDetails
+      (orders.length > 0 &&
+        currentJobsOrderIds.length > 0 &&
+        !isFetchingCurrentJobDetails &&
+        currentOrders.length === 0) ||
+      justDeleted
     ) {
       const currOrdersArr = [];
       for (let i = 0; i < currentJobsOrderIds.length; i++) {
@@ -221,46 +227,24 @@ const Home: React.FC<Props> = (props) => {
       }
       //console.log('loop running');
       setCurrentOrders(currOrdersArr);
+      setJustDeleted(false);
     }
-  }, [orders, currentJobsOrderIds, isFetchingCurrentJobDetails]);
-  //console.log('currOrd', currentOrders);
+  }, [
+    justDeleted,
+    currentOrders,
+    orders,
+    currentJobsOrderIds,
+    isFetchingCurrentJobDetails,
+  ]);
+  //console.log('currOrds', currentOrders);
   //console.log(route);
 
   useEffect(() => {
-    const fetchRiderDetails = async () => {
-      const dataSnapshot = await database()
-        .ref(`riders/${currentOrders[0].orderDetails.riderId}`)
-        .once('value');
-      const riderDetails = dataSnapshot.val();
-      const fullName = `${riderDetails.firstName} ${riderDetails.lastName}`;
-      dispatch({
-        type: orderActions.UPDATE_ORDER,
-        orderId: currentJobsOrderIds[0].id,
-        valueToUpdate: 'riderName',
-        value: fullName,
-      });
-      dispatch({
-        type: orderActions.UPDATE_ORDER,
-        orderId: currentJobsOrderIds[0].id,
-        valueToUpdate: 'riderPhone',
-        value: riderDetails.phone,
-      });
-      dispatch({
-        type: orderActions.UPDATE_ORDER,
-        orderId: currentJobsOrderIds[0].id,
-        valueToUpdate: 'riderImage',
-        value: riderDetails.passportPhotoUrl,
-      });
-    };
-    if (currentOrders.length > 0) {
-      if (
-        currentOrders[0].orderDetails.riderId &&
-        !currentOrders[0].orderDetails.riderName
-      ) {
-        fetchRiderDetails();
-      }
+    if (route.params && route.params.fromComplete) {
+      setCompleteOrder(true);
+      return;
     }
-  }, [currentOrders, currentJobsOrderIds, dispatch]);
+  }, [route]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -344,6 +328,11 @@ const Home: React.FC<Props> = (props) => {
                         currentOrder={item}
                         userId={userId}
                         route={route}
+                        navigation={navigation}
+                        completeOrder={completeOrder}
+                        setCompleteOrder={setCompleteOrder}
+                        justDeleted={justDeleted}
+                        setJustDeleted={setJustDeleted}
                       />
                       <Button
                         style={styles.button}

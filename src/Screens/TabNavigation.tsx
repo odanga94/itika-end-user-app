@@ -46,7 +46,8 @@ export type HomeStackParamList = {
 export type OrdersStackParamList = {
   Orders: undefined;
   PastOrderDetails: object;
-  TrackOrder: undefined;
+  TrackOrder: object;
+  //OrderComplete: object;
 };
 
 export type SupportStackParamList = {

@@ -37,8 +37,8 @@ const PastOrder: React.FC<Props> = (props) => {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingRight: 8,
+              //justifyContent: 'space-between',
+              //paddingRight: 8,
             }}>
             <Text style={styles.firstText}>
               {order.orderDetails.packageType}
@@ -48,6 +48,8 @@ const PastOrder: React.FC<Props> = (props) => {
                 ...styles.firstText,
                 fontWeight: 'bold',
                 color: constants.primaryTextColor,
+                flex: 1,
+                marginLeft: 8,
               }}>
               KES. {order.orderDetails.estimatedPrice}
             </Text>

@@ -164,7 +164,7 @@ const PickLocationScreen: React.FC<Props> = (props) => {
     <Fragment>
       <MapView
         style={{flex: 1}}
-        region={mapRegion}
+        initialRegion={mapRegion}
         onPress={(event) => {
           fetchAddressOnMapPressHandler(event);
         }}>

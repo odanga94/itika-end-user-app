@@ -27,20 +27,17 @@ const {heightRatio, height} = constant.styleGuide;
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
+  route: any;
 }
 
 const OrderComplete: React.FC<Props> = (props) => {
-  const {navigation} = props;
+  const {navigation, route} = props;
   //const dispatch = useDispatch();
 
-  const currentJob = useSelector((state: any) => state.currentJob);
+  const currentJobOrderId = route.params.orderId;
   //console.log(currentJob);
   const currentOrder = useSelector((state: any) =>
-    state.orders.orders.find(
-      (order: any) =>
-        order.id === currentJob.currentJobOrderId &&
-        order.clientId === currentJob.currentJobClientId,
-    ),
+    state.orders.orders.find((order: any) => order.id === currentJobOrderId),
   );
   const userId = useSelector((state: any) => state.auth.userId);
 
@@ -91,7 +88,7 @@ const OrderComplete: React.FC<Props> = (props) => {
           .update({averageRating: firstRating});
       }
       await database()
-        .ref(`user_profiles/${userId}/currentJobOrderId`)
+        .ref(`user_profiles/${userId}/processing_orders/${currentJobOrderId}`)
         .remove();
       //navigation.setParams({fromOrderComplete: true});
       navigation.reset({
@@ -108,7 +105,7 @@ const OrderComplete: React.FC<Props> = (props) => {
     setSubmitLoading(true);
     try {
       await database()
-        .ref(`user_profiles/${userId}/currentJobOrderId`)
+        .ref(`user_profiles/${userId}/processing_orders/${currentJobOrderId}`)
         .remove();
       navigation.reset({
         index: 0,

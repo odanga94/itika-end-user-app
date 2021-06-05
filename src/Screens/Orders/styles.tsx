@@ -41,12 +41,13 @@ export default StyleSheet.create({
   button: {
     height: 45,
     width: width - 42,
-    backgroundColor: constant.primaryColor,
+    backgroundColor: constant.primaryTextColor,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    top: 10 * heightRatio,
+    //top: 10 * heightRatio,
     left: 20,
+    marginVertical: 10 * heightRatio,
   },
   buttonText: {
     fontSize: 16,
@@ -69,10 +70,11 @@ export default StyleSheet.create({
   pastView: {
     height: 50,
     backgroundColor: constant.backColor,
-    marginTop: 30,
+    marginTop: 15,
     width: width - 40,
     left: 20,
     justifyContent: 'center',
+    borderRadius: 8,
   },
   firstText: {
     fontSize: 18,
@@ -92,5 +94,11 @@ export default StyleSheet.create({
     color: constant.commonColor,
     fontSize: 18,
     fontWeight: '700',
+  },
+  orderContainer: {
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    width: width - 42,
+    left: 20,
   },
 });

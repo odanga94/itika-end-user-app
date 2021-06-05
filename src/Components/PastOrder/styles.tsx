@@ -16,7 +16,7 @@ export default StyleSheet.create({
     //borderBottomWidth: 1,
   },
   secondView: {
-    flex: 0.4,
+    flex: 0.3,
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 14,
@@ -35,8 +35,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
   thirdView: {
-    flex: 1,
-    left: 8,
+    flex: 0.7,
+    left: 4,
   },
   mapPin: {
     height: 15,
@@ -53,6 +53,7 @@ export default StyleSheet.create({
     fontSize: 17,
     fontWeight: '500',
     color: constant.thirdTextColor,
+    flex: 3,
   },
   secondText: {
     paddingTop: 2,

@@ -16,13 +16,68 @@ interface Props {
   currentOrder: any;
   userId: string;
   route: any;
+  navigation: any;
+  completeOrder: boolean;
+  setCompleteOrder: (val: boolean) => void;
+  justDeleted: boolean | undefined;
+  setJustDeleted: (val: boolean) => void;
 }
 
 const CurrentOrder: React.FC<Props> = (props) => {
-  const {currentOrder, userId, route} = props;
+  const {
+    currentOrder,
+    userId,
+    route,
+    navigation,
+    completeOrder,
+    setCompleteOrder,
+    justDeleted,
+    setJustDeleted,
+  } = props;
   const dispatch = useDispatch();
+  //console.log('curr', currentOrder);
 
   const [cancelLoading, setCancelLoading] = useState(false);
+
+  useEffect(() => {
+    if (completeOrder) {
+      if (currentOrder && currentOrder.orderDetails.status === 'delivered') {
+        dispatch({
+          type: currentJobActions.DELETE_CURRENT_JOB,
+          currentJobOrderId: currentOrder.id,
+        });
+        setCompleteOrder(false);
+        setJustDeleted(true);
+        return;
+      }
+    } else if (
+      !completeOrder &&
+      currentOrder &&
+      currentOrder.orderDetails.status === 'delivered' &&
+      !justDeleted
+    ) {
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'OrderComplete',
+            params: {
+              orderId: currentOrder.id,
+            },
+          },
+        ],
+      });
+    }
+  }, [
+    currentOrder,
+    completeOrder,
+    setCompleteOrder,
+    route,
+    navigation,
+    dispatch,
+    justDeleted,
+    setJustDeleted,
+  ]);
 
   useEffect(() => {
     const cancelJobHandler = async () => {
@@ -134,6 +189,41 @@ const CurrentOrder: React.FC<Props> = (props) => {
     };
   }, [currentOrder, dispatch, userId, route]);
 
+  useEffect(() => {
+    const fetchRiderDetails = async () => {
+      const dataSnapshot = await database()
+        .ref(`riders/${currentOrder.orderDetails.riderId}`)
+        .once('value');
+      const riderDetails = dataSnapshot.val();
+      const fullName = `${riderDetails.firstName} ${riderDetails.lastName}`;
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentOrder.id,
+        valueToUpdate: 'riderName',
+        value: fullName,
+      });
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentOrder.id,
+        valueToUpdate: 'riderPhone',
+        value: riderDetails.phone,
+      });
+      dispatch({
+        type: orderActions.UPDATE_ORDER,
+        orderId: currentOrder.id,
+        valueToUpdate: 'riderImage',
+        value: riderDetails.passportPhotoUrl,
+      });
+    };
+
+    if (
+      currentOrder.orderDetails.riderId &&
+      !currentOrder.orderDetails.riderName
+    ) {
+      fetchRiderDetails();
+    }
+  }, [currentOrder, dispatch]);
+
   if (cancelLoading) {
     return (
       <View>
@@ -174,7 +264,7 @@ const CurrentOrder: React.FC<Props> = (props) => {
             </Text>
           </Text>
         </View>
-        <View style={styles.fifthView}>
+        {/* <View style={styles.fifthView}>
           <Text style={styles.thirdText}>
             Status:{' '}
             <Text style={styles.fifthText} adjustsFontSizeToFit>
@@ -191,7 +281,7 @@ const CurrentOrder: React.FC<Props> = (props) => {
                 : ''}
             </Text>
           </Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );
