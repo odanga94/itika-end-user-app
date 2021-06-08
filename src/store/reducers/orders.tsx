@@ -8,11 +8,20 @@ import {
   SET_ORDER_ID_BEING_PROCESSED,
   RESET_ORDER_ID_BEING_PROCESSED,
   RESET_ORDERS,
+  SHOULD_NAVIGATE_TO_CHAT,
+  RESET_SHOULD_NAVIGATE_TO_CHAT,
 } from '../actions/orders';
 
-const initialState: {orders: Order[]; orderIdBeingProcessed: any} = {
+const initialState: {
+  orders: Order[];
+  orderIdBeingProcessed: any;
+  shouldNavigateToChat: boolean;
+  chatOrderId: string;
+} = {
   orders: [],
   orderIdBeingProcessed: null,
+  shouldNavigateToChat: false,
+  chatOrderId: '',
 };
 
 const ordersReducer = (state = initialState, action: any) => {
@@ -80,6 +89,18 @@ const ordersReducer = (state = initialState, action: any) => {
       return {
         ...state,
         orderIdBeingProcessed: null,
+      };
+    case SHOULD_NAVIGATE_TO_CHAT:
+      return {
+        ...state,
+        shouldNavigateToChat: true,
+        chatOrderId: action.orderId,
+      };
+    case RESET_SHOULD_NAVIGATE_TO_CHAT:
+      return {
+        ...state,
+        shouldNavigateToChat: false,
+        chatOrderId: '',
       };
     case RESET_ORDERS:
       return initialState;

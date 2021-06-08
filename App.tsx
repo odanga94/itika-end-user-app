@@ -15,6 +15,7 @@ import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import {Root} from 'native-base';
+import messaging from '@react-native-firebase/messaging';
 
 import Stack from './src/Screens';
 import authReducer from './src/store/reducers/user/auth';
@@ -59,8 +60,34 @@ declare const global: {HermesInternal: null | {}};
 
 const App = () => {
   useEffect(() => {
+    async function requestUserPermission() {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        //console.log('Authorization status:', authStatus);
+        messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+          if (remoteMessage.data) {
+            //const orderId = JSON.parse(remoteMessage.data.orderId);
+            if (remoteMessage.data.messageText) {
+              const senderId = JSON.parse(remoteMessage.data.senderId);
+              const messageText = JSON.parse(remoteMessage.data.messageText);
+              console.log(
+                `The user "${senderId}" wrote a new chat message "${messageText}" whiile app is in the background."`,
+              );
+              return;
+            }
+          }
+        });
+      }
+    }
+
     SplashScreen.hide();
+    requestUserPermission();
   }, []);
+
   return (
     <Provider store={store}>
       <Root>

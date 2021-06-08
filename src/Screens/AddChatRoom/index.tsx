@@ -17,9 +17,11 @@ import {ActionSheet} from 'native-base';
 import database from '@react-native-firebase/database';
 
 import {HomeStackParamList} from '../TabNavigation';
-import {UPDATE_ORDER} from '../../store/actions/orders';
+import {
+  UPDATE_ORDER,
+  RESET_SHOULD_NAVIGATE_TO_CHAT,
+} from '../../store/actions/orders';
 import * as profileActions from '../../store/actions/user/profile';
-import Button from '../../Components/Button';
 import Spinner from '../../Components/UI/Spinner';
 import styles from './styles';
 import constants from '../../utils/constant';
@@ -68,6 +70,12 @@ const AddChatRoom: React.FC<Props> = (props) => {
     // },
   ]);
   const [sendImageLoading, setSendImageLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch({
+      type: RESET_SHOULD_NAVIGATE_TO_CHAT,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -348,11 +356,21 @@ const AddChatRoom: React.FC<Props> = (props) => {
       initializeChatRoom();
     } else if (messages.length === 0) {
       const chatsArr: any = [];
-      const chatKeysArr = Object.keys(currentOrder.orderDetails.chat);
+      const chatKeysArr = Object.keys(
+        currentOrder.orderDetails.chat,
+      ).sort((a, b) => (a < b ? -1 : 1));
       //for(let i = chatKeysArr.length - 5; i <)
       //console.log('keys', chatKeysArr);
       for (let i = chatKeysArr.length - 1; i >= 0; i--) {
-        chatsArr.push(currentOrder.orderDetails.chat[chatKeysArr[i]]);
+        if (
+          !messages.find(
+            (message: any) =>
+              message._id ===
+              currentOrder.orderDetails.chat[chatKeysArr[i]]._id,
+          )
+        ) {
+          chatsArr.push(currentOrder.orderDetails.chat[chatKeysArr[i]]);
+        }
       }
       //console.log(chatsArr);
       setMessages((prevState: any) => GiftedChat.append(prevState, chatsArr));

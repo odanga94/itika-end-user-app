@@ -15,6 +15,8 @@ import Modal from 'react-native-modal';
 import {useSelector, useDispatch} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import database from '@react-native-firebase/database';
+import messaging from '@react-native-firebase/messaging';
+import {Toast} from 'native-base';
 
 import {getGpsLoc} from '../../utils';
 import FlowCard from '../../Components/FlowCard';
@@ -29,6 +31,7 @@ import Spinner from '../../Components/UI/Spinner';
 import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
+import {UPDATE_TOKENS} from '../../store/actions/user/profile';
 import Order from '../../models/order';
 
 const pkgImage = require('../../../assets/package-yellow.png');
@@ -42,8 +45,8 @@ interface Props {
 const Home: React.FC<Props> = (props) => {
   const {navigation, route} = props;
   const dispatch = useDispatch();
-  /* const userProfile = useSelector((state: any) => state.profile);
-  console.log(userProfile); */
+  const userProfile = useSelector((state: any) => state.profile);
+  //console.log(userProfile);
 
   const userId = useSelector((state: any) => state.auth.userId);
   const currentJobsOrderIds = useSelector(
@@ -53,6 +56,10 @@ const Home: React.FC<Props> = (props) => {
   const orders = useSelector((state: any) => state.orders.orders);
 
   const location = useSelector((state: any) => state.location);
+  const shouldNavigateToChat = useSelector(
+    (state: any) => state.orders.shouldNavigateToChat,
+  );
+  const chatOrderId = useSelector((state: any) => state.orders.chatOrderId);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [fetchLocationLoading, setFetchLocationLoading] = useState<boolean>(
@@ -67,6 +74,152 @@ const Home: React.FC<Props> = (props) => {
   const [currentOrders, setCurrentOrders] = useState<any>([]);
   const [completeOrder, setCompleteOrder] = useState(false);
   const [justDeleted, setJustDeleted] = useState(false);
+
+  useEffect(() => {
+    async function saveTokenToDatabase(token: string) {
+      // Add the token to the users datastore
+      await database()
+        .ref(`user_profiles/${userId}/tokens`)
+        .transaction((currentTokens: any) => {
+          if (!currentTokens) {
+            currentTokens = [token];
+            dispatch({
+              type: UPDATE_TOKENS,
+              token,
+            });
+          } else if (!currentTokens.find((tkn: string) => tkn === token)) {
+            currentTokens.push(token);
+            dispatch({
+              type: UPDATE_TOKENS,
+              token,
+            });
+          }
+          return currentTokens;
+        });
+    }
+
+    const tokenSubscription = messaging().onTokenRefresh(
+      async (token: string) => {
+        console.log('newToken', token);
+        await saveTokenToDatabase(token);
+        /* dispatch({
+          type: UPDATE_TOKENS,
+          token,
+        }); */
+      },
+    );
+
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      if (remoteMessage.data) {
+        const orderId = JSON.parse(remoteMessage.data.orderId);
+        if (remoteMessage.data.messageText) {
+          const senderId = JSON.parse(remoteMessage.data.senderId);
+          const messageText = JSON.parse(remoteMessage.data.messageText);
+          console.log(
+            `The user "${senderId}" wrote a new chat message "${messageText}" while app is in the foreground."`,
+          );
+          if (senderId !== userId) {
+            Toast.show({
+              text: `New Message: ${messageText}`,
+              buttonText: 'View',
+              duration: 5000,
+              textStyle: {color: constant.primaryTextColor},
+              buttonStyle: {backgroundColor: constant.primaryColor},
+              buttonTextStyle: {color: '#fff'},
+              position: 'top',
+              onClose: (reason) => {
+                if (reason === 'user') {
+                  navigation.navigate('AddChatRoom', {
+                    orderId,
+                  });
+                }
+              },
+            });
+          }
+          return;
+        }
+      }
+    });
+
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.data,
+      );
+      if (remoteMessage.data) {
+        const orderId = JSON.parse(remoteMessage.data!.orderId);
+        if (remoteMessage.data.messageText) {
+          const senderId = JSON.parse(remoteMessage.data.senderId);
+          const messageText = JSON.parse(remoteMessage.data.messageText);
+          console.log(
+            `The user "${senderId}" wrote a new chat message "${messageText}" while app is in the background."`,
+          );
+          //console.log('should now navigate');
+          if (senderId !== userId) {
+            //console.log('navigating...');
+            navigation.navigate('AddChatRoom', {
+              orderId,
+            });
+          }
+          return;
+        }
+      }
+    });
+
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          if (remoteMessage.data) {
+            const orderId = JSON.parse(remoteMessage.data!.orderId);
+            if (remoteMessage.data.messageText) {
+              const senderId = JSON.parse(remoteMessage.data.senderId);
+              const messageText = JSON.parse(remoteMessage.data.messageText);
+              console.log(
+                `The user "${senderId}" wrote a new chat message "${messageText}" while app is in quit state."`,
+              );
+              //console.log('should now navigate');
+              if (senderId !== userId) {
+                //console.log('navigating...');
+                dispatch({
+                  type: orderActions.SHOULD_NAVIGATE_TO_CHAT,
+                  orderId,
+                });
+              }
+              return;
+            }
+          }
+        }
+      });
+
+    if (userProfile.firstName) {
+      //console.log(riderProfile.isVerified);
+      /* if (!riderProfile.isVerified) {
+        navigation.reset({
+          index: 0,
+          routes: [{name: /*'Home' 'DisApproved'}],
+        });
+        return;
+      } */
+      // if (riderProfile.tokens.length === 0) {
+      messaging()
+        .getToken()
+        .then((token: string) => {
+          //console.log('token', token);
+          return saveTokenToDatabase(token);
+        });
+      // }
+    }
+
+    return () => {
+      tokenSubscription();
+      unsubscribe();
+    };
+  }, [dispatch, userId, userProfile, navigation]);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -238,6 +391,28 @@ const Home: React.FC<Props> = (props) => {
   ]);
   //console.log('currOrds', currentOrders);
   //console.log(route);
+
+  useEffect(() => {
+    console.log('should navigate to chat');
+    if (
+      shouldNavigateToChat &&
+      orders.length > 0 &&
+      !isFetchingCurrentJobDetails
+    ) {
+      console.log('navigating....');
+      navigation.navigate('AddChatRoom', {
+        orderId: chatOrderId,
+      });
+    }
+  }, [
+    shouldNavigateToChat,
+    orders,
+    navigation,
+    chatOrderId,
+    isFetchingCurrentJobDetails,
+  ]);
+
+  //console.log('shouldNavigate', shouldNavigateToChat);
 
   useEffect(() => {
     if (route.params && route.params.fromComplete) {

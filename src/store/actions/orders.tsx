@@ -13,6 +13,8 @@ export const REMOVE_ORDER = 'REMOVE_ORDER';
 export const RESET_ORDERS = 'RESET_ORDERS';
 export const SET_ORDER_ID_BEING_PROCESSED = 'SET_ORDER_ID_BEING_PROCESSED';
 export const RESET_ORDER_ID_BEING_PROCESSED = 'RESET_ORDER_ID_BEING_PROCESSED';
+export const SHOULD_NAVIGATE_TO_CHAT = 'SHOULD_NAVIGATE_TO_CHAT';
+export const RESET_SHOULD_NAVIGATE_TO_CHAT = 'RESET_SHOULD_NAVIGATE_TO_CHAT';
 
 const getRiderDetails = async (riderId: string) => {
   const dataSnapshot = await database().ref(`riders/${riderId}`).once('value');

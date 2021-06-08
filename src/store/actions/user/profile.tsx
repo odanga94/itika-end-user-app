@@ -11,6 +11,7 @@ export const UPDATE_IMAGE = 'UPDATE_IMAGE';
 export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const HAS_ORDERS = 'HAS_ORDERS';
 export const RESET_PROFILE = 'RESET_PROFILE';
+export const UPDATE_TOKENS = 'UPDATE_TOKENS';
 
 export const fetchProfile = (uid: string) => {
   return async (dispatch: any) => {

@@ -6,6 +6,7 @@ import {
   HAS_ORDERS,
   RESET_PROFILE,
   CREATE_PROFILE,
+  UPDATE_TOKENS,
 } from '../../actions/user/profile';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   email: '',
   imageUri: '',
   averageRating: -1,
+  tokens: [],
   //hasOrders: true,
 };
 
@@ -32,6 +34,7 @@ const profileReducer = (state = initialState, action: any) => {
           averageRating: action.profileData.averageRating
             ? action.profileData.averageRating
             : -1,
+          tokens: action.profileData.tokens ? action.profileData.tokens : [],
         };
       }
       return state;
@@ -64,6 +67,11 @@ const profileReducer = (state = initialState, action: any) => {
       return {
         ...state,
         hasOrders: action.hasOrders,
+      };
+    case UPDATE_TOKENS:
+      return {
+        ...state,
+        tokens: state.tokens.concat(action.token),
       };
     case RESET_PROFILE:
       return initialState;
