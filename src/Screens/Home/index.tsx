@@ -17,6 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import database from '@react-native-firebase/database';
 import messaging from '@react-native-firebase/messaging';
 import {Toast} from 'native-base';
+import PushNotification from 'react-native-push-notification';
 
 import {getGpsLoc} from '../../utils';
 import FlowCard from '../../Components/FlowCard';
@@ -56,10 +57,16 @@ const Home: React.FC<Props> = (props) => {
   const orders = useSelector((state: any) => state.orders.orders);
 
   const location = useSelector((state: any) => state.location);
+
   const shouldNavigateToChat = useSelector(
     (state: any) => state.orders.shouldNavigateToChat,
   );
   const chatOrderId = useSelector((state: any) => state.orders.chatOrderId);
+
+  const shouldNavigateToTrackOrder = useSelector(
+    (state: any) => state.orders.shouldNavigateToTrackOrder,
+  );
+  const trackOrderId = useSelector((state: any) => state.orders.trackOrderId);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [fetchLocationLoading, setFetchLocationLoading] = useState<boolean>(
@@ -111,8 +118,8 @@ const Home: React.FC<Props> = (props) => {
 
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       if (remoteMessage.data) {
-        const orderId = JSON.parse(remoteMessage.data.orderId);
         if (remoteMessage.data.messageText) {
+          const orderId = JSON.parse(remoteMessage.data.orderId);
           const senderId = JSON.parse(remoteMessage.data.senderId);
           const messageText = JSON.parse(remoteMessage.data.messageText);
           console.log(
@@ -137,18 +144,58 @@ const Home: React.FC<Props> = (props) => {
             });
           }
           return;
+        } else if (remoteMessage.data.newStatus) {
+          const orderId = JSON.parse(remoteMessage.data.orderId);
+          const newStatus = JSON.parse(remoteMessage.data.newStatus);
+          const packageType = JSON.parse(remoteMessage.data.packageType);
+          const notificationMessage = JSON.parse(
+            remoteMessage.data.notificationMessage,
+          );
+          console.log(
+            `The order "${orderId}" has been updated: "${newStatus}"`,
+          );
+          Toast.show({
+            text: `${packageType} Package Update: ${notificationMessage}`,
+            buttonText: 'View',
+            duration: 5000,
+            textStyle: {color: constant.primaryTextColor},
+            buttonStyle: {backgroundColor: constant.primaryColor},
+            buttonTextStyle: {color: '#fff'},
+            position: 'top',
+            onClose: (reason) => {
+              if (newStatus === 'delivered') {
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'OrderComplete',
+                      params: {
+                        orderId,
+                      },
+                    },
+                  ],
+                });
+                return;
+              }
+              if (reason === 'user') {
+                navigation.navigate('TrackOrder', {orderId});
+              }
+            },
+          });
+          return;
         }
       }
     });
 
     messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      PushNotification.removeAllDeliveredNotifications();
       console.log(
         'Notification caused app to open from background state:',
         remoteMessage.data,
       );
       if (remoteMessage.data) {
-        const orderId = JSON.parse(remoteMessage.data!.orderId);
         if (remoteMessage.data.messageText) {
+          const orderId = JSON.parse(remoteMessage.data!.orderId);
           const senderId = JSON.parse(remoteMessage.data.senderId);
           const messageText = JSON.parse(remoteMessage.data.messageText);
           console.log(
@@ -162,6 +209,31 @@ const Home: React.FC<Props> = (props) => {
             });
           }
           return;
+        } else if (remoteMessage.data.newStatus) {
+          const orderId = JSON.parse(remoteMessage.data.orderId);
+          const newStatus = JSON.parse(remoteMessage.data.newStatus);
+          // const packageType = JSON.parse(remoteMessage.data.packageType);
+          console.log(
+            `The order "${orderId}" has been updated: "${newStatus}"`,
+          );
+          if (newStatus === 'delivered') {
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'OrderComplete',
+                  params: {
+                    orderId,
+                  },
+                },
+              ],
+            });
+            return;
+          }
+          if (navigation.isFocused()) {
+            navigation.navigate('TrackOrder', {orderId});
+          }
+          return;
         }
       }
     });
@@ -169,14 +241,15 @@ const Home: React.FC<Props> = (props) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
+        PushNotification.removeAllDeliveredNotifications();
         if (remoteMessage) {
           console.log(
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
           if (remoteMessage.data) {
-            const orderId = JSON.parse(remoteMessage.data!.orderId);
             if (remoteMessage.data.messageText) {
+              const orderId = JSON.parse(remoteMessage.data!.orderId);
               const senderId = JSON.parse(remoteMessage.data.senderId);
               const messageText = JSON.parse(remoteMessage.data.messageText);
               console.log(
@@ -187,6 +260,20 @@ const Home: React.FC<Props> = (props) => {
                 //console.log('navigating...');
                 dispatch({
                   type: orderActions.SHOULD_NAVIGATE_TO_CHAT,
+                  orderId,
+                });
+              }
+              return;
+            } else if (remoteMessage.data.newStatus) {
+              const orderId = JSON.parse(remoteMessage.data.orderId);
+              const newStatus = JSON.parse(remoteMessage.data.newStatus);
+              // const packageType = JSON.parse(remoteMessage.data.packageType);
+              console.log(
+                `The order "${orderId}" has been updated: "${newStatus}"`,
+              );
+              if (newStatus !== 'delivered') {
+                dispatch({
+                  type: orderActions.SHOULD_NAVIGATE_TO_TRACK_ORDER,
                   orderId,
                 });
               }
@@ -393,18 +480,29 @@ const Home: React.FC<Props> = (props) => {
   //console.log(route);
 
   useEffect(() => {
-    console.log('should navigate to chat');
+    //console.log('should navigate to chat/track');
     if (
       shouldNavigateToChat &&
       orders.length > 0 &&
       !isFetchingCurrentJobDetails
     ) {
-      console.log('navigating....');
+      //console.log('navigating....');
       navigation.navigate('AddChatRoom', {
         orderId: chatOrderId,
       });
+    } else if (
+      shouldNavigateToTrackOrder &&
+      orders.length > 0 &&
+      !isFetchingCurrentJobDetails
+    ) {
+      //console.log('navigating...');
+      navigation.navigate('TrackOrder', {
+        orderId: trackOrderId,
+      });
     }
   }, [
+    shouldNavigateToTrackOrder,
+    trackOrderId,
     shouldNavigateToChat,
     orders,
     navigation,

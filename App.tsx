@@ -78,6 +78,13 @@ const App = () => {
                 `The user "${senderId}" wrote a new chat message "${messageText}" whiile app is in the background."`,
               );
               return;
+            } else if (remoteMessage.data.newStatus) {
+              const orderId = JSON.parse(remoteMessage.data.orderId);
+              const newStatus = JSON.parse(remoteMessage.data.newStatus);
+              console.log(
+                `The order "${orderId}" has been updated: "${newStatus}"`,
+              );
+              return;
             }
           }
         });

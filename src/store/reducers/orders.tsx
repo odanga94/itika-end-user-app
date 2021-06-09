@@ -10,6 +10,8 @@ import {
   RESET_ORDERS,
   SHOULD_NAVIGATE_TO_CHAT,
   RESET_SHOULD_NAVIGATE_TO_CHAT,
+  SHOULD_NAVIGATE_TO_TRACK_ORDER,
+  RESET_SHOULD_NAVIGATE_TO_TRACK_ORDER,
 } from '../actions/orders';
 
 const initialState: {
@@ -17,11 +19,15 @@ const initialState: {
   orderIdBeingProcessed: any;
   shouldNavigateToChat: boolean;
   chatOrderId: string;
+  shouldNavigateToTrackOrder: boolean;
+  trackOrderId: string;
 } = {
   orders: [],
   orderIdBeingProcessed: null,
   shouldNavigateToChat: false,
   chatOrderId: '',
+  shouldNavigateToTrackOrder: false,
+  trackOrderId: '',
 };
 
 const ordersReducer = (state = initialState, action: any) => {
@@ -101,6 +107,18 @@ const ordersReducer = (state = initialState, action: any) => {
         ...state,
         shouldNavigateToChat: false,
         chatOrderId: '',
+      };
+    case SHOULD_NAVIGATE_TO_TRACK_ORDER:
+      return {
+        ...state,
+        shouldNavigateToTrackOrder: true,
+        trackOrderId: action.orderId,
+      };
+    case RESET_SHOULD_NAVIGATE_TO_CHAT:
+      return {
+        ...state,
+        shouldNavigateToTrackOrder: false,
+        trackOrderId: '',
       };
     case RESET_ORDERS:
       return initialState;

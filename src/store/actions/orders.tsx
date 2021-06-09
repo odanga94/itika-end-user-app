@@ -15,6 +15,9 @@ export const SET_ORDER_ID_BEING_PROCESSED = 'SET_ORDER_ID_BEING_PROCESSED';
 export const RESET_ORDER_ID_BEING_PROCESSED = 'RESET_ORDER_ID_BEING_PROCESSED';
 export const SHOULD_NAVIGATE_TO_CHAT = 'SHOULD_NAVIGATE_TO_CHAT';
 export const RESET_SHOULD_NAVIGATE_TO_CHAT = 'RESET_SHOULD_NAVIGATE_TO_CHAT';
+export const SHOULD_NAVIGATE_TO_TRACK_ORDER = 'SHOULD_NAVIGATE_TO_TRACK_ORDER';
+export const RESET_SHOULD_NAVIGATE_TO_TRACK_ORDER =
+  'RESET_SHOULD_NAVIGATE_TO_TRACK_ORDER';
 
 const getRiderDetails = async (riderId: string) => {
   const dataSnapshot = await database().ref(`riders/${riderId}`).once('value');

@@ -24,7 +24,10 @@ import mapStyle from '../../utils/customMap';
 import {getEstimatedDistanceAndTime} from '../../utils/index';
 import ENV from '../../../config';
 import styles from './styles';
-import {UPDATE_ORDER} from '../../store/actions/orders';
+import {
+  UPDATE_ORDER,
+  RESET_SHOULD_NAVIGATE_TO_TRACK_ORDER,
+} from '../../store/actions/orders';
 import Button from '../../Components/Button';
 import Spinner from '../../Components/UI/Spinner';
 
@@ -79,6 +82,12 @@ const TrackOrder: React.FC<Props> = (props) => {
   const mapRef = useRef(null);
 
   const markersLength = markers.length;
+
+  useEffect(() => {
+    dispatch({
+      type: RESET_SHOULD_NAVIGATE_TO_TRACK_ORDER,
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentOrder) {
