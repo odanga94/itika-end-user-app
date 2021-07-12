@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect, useCallback, Fragment} from 'react';
+import React, {useState, useEffect, useCallback, Fragment, useRef} from 'react';
 import {
   View,
   Text,
@@ -16,8 +16,10 @@ import {useSelector, useDispatch} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import database from '@react-native-firebase/database';
 import messaging from '@react-native-firebase/messaging';
-import {Toast} from 'native-base';
+// import {Toast} from 'native-base';
 import PushNotification from 'react-native-push-notification';
+import DropdownAlert from 'react-native-dropdownalert';
+import {Audio} from 'expo-av';
 
 import {getGpsLoc} from '../../utils';
 import FlowCard from '../../Components/FlowCard';
@@ -33,10 +35,11 @@ import * as currentJobActions from '../../store/actions/currentJob';
 import * as orderActions from '../../store/actions/orders';
 import * as locationActions from '../../store/actions/location';
 import {UPDATE_TOKENS} from '../../store/actions/user/profile';
-import Order from '../../models/order';
+// import Order from '../../models/order';
 
 const pkgImage = require('../../../assets/package-yellow.png');
 const errandImage = require('../../../assets/errand.png');
+const alertSound = require('../../../assets/juntos.mp3');
 
 interface Props {
   navigation: StackNavigationProp<HomeStackParamList>;
@@ -81,6 +84,18 @@ const Home: React.FC<Props> = (props) => {
   const [currentOrders, setCurrentOrders] = useState<any>([]);
   const [completeOrder, setCompleteOrder] = useState(false);
   const [justDeleted, setJustDeleted] = useState(false);
+  const [audioSound, setAudioSound] = useState<any>();
+
+  const dropDownAlertRef = useRef(null);
+
+  useEffect(() => {
+    return audioSound
+      ? () => {
+          console.log('Unloading Sound');
+          audioSound.unloadAsync();
+        }
+      : undefined;
+  }, [audioSound]);
 
   useEffect(() => {
     async function saveTokenToDatabase(token: string) {
@@ -117,7 +132,17 @@ const Home: React.FC<Props> = (props) => {
     );
 
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      const playSound = async () => {
+        console.log('Loading Sound');
+        const {sound} = await Audio.Sound.createAsync(alertSound);
+        setAudioSound(sound);
+
+        console.log('Playing Sound');
+        await sound.playAsync();
+      };
+
       if (remoteMessage.data) {
+        playSound();
         if (remoteMessage.data.messageText) {
           const orderId = JSON.parse(remoteMessage.data.orderId);
           const senderId = JSON.parse(remoteMessage.data.senderId);
@@ -126,22 +151,12 @@ const Home: React.FC<Props> = (props) => {
             `The user "${senderId}" wrote a new chat message "${messageText}" while app is in the foreground."`,
           );
           if (senderId !== userId) {
-            Toast.show({
-              text: `New Message: ${messageText}`,
-              buttonText: 'View',
-              duration: 5000,
-              textStyle: {color: constant.primaryTextColor},
-              buttonStyle: {backgroundColor: constant.primaryColor},
-              buttonTextStyle: {color: '#fff'},
-              position: 'top',
-              onClose: (reason) => {
-                if (reason === 'user') {
-                  navigation.navigate('AddChatRoom', {
-                    orderId,
-                  });
-                }
-              },
-            });
+            dropDownAlertRef.current.alertWithType(
+              'success',
+              'New Message',
+              messageText,
+              {orderId: orderId},
+            );
           }
           return;
         } else if (remoteMessage.data.newStatus) {
@@ -154,35 +169,25 @@ const Home: React.FC<Props> = (props) => {
           console.log(
             `The order "${orderId}" has been updated: "${newStatus}"`,
           );
-          Toast.show({
-            text: `${packageType} Package Update: ${notificationMessage}`,
-            buttonText: 'View',
-            duration: 5000,
-            textStyle: {color: constant.primaryTextColor},
-            buttonStyle: {backgroundColor: constant.primaryColor},
-            buttonTextStyle: {color: '#fff'},
-            position: 'top',
-            onClose: (reason) => {
-              if (newStatus === 'delivered') {
-                navigation.reset({
-                  index: 0,
-                  routes: [
-                    {
-                      name: 'OrderComplete',
-                      params: {
-                        orderId,
-                      },
-                    },
-                  ],
-                });
-                return;
-              }
-              if (reason === 'user') {
-                navigation.navigate('TrackOrder', {orderId});
-              }
-            },
-          });
-          return;
+          dropDownAlertRef.current.alertWithType(
+            'info',
+            packageType,
+            `Package Update: ${notificationMessage}`,
+            {orderId: orderId, newStatus},
+          );
+          if (newStatus === 'delivered') {
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'OrderComplete',
+                  params: {
+                    orderId,
+                  },
+                },
+              ],
+            });
+          }
         }
       }
     });
@@ -667,6 +672,28 @@ const Home: React.FC<Props> = (props) => {
             <CategoriesCard navigation={navigation} />
           </ScrollView>
         </View> */}
+      <DropdownAlert
+        ref={dropDownAlertRef}
+        onTap={(alertData) => {
+          if (
+            alertData.payload.newStatus &&
+            alertData.payload.newStatus !== 'delivered'
+          ) {
+            navigation.navigate('TrackOrder', {
+              orderId: alertData.payload.orderId,
+            });
+          } else if (!alertData.payload.newStatus) {
+            navigation.navigate('AddChatRoom', {
+              orderId: alertData.payload.orderId,
+            });
+          }
+        }}
+        closeInterval={5000}
+        infoColor={constant.primaryColor}
+        successColor={constant.primaryTextColor}
+        //successImageSrc={chatIcon}
+        updateStatusBar={false}
+      />
     </SafeAreaView>
   );
 };

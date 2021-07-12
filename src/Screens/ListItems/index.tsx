@@ -97,7 +97,7 @@ const ListItemsScreen: React.FC<Props> = (props) => {
       }
     }
     //console.log(selectedItems, type);
-    navigation.navigate('OrderDetails', {selectedItems, type});
+    navigation.navigate('CheckOut', {selectedItems, type});
   }, [itemsState, navigation, type]);
 
   /* useEffect(() => {

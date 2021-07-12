@@ -4,13 +4,13 @@ import {
   View,
   Text,
   ScrollView,
-  TextInput,
   KeyboardAvoidingView,
   Alert,
   Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {CheckBox} from 'native-base';
 
 import {HomeStackParamList} from '../TabNavigation';
 import Button from '../../Components/Button';
@@ -18,7 +18,7 @@ import ImagePicker from '../../Components/ImagePicker';
 import Spinner from '../../Components/UI/Spinner';
 import ListButton from '../../Components/UI/ListButton';
 
-import {getEstimatedDistanceAndTime} from '../../utils';
+// import {getEstimatedDistanceAndTime} from '../../utils';
 
 import * as profileActions from '../../store/actions/user/profile';
 import * as appSettingsActions from '../../store/actions/app-settings';
@@ -35,34 +35,35 @@ const OrderDetails: React.FC<Props> = (props) => {
 
   const dispatch = useDispatch();
 
-  const userId = useSelector((state: any) => state.auth.userId);
-  const phoneNumber = useSelector((state: any) => state.profile.phone);
-  const baseFee = useSelector((state: any) => state.appSettings.baseFee);
-  const pricePerKm = useSelector((state: any) => state.appSettings.pricePerKm);
+  /* const userId = useSelector((state: any) => state.auth.userId);
+  const phoneNumber = useSelector((state: any) => state.profile.phone); */
+  /*   const baseFee = useSelector((state: any) => state.appSettings.baseFee);
+  const pricePerKm = useSelector((state: any) => state.appSettings.pricePerKm); */
   //console.log(baseFee, pricePerKm);
 
   const pickedLocationAddress = route.params.pickedLocationAddress;
   const pickedLocation = route.params.pickedLocation;
   const pickedDropOffAddress = route.params.pickedDropOffAddress;
   const pickedDropOffLocation = route.params.pickedDropOffLocation;
-  const selectedPackageType = route.params.selectedItems;
+  // const selectedPackageType = route.params.selectedItems;
 
-  const [recipientName, setRecipientName] = useState('');
-  const [recipientPhone, setRecipientPhone] = useState('');
+  // const [recipientName, setRecipientName] = useState('');
+  // const [recipientPhone, setRecipientPhone] = useState('');
 
-  const [estimatedPrice, setEstimatedPrice] = useState(0);
+  // const [estimatedPrice, setEstimatedPrice] = useState(0);
   //const [isEdible, setIsEdible] = useState(false);
-  const [packageType, setPackageType] = useState('');
-  const [packageDescription, setPackageDescription] = useState('');
-  const [packagePhotoUri, setPackagePhotoUri] = useState('');
+  // const [packageType, setPackageType] = useState('');
+  // const [packageDescription, setPackageDescription] = useState('');
+  // const [packagePhotoUri, setPackagePhotoUri] = useState('');
+  const [isReturnTrip, setIsReturnTrip] = useState(false);
 
-  const [clientPhone, setClientPhone] = useState(phoneNumber);
+  // const [clientPhone, setClientPhone] = useState(phoneNumber);
 
   const [addOrderLoading, setAddOrderLoading] = useState<boolean>(false);
   const [addOrderError, setAddOrderError] = useState<boolean>(false);
-  const [fetchAppSettings, setFetchAppSettings] = useState<boolean>(false);
+  // const [fetchAppSettings, setFetchAppSettings] = useState<boolean>(false);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!phoneNumber && userId) {
       dispatch(profileActions.fetchProfile(userId));
     }
@@ -72,9 +73,9 @@ const OrderDetails: React.FC<Props> = (props) => {
     if (phoneNumber) {
       setClientPhone(phoneNumber);
     }
-  }, [phoneNumber]);
+  }, [phoneNumber]); */
 
-  useEffect(() => {
+  /*  useEffect(() => {
     const fetchSettings = async () => {
       setFetchAppSettings(true);
       try {
@@ -86,17 +87,17 @@ const OrderDetails: React.FC<Props> = (props) => {
     };
 
     fetchSettings();
-  }, [dispatch]);
+  }, [dispatch]); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (selectedPackageType && Object.keys(selectedPackageType).length > 0) {
       Object.keys(selectedPackageType).forEach((key) => {
         setPackageType(selectedPackageType[key].name);
       });
     }
-  }, [selectedPackageType]);
+  }, [selectedPackageType]); */
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const roundUp = (num: number, precision: number) => {
       return Math.ceil(num / precision) * precision;
     };
@@ -117,7 +118,7 @@ const OrderDetails: React.FC<Props> = (props) => {
       //console.log('loc', pickedLocation, pickedDropOffLocation)
       calculatePriceEstimate();
     }
-  }, [pickedLocation, pickedDropOffLocation, baseFee, pricePerKm]);
+  }, [pickedLocation, pickedDropOffLocation, baseFee, pricePerKm]); */
 
   /* useEffect(() => {
     const getAddress = async () => {
@@ -151,7 +152,7 @@ const OrderDetails: React.FC<Props> = (props) => {
   };
 
   const goToCheckOut = async () => {
-    if (!recipientName.trim()) {
+    /* if (!recipientName.trim()) {
       Alert.alert('Wrong Input!', 'Please enter a valid Recipient Name.', [
         {text: 'Okay'},
       ]);
@@ -162,7 +163,7 @@ const OrderDetails: React.FC<Props> = (props) => {
         {text: 'Okay'},
       ]);
       return;
-    }
+    } */
     if (!pickedLocation || !pickedLocationAddress) {
       Alert.alert('Wrong Input!', 'Please enter a Pick up Location.', [
         {text: 'Okay'},
@@ -175,7 +176,7 @@ const OrderDetails: React.FC<Props> = (props) => {
       ]);
       return;
     }
-    if (!packageType) {
+    /* if (!packageType) {
       Alert.alert('Wrong Input!', 'Please enter the package type.', [
         {text: 'Okay'},
       ]);
@@ -196,7 +197,7 @@ const OrderDetails: React.FC<Props> = (props) => {
         [{text: 'Okay'}],
       );
       return;
-    }
+    } */
 
     let pickUpLocation: any;
     if (pickedLocation.resp) {
@@ -209,17 +210,18 @@ const OrderDetails: React.FC<Props> = (props) => {
     }
 
     const orderDetails = {
-      recipientName: recipientName,
-      recipientPhone: recipientPhone,
+      /* recipientName: recipientName,
+      recipientPhone: recipientPhone, */
       pickUpLocation,
       pickUpLocationAddress: pickedLocationAddress,
       dropOffLocation: pickedDropOffLocation,
       dropOffLocationAddress: pickedDropOffAddress,
-      packageType: packageType,
+      isReturnTrip,
+      /* packageType: packageType,
       packageDescription: packageDescription,
       packagePhotoUri: packagePhotoUri,
       clientPhone: clientPhone,
-      estimatedPrice: estimatedPrice,
+      estimatedPrice: estimatedPrice, */
       dateRequested: new Date().toString(),
       status: 'pending',
     };
@@ -229,7 +231,7 @@ const OrderDetails: React.FC<Props> = (props) => {
 
     navigation.navigate('CheckOut', {
       orderDetails,
-      initiallyHadPhoneNo: phoneNumber ? true : false,
+      // initiallyHadPhoneNo: phoneNumber ? true : false,
     });
   };
 
@@ -263,7 +265,7 @@ const OrderDetails: React.FC<Props> = (props) => {
     <View
       style={{
         padding: 10,
-        paddingTop: 0,
+        paddingTop: 20,
         backgroundColor: 'white',
         flex: 1,
         justifyContent: 'space-between',
@@ -277,7 +279,7 @@ const OrderDetails: React.FC<Props> = (props) => {
         style={{flex: 1}}>
         <ScrollView contentContainerStyle={styles.screen}>
           <Fragment>
-            <Fragment>
+            {/*  <Fragment>
               <Text style={styles.secondText}>Recipient Name</Text>
               <TextInput
                 style={styles.input}
@@ -296,7 +298,7 @@ const OrderDetails: React.FC<Props> = (props) => {
                 value={recipientPhone}
                 keyboardType="number-pad"
               />
-            </Fragment>
+            </Fragment> */}
             <Fragment>
               <Text style={styles.secondText}>Select Pick Up Location:</Text>
               <ListButton
@@ -316,6 +318,37 @@ const OrderDetails: React.FC<Props> = (props) => {
               />
             </Fragment>
             <Fragment>
+              <View
+                style={{
+                  borderBottomColor: '#ccc',
+                  borderBottomWidth: 1,
+                  paddingBottom: 2,
+                  marginBottom: 5,
+                }}>
+                <Text style={styles.secondText}>Is it a return trip ?</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', marginRight: 15}}>
+                  <Text style={{...styles.secondText, marginTop: 0}}>No</Text>
+                  <CheckBox
+                    style={{marginRight: 7.5, marginLeft: -5}}
+                    checked={!isReturnTrip}
+                    color={constants.primaryTextColor}
+                    onPress={() => setIsReturnTrip(false)}
+                  />
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{...styles.secondText, marginTop: 0}}>Yes</Text>
+                  <CheckBox
+                    style={{marginLeft: -5}}
+                    checked={isReturnTrip}
+                    color={constants.primaryTextColor}
+                    onPress={() => setIsReturnTrip(true)}
+                  />
+                </View>
+              </View>
+            </Fragment>
+            {/* <Fragment>
               <Text style={styles.secondText}>Select Package Type:</Text>
               <ListButton
                 info={packageType}
@@ -337,40 +370,8 @@ const OrderDetails: React.FC<Props> = (props) => {
                   });
                 }}
               />
-              {/*               <View style={styles.radioView}>
-                <ListItem>
-                  <Left>
-                    <Text style={{...styles.secondText, fontWeight: 'normal'}}>
-                      Non-Edible
-                    </Text>
-                  </Left>
-                  <Right>
-                    <Radio
-                      selectedColor={constants.primaryTextColor}
-                      selected={!isEdible}
-                      onPress={() => setIsEdible(false)}
-                      color="#505050"
-                    />
-                  </Right>
-                </ListItem>
-                <ListItem>
-                  <Left>
-                    <Text style={{...styles.secondText, fontWeight: 'normal'}}>
-                      Edible
-                    </Text>
-                  </Left>
-                  <Right>
-                    <Radio
-                      selectedColor={constants.primaryTextColor}
-                      selected={isEdible}
-                      onPress={() => setIsEdible(true)}
-                      color="#505050"
-                    />
-                  </Right>
-                </ListItem>
-              </View> */}
-            </Fragment>
-            <Fragment>
+            </Fragment>  */}
+            {/*             <Fragment>
               <Text style={styles.secondText}>
                 Kindly describe the package (optional):
               </Text>
@@ -406,14 +407,14 @@ const OrderDetails: React.FC<Props> = (props) => {
                 value={clientPhone}
                 keyboardType="number-pad"
               />
-            </Fragment>
-            <Fragment>
+            </Fragment> */}
+            {/* <Fragment>
               <Text style={styles.secondText}>Price Estimate:</Text>
               <Text
                 style={{...styles.input, color: constants.primaryTextColor}}>
                 KES. {estimatedPrice}
               </Text>
-            </Fragment>
+            </Fragment> */}
           </Fragment>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -445,7 +446,7 @@ const OrderDetails: React.FC<Props> = (props) => {
 
 export const orderDetailsScreenOptions = (navigationData: any) => {
   return {
-    title: 'Enter Package Details',
+    title: 'Enter Pick Up & Drop Off',
   };
 };
 

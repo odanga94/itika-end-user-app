@@ -11,7 +11,6 @@ export default StyleSheet.create({
     backgroundColor: constant.commonColor,
     padding: 10,
     paddingTop: 0,
-    justifyContent: 'space-between',
   },
   screen: {
     width: '100%',
@@ -43,24 +42,34 @@ export default StyleSheet.create({
     color: constant.thirdTextColor,
   },
   fourthView: {
-    flex: iphoneX ? 0.25 : 0.3,
-    top: 20,
+    // flex: iphoneX ? 0.25 : 0.3,
+    marginBottom: 10,
   },
   secondText: {
-    left: 20,
     fontSize: 14,
     fontWeight: '500',
     color: constant.thirdTextColor,
   },
+  input: {
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    borderBottomColor: '#ccc',
+    borderTopColor: '#ccc',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    fontFamily: 'poppins-regular',
+    marginTop: 3,
+    //marginBottom: 15,
+  },
   fifthView: {
-    height: 60,
+    paddingVertical: 5,
     backgroundColor: constant.paymentBackGround,
     left: 20,
-    marginTop: 15 * heightRatio,
+    marginTop: 8 * heightRatio,
     marginRight: 40,
     borderRadius: 5,
     borderWidth: 0.5,
-    borderColor: constant.primaryColor,
+    borderColor: constant.primaryTextColor,
     flexDirection: 'row',
   },
   thirdText: {
@@ -68,7 +77,7 @@ export default StyleSheet.create({
     left: 10,
     fontSize: 14,
     fontWeight: '500',
-    color: constant.primaryColor,
+    color: constant.primaryTextColor,
   },
   fourthText: {
     fontSize: 14,
@@ -89,7 +98,7 @@ export default StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-    backgroundColor: constant.primaryColor,
+    backgroundColor: constant.primaryTextColor,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -172,5 +181,23 @@ export default StyleSheet.create({
   cardIcon: {
     height: 30,
     width: 30,
+  },
+  image: {
+    width: '100%',
+    height: height / 4,
+  },
+  infoContainer: {
+    marginHorizontal: 20,
+  },
+  datePriceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  datePrice: {
+    fontSize: 16,
+    color: '#888',
+    //textAlign: 'center',
+    fontFamily: 'poppins-bold',
   },
 });
